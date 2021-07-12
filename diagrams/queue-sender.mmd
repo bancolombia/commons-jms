@@ -1,0 +1,13 @@
+graph TD
+  A[ConnectionFactory] -->|create| B(JMSContext)
+  A -->|create| C(JMSContext)
+  A -->|create| D(JMSContext)
+  B -->|create| E(JMSProducer)
+  C -->|create| F(JMSProducer)
+  D -->|create| G(JMSProducer)
+  B -->|create| H(Destination: default)
+  C -->|create| I(Destination: default)
+  D -->|create| J(Destination: default)
+  E -->|uses| H
+  F -->|uses| I
+  G -->|uses| J

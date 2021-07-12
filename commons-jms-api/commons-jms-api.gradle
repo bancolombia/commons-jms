@@ -1,0 +1,8 @@
+dependencies {
+    api 'javax.jms:javax.jms-api:' + jsmAPI
+}
+
+ext {
+    artifactId = 'commons-jms-api'
+    artifactDescription = 'Commons JMS API'
+}

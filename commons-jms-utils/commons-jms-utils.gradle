@@ -1,0 +1,10 @@
+dependencies {
+    api project(':commons-jms-api')
+    implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+}
+
+ext {
+    artifactId = 'commons-jms-utils'
+    artifactDescription = 'Commons JMS Utils'
+}
