@@ -8,14 +8,14 @@ import lombok.Getter;
 @Builder(toBuilder = true)
 public class MQListenerConfig {
     @Builder.Default
-    private final String queue = "";
+    private final String queue = ""; //NOSONAR
     @Builder.Default
-    private final int concurrency = 1;
+    private final int concurrency = 1; //NOSONAR
     @Builder.Default
-    private final String connectionFactory = "";
+    private final String connectionFactory = ""; //NOSONAR
     @Builder.Default
-    private final String tempQueueAlias = "";
+    private final String tempQueueAlias = ""; //NOSONAR
     @Builder.Default
-    private final MQQueueCustomizer customizer = ignored -> {
+    private final MQQueueCustomizer customizer = ignored -> { //NOSONAR
     };
 }

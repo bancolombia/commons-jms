@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -34,7 +33,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -44,7 +42,7 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
     private StringValueResolver embeddedValueResolver;
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
         Class<?> targetClass = AopProxyUtils.ultimateTargetClass(bean);
         if (AnnotationUtils.isCandidateClass(targetClass, MQListener.class)) {
             Map<Method, Set<MQListener>> annotatedMethods = getAnnotatedMethods(targetClass);
@@ -54,7 +52,7 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
     }
 
     @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(BeanFactory beanFactory) {
         if (beanFactory instanceof ConfigurableBeanFactory) {
             this.embeddedValueResolver = new EmbeddedValueResolver((ConfigurableBeanFactory) beanFactory);
         }
@@ -118,9 +116,13 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
     }
 
     private int resolveConcurrency(int concurrencyAnnotation, int concurrencyProperties) {
-        return Stream.of(concurrencyAnnotation, concurrencyProperties, 1)
-                .filter(concurrency -> concurrency > 0)
-                .findFirst().get();
+        if (concurrencyAnnotation > 0) {
+            return concurrencyAnnotation;
+        }
+        if (concurrencyProperties > 0) {
+            return concurrencyProperties;
+        }
+        return MQProperties.DEFAULT_CONCURRENCY;
     }
 
     private String resolveQueue(String primaryAnnotation, String secondaryValue, String queueProperties) {

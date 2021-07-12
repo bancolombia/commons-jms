@@ -1,7 +1,9 @@
 package co.com.bancolombia.commons.jms.mq;
 
 import lombok.AllArgsConstructor;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.invocation.reactive.InvocableHandlerMethod;
+import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -14,12 +16,16 @@ public final class MQReactiveMessageListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        Mono.defer(() -> process(message))
-                .subscribeOn(Schedulers.boundedElastic())
+        onMessageAsync(message)
                 .subscribe();
     }
 
-    protected Mono<Object> process(Message message) {
-        return method.invoke(null, message);
+    protected Mono<Object> onMessageAsync(Message message) {
+        return Mono.defer(() -> callRealMethod(message))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private Mono<Object> callRealMethod(Message message) {
+        return method.invoke(MessageBuilder.createMessage("", new MessageHeaders(null)), message);
     }
 }

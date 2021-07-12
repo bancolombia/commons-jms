@@ -6,11 +6,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.handler.invocation.reactive.InvocableHandlerMethod;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import javax.jms.Message;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class MQReactiveMessageListenerTest {
@@ -22,13 +23,16 @@ public class MQReactiveMessageListenerTest {
     private MQReactiveMessageListener listener;
 
     @Test
-    void shouldListen() throws InterruptedException {
+    void shouldListen() {
         // Arrange
+        when(handlerMethod.invoke(any(), any())).thenReturn(Mono.empty());
         // Act
-        listener.onMessage(message);
-        Thread.sleep(1000);
+        Mono<Object> listen = listener.onMessageAsync(message);
+
+        StepVerifier.create(listen)
+                .verifyComplete();
         // Assert
-        verify(handlerMethod, times(1)).invoke(null, message);
+        verify(handlerMethod, times(1)).invoke(any(), any(Message.class));
     }
 
 }
