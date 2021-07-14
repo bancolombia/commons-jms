@@ -12,8 +12,8 @@ allprojects {
         properties {
             property "sonar.sourceEncoding", "UTF-8"
             property "sonar.projectKey", "bancolombia_commons-jms"
-            property "sonar.organization", "grupo-bancolombia"
-            property "sonar.host.url", "https://sonarcloud.io/"
+//            property "sonar.organization", "grupo-bancolombia"
+//            property "sonar.host.url", "https://sonarcloud.io/"
             property "sonar.sources", "src/main"
             property "sonar.test", "src/test"
             property "sonar.java.binaries", "build/classes"
@@ -30,6 +30,7 @@ subprojects {
     apply plugin: "java-library"
     apply plugin: "maven"
     apply plugin: "io.spring.dependency-management"
+    apply plugin: "org.springframework.boot"
 
     ext {
         groupId = 'com.github.bancolombia'
@@ -50,14 +51,7 @@ subprojects {
         testImplementation 'io.projectreactor:reactor-test'
         testImplementation platform('org.junit:junit-bom:5.7.0')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-//        testImplementation 'org.mockito:mockito-inline:3.7.7'
         testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        }
     }
 
     test {

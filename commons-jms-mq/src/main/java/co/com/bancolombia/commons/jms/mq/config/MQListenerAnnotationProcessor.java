@@ -129,7 +129,7 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
         if (StringUtils.hasText(primaryAnnotation)) {
             return primaryAnnotation;
         }
-        if (StringUtils.isEmpty(secondaryValue) && StringUtils.hasText(queueProperties)) {
+        if (!StringUtils.hasText(secondaryValue) && StringUtils.hasText(queueProperties)) {
             return queueProperties;
         }
         return null;
