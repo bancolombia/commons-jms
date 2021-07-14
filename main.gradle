@@ -2,7 +2,7 @@ allprojects {
     apply plugin: "java"
     apply plugin: "jacoco"
     apply plugin: 'org.sonarqube'
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenCentral()
@@ -12,8 +12,8 @@ allprojects {
         properties {
             property "sonar.sourceEncoding", "UTF-8"
             property "sonar.projectKey", "bancolombia_commons-jms"
-//            property "sonar.organization", "grupo-bancolombia"
-//            property "sonar.host.url", "https://sonarcloud.io/"
+            property "sonar.organization", "grupo-bancolombia"
+            property "sonar.host.url", "https://sonarcloud.io/"
             property "sonar.sources", "src/main"
             property "sonar.test", "src/test"
             property "sonar.java.binaries", "build/classes"
@@ -82,6 +82,14 @@ subprojects {
     if (toPublish.split(',').contains(it.name)) {
         apply plugin: "maven-publish"
         apply plugin: "signing"
+
+        jar {
+            enabled = true
+        }
+
+        bootJar {
+            enabled = false
+        }
 
         task sourcesJar(type: Jar, dependsOn: classes) {
             classifier = 'sources'
