@@ -1,0 +1,19 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: "mq-reactive"
+commons:
+  jms:
+    output-concurrency: 2
+    output-queue: "DEV.QUEUE.1"
+    producer-ttl: 60
+    reactive: true
+    input-concurrency: 2
+    input-queue: "DEV.QUEUE.1"
+    input-queue-alias: ""
+ibm:
+  mq:
+    channel: "DEV.APP.SVRCONN"
+    user: "app"
+    queue-manager: QM1

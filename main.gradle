@@ -2,7 +2,7 @@ allprojects {
     apply plugin: "java"
     apply plugin: "jacoco"
     apply plugin: 'org.sonarqube'
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenCentral()
@@ -30,6 +30,7 @@ subprojects {
     apply plugin: "java-library"
     apply plugin: "maven"
     apply plugin: "io.spring.dependency-management"
+    apply plugin: "org.springframework.boot"
 
     ext {
         groupId = 'com.github.bancolombia'
@@ -50,14 +51,7 @@ subprojects {
         testImplementation 'io.projectreactor:reactor-test'
         testImplementation platform('org.junit:junit-bom:5.7.0')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-//        testImplementation 'org.mockito:mockito-inline:3.7.7'
         testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        }
     }
 
     test {
@@ -88,6 +82,14 @@ subprojects {
     if (toPublish.split(',').contains(it.name)) {
         apply plugin: "maven-publish"
         apply plugin: "signing"
+
+        jar {
+            enabled = true
+        }
+
+        bootJar {
+            enabled = false
+        }
 
         task sourcesJar(type: Jar, dependsOn: classes) {
             classifier = 'sources'
