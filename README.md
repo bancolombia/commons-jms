@@ -153,3 +153,8 @@ To customize sender you should override the default `MQMessageSenderSync` bean r
 You can define custom beans to change default behaviors:
 -  [`MQAutoconfiguration`](commons-jms-mq/src/main/java/co/com/bancolombia/commons/jms/mq/config/MQAutoconfiguration.java)
 -  [`MQAutoconfigurationSender`](commons-jms-mq/src/main/java/co/com/bancolombia/commons/jms/mq/config/MQAutoconfigurationSender.java)
+
+
+# License
+
+This repository is licensed under [MIT License](./LICENSE) Copyright (c) 2021 Bancolombia S.A
