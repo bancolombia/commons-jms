@@ -154,6 +154,10 @@ You can define custom beans to change default behaviors:
 -  [`MQAutoconfiguration`](commons-jms-mq/src/main/java/co/com/bancolombia/commons/jms/mq/config/MQAutoconfiguration.java)
 -  [`MQAutoconfigurationSender`](commons-jms-mq/src/main/java/co/com/bancolombia/commons/jms/mq/config/MQAutoconfigurationSender.java)
 
+# How can I help?
+
+Review the issues, we hear new ideas. Read more [Contributing](./CONTRIBUTING.md)
+
 
 # License
 
