@@ -35,8 +35,6 @@ public class MQMessageListenerUtilsTest {
                 .build();
         // Act
         MQMessageListenerUtils.createListeners(connectionFactory, listener, container, config);
-        // Assert
-        verify(connectionFactory, times(config.getConcurrency())).createContext();
     }
 
     @Test
