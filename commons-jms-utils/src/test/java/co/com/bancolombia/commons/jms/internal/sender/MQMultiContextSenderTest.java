@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MQMultiContextSenderTest {
+class MQMultiContextSenderTest {
     @Mock
     private MQMultiContextSenderSync senderSync;
     @Mock

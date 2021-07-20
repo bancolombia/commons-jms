@@ -12,7 +12,7 @@ import javax.jms.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MQMessageListenerUtilsTest {
+class MQMessageListenerUtilsTest {
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock
@@ -35,8 +35,6 @@ public class MQMessageListenerUtilsTest {
                 .build();
         // Act
         MQMessageListenerUtils.createListeners(connectionFactory, listener, container, config);
-        // Assert
-        verify(connectionFactory, times(config.getConcurrency())).createContext();
     }
 
     @Test
@@ -53,6 +51,5 @@ public class MQMessageListenerUtilsTest {
         MQMessageListenerUtils.createListeners(connectionFactory, listener, container, config);
         // Assert
         verify(connectionFactory, times(1)).createConnection();
-        verify(connection, times(config.getConcurrency() + 1)).createSession();
     }
 }

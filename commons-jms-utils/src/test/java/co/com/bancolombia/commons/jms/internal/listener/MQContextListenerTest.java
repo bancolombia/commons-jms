@@ -13,7 +13,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MQContextListenerTest {
+class MQContextListenerTest {
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock

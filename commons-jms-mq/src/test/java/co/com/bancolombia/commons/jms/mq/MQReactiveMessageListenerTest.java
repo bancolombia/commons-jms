@@ -14,7 +14,7 @@ import javax.jms.Message;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MQReactiveMessageListenerTest {
+class MQReactiveMessageListenerTest {
     @Mock
     private InvocableHandlerMethod handlerMethod;
     @Mock
