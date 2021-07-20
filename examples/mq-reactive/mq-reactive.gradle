@@ -3,3 +3,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-webflux'
     compile project(':commons-jms-mq')
 }
+
+install {
+    enabled false
+}
