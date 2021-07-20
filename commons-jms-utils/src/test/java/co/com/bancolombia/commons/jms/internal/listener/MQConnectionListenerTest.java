@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MQConnectionListenerTest {
+class MQConnectionListenerTest {
     @Mock
     private Session session;
     @Mock

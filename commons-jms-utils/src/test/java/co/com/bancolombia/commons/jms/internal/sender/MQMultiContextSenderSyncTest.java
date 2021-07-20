@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class MQMultiContextSenderSyncTest {
+class MQMultiContextSenderSyncTest {
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock

@@ -12,7 +12,7 @@ import javax.jms.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MQMessageListenerUtilsTest {
+class MQMessageListenerUtilsTest {
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock

@@ -11,7 +11,7 @@ import javax.jms.TemporaryQueue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class MQTemporaryQueuesContainerImpTest {
+class MQTemporaryQueuesContainerImpTest {
     @Mock
     private TemporaryQueue queue;
 

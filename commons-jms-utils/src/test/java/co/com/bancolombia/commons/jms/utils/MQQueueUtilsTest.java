@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MQQueueUtilsTest {
+class MQQueueUtilsTest {
     @Mock
     private JMSContext context;
     @Mock
