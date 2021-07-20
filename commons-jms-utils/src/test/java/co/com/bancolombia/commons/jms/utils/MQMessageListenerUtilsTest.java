@@ -53,6 +53,5 @@ public class MQMessageListenerUtilsTest {
         MQMessageListenerUtils.createListeners(connectionFactory, listener, container, config);
         // Assert
         verify(connectionFactory, times(1)).createConnection();
-        verify(connection, times(config.getConcurrency() + 1)).createSession();
     }
 }
