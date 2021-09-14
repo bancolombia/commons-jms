@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
 import co.com.bancolombia.commons.jms.mq.MQListener;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
+import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import reactor.core.publisher.Mono;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
 import javax.jms.Message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,8 +47,24 @@ class MQListenerAnnotationProcessorTest {
     @Test
     void shouldProcessAnnotated() {
         // Arrange
-        Object bean = new MyReactiveListener();
+        Object bean = new MyListener();
         doReturn(new MQProperties()).when(factory).getBean(MQProperties.class);
+        doReturn(container).when(factory).getBean(MQTemporaryQueuesContainer.class);
+        doReturn(cf).when(factory).getBean(ConnectionFactory.class);
+        doReturn(cf).when(factory).getBean("custom", ConnectionFactory.class);
+        // Act
+        Object result = processor.postProcessAfterInitialization(bean, "MyListener");
+        // Assert
+        assertEquals(bean, result);
+    }
+
+    @Test
+    void shouldProcessAnnotatedReactive() {
+        // Arrange
+        Object bean = new MyReactiveListener();
+        MQProperties properties = new MQProperties();
+        properties.setReactive(true);
+        doReturn(properties).when(factory).getBean(MQProperties.class);
         doReturn(container).when(factory).getBean(MQTemporaryQueuesContainer.class);
         doReturn(cf).when(factory).getBean(ConnectionFactory.class);
         doReturn(cf).when(factory).getBean("custom", ConnectionFactory.class);
@@ -61,6 +79,7 @@ class MQListenerAnnotationProcessorTest {
         // Arrange
         MQProperties properties = new MQProperties();
         properties.setInputConcurrency(0);
+        properties.setReactive(true);
         doReturn(properties).when(factory).getBean(MQProperties.class);
         doReturn(container).when(factory).getBean(MQTemporaryQueuesContainer.class);
         doReturn(cf).when(factory).getBean(ConnectionFactory.class);
@@ -74,7 +93,9 @@ class MQListenerAnnotationProcessorTest {
     @Test
     void shouldFailWithInvalidBothQueues() {
         // Arrange
-        doReturn(new MQProperties()).when(factory).getBean(MQProperties.class);
+        MQProperties properties = new MQProperties();
+        properties.setReactive(true);
+        doReturn(properties).when(factory).getBean(MQProperties.class);
         Object bean = new MyReactiveListenerInvalidBothQueues();
         // Assert
         assertThrows(MQInvalidListenerException.class, () -> {
@@ -86,13 +107,29 @@ class MQListenerAnnotationProcessorTest {
     @Test
     void shouldFailWithInvalidNoQueues() {
         // Arrange
-        doReturn(new MQProperties()).when(factory).getBean(MQProperties.class);
+        MQProperties properties = new MQProperties();
+        properties.setReactive(true);
+        doReturn(properties).when(factory).getBean(MQProperties.class);
         Object bean = new MyReactiveListenerInvalidNoQueues();
         // Assert
         assertThrows(MQInvalidListenerException.class, () -> {
             // Act
             processor.postProcessAfterInitialization(bean, "MyReactiveListenerInvalidNoQueues");
         });
+    }
+
+    @Log
+    public static class MyListener {
+
+        @MQListener(value = "QUEUE.NAME", connectionFactory = "custom")
+        public void process(Message message) throws JMSException {
+            log.info("message: " + message.getJMSMessageID());
+        }
+
+        @MQListener("QUEUE.NAME2")
+        public void process2(Message message) throws JMSException {
+            log.info("message: " + message.getJMSMessageID());
+        }
     }
 
     public static class MyReactiveListener {

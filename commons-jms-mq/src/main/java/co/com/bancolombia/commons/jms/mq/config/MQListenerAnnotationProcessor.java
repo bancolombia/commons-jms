@@ -5,6 +5,7 @@ import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.MQListener;
 import co.com.bancolombia.commons.jms.mq.MQListeners;
+import co.com.bancolombia.commons.jms.mq.MQMessageListener;
 import co.com.bancolombia.commons.jms.mq.MQReactiveMessageListener;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.utils.MQMessageListenerUtils;
@@ -22,7 +23,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.messaging.handler.invocation.reactive.InvocableHandlerMethod;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
@@ -70,10 +70,10 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
     }
 
     private void processJmsListener(MQListener mqListener, Method mostSpecificMethod, Object bean) {
-        MQListenerConfig config = validateAnnotationConfig(mqListener);
+        MQProperties properties = resolveBeanWithName("", MQProperties.class);
+        MQListenerConfig config = validateAnnotationConfig(mqListener, properties);
         Method invocableMethod = AopUtils.selectInvocableMethod(mostSpecificMethod, bean.getClass());
-        InvocableHandlerMethod handlerMethod = new InvocableHandlerMethod(bean, invocableMethod);
-        MessageListener processor = new MQReactiveMessageListener(handlerMethod);
+        MessageListener processor = getEffectiveMessageListener(bean, invocableMethod, properties.isReactive());
         ConnectionFactory cf = resolveBeanWithName(mqListener.connectionFactory(), ConnectionFactory.class);
         MQTemporaryQueuesContainer temporaryQueuesContainer = beanFactory.getBean(MQTemporaryQueuesContainer.class);
         try {
@@ -84,13 +84,18 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
         }
     }
 
-    private MQListenerConfig validateAnnotationConfig(MQListener config) {
+    private MessageListener getEffectiveMessageListener(Object bean, Method invocableMethod, boolean isReactive) {
+        return isReactive ?
+                MQReactiveMessageListener.fromBeanAndMethod(bean, invocableMethod) :
+                MQMessageListener.fromBeanAndMethod(bean, invocableMethod);
+    }
+
+    private MQListenerConfig validateAnnotationConfig(MQListener config, MQProperties properties) {
         // Resolve dynamic values
         int concurrency = Integer.parseInt(Objects.
                 requireNonNull(embeddedValueResolver.resolveStringValue(config.concurrency())));
         String queue = embeddedValueResolver.resolveStringValue(config.value());
         MQQueueCustomizer customizer = resolveBeanWithName(config.queueCustomizer(), MQQueueCustomizer.class);
-        MQProperties properties = resolveBeanWithName("", MQProperties.class);
         // Map params
         if (StringUtils.hasText(queue) && StringUtils.hasText(config.tempQueueAlias())) {
             throw new MQInvalidListenerException("Invalid configuration, should define only one of value or " +
