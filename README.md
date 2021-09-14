@@ -15,8 +15,6 @@ There are some scenarios covered by the library:
 ### Limitations
 
 - Initially available for IBM MQ Clients.
-- This abstraction is only available for [Project Reactor](https://projectreactor.io/) based projects, we will make it
-  available for non reactor projects.
 
 # How to use
 
