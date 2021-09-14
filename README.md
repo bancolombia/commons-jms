@@ -1,5 +1,13 @@
 # Commons JMS
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=alert_status)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=security_rating)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=coverage)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=bugs)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=code_smells)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+
 JMS Configuration Abstraction with Multi-Connection for queue listeners and producers, built on top of spring boot JMS.
 This library offers a performant setup for JMS Clients.
 
