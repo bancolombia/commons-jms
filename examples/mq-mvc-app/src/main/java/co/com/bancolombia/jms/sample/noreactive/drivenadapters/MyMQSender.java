@@ -1,10 +1,10 @@
-package co.com.bancolombia.jms.sample.drivenadapters;
+package co.com.bancolombia.jms.sample.noreactive.drivenadapters;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.mq.EnableMQMessageSender;
-import co.com.bancolombia.jms.sample.domain.exceptions.ParseMessageException;
-import co.com.bancolombia.jms.sample.domain.model.Request;
-import co.com.bancolombia.jms.sample.domain.model.RequestGateway;
+import co.com.bancolombia.jms.sample.noreactive.domain.exceptions.ParseMessageException;
+import co.com.bancolombia.jms.sample.noreactive.domain.model.Request;
+import co.com.bancolombia.jms.sample.noreactive.domain.model.RequestGateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;

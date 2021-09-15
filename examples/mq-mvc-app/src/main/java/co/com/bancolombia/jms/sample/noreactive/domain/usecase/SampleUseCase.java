@@ -1,8 +1,8 @@
-package co.com.bancolombia.jms.sample.domain.usecase;
+package co.com.bancolombia.jms.sample.noreactive.domain.usecase;
 
-import co.com.bancolombia.jms.sample.domain.model.Request;
-import co.com.bancolombia.jms.sample.domain.model.RequestGateway;
-import co.com.bancolombia.jms.sample.domain.model.Result;
+import co.com.bancolombia.jms.sample.noreactive.domain.model.Request;
+import co.com.bancolombia.jms.sample.noreactive.domain.model.RequestGateway;
+import co.com.bancolombia.jms.sample.noreactive.domain.model.Result;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;

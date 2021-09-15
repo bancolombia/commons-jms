@@ -1,7 +1,7 @@
-package co.com.bancolombia.jms.sample.domain.usecase;
+package co.com.bancolombia.jms.sample.noreactive.domain.usecase;
 
-import co.com.bancolombia.jms.sample.domain.exceptions.RelatedMessageNotFoundException;
-import co.com.bancolombia.jms.sample.domain.model.Result;
+import co.com.bancolombia.jms.sample.noreactive.domain.exceptions.RelatedMessageNotFoundException;
+import co.com.bancolombia.jms.sample.noreactive.domain.model.Result;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.CompletableFuture;

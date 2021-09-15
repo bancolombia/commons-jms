@@ -1,4 +1,4 @@
-package co.com.bancolombia.jms.sample.domain.model;
+package co.com.bancolombia.jms.sample.noreactive.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Request {
-    private String id;
-    private long createdAt;
+public class Result {
+    private String request;
+    private long takenTime;
 }

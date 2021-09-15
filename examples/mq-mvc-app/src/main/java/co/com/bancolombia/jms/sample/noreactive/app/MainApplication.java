@@ -1,4 +1,4 @@
-package co.com.bancolombia.jms.sample.app;
+package co.com.bancolombia.jms.sample.noreactive.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

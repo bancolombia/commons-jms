@@ -1,4 +1,4 @@
-package co.com.bancolombia.jms.sample.app.config;
+package co.com.bancolombia.jms.sample.noreactive.app.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
