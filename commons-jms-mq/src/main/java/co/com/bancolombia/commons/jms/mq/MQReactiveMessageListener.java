@@ -9,10 +9,16 @@ import reactor.core.scheduler.Schedulers;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import java.lang.reflect.Method;
 
 @AllArgsConstructor
 public final class MQReactiveMessageListener implements MessageListener {
     private final InvocableHandlerMethod method;
+
+    public static MQReactiveMessageListener fromBeanAndMethod(Object bean, Method invocableMethod) {
+        InvocableHandlerMethod handlerMethod = new InvocableHandlerMethod(bean, invocableMethod);
+        return new MQReactiveMessageListener(handlerMethod);
+    }
 
     @Override
     public void onMessage(Message message) {
