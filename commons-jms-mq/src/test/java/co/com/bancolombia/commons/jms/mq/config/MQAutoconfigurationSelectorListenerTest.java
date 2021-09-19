@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MQAutoconfigurationSelectorListenerTest {
+class MQAutoconfigurationSelectorListenerTest {
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock
@@ -27,7 +27,7 @@ public class MQAutoconfigurationSelectorListenerTest {
     private final MQAutoconfigurationSelectorListener configurator = new MQAutoconfigurationSelectorListener();
 
     @Test
-    public void shouldMapConfiguration() {
+    void shouldMapConfiguration() {
         // Arrange
         int inputConcurrency = 1;
         String queueName = "QUEUE";
@@ -42,7 +42,7 @@ public class MQAutoconfigurationSelectorListenerTest {
     }
 
     @Test
-    public void shouldHandleError() {
+    void shouldHandleError() {
         // Arrange
         MQListenerConfig config = MQListenerConfig.builder().concurrency(0).build();
         // Act
@@ -52,7 +52,7 @@ public class MQAutoconfigurationSelectorListenerTest {
     }
 
     @Test
-    public void shouldCreateDefaultMessageSelectorListener() {
+    void shouldCreateDefaultMessageSelectorListener() {
         // Arrange
         MQListenerConfig config = MQListenerConfig.builder()
                 .concurrency(1)
