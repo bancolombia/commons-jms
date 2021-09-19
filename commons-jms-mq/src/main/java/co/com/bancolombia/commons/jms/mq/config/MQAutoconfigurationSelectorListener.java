@@ -5,7 +5,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
-import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidSenderException;
+import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,7 +29,7 @@ public class MQAutoconfigurationSelectorListener {
     public MQMultiContextMessageSelectorListenerSync defaultMQMultiContextMessageSelectorListenerSync(
             ConnectionFactory cf, MQListenerConfig config) {
         if (config.getConcurrency() < 1) {
-            throw new MQInvalidSenderException("Invalid property commons.jms.input-concurrency, minimum value 1, " +
+            throw new MQInvalidListenerException("Invalid property commons.jms.input-concurrency, minimum value 1, " +
                     "you have passed " + config.getConcurrency());
         }
         if (log.isInfoEnabled()) {
