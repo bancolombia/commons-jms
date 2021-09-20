@@ -19,6 +19,7 @@ There are some scenarios covered by the library:
 - Send messages to a fixed queue.
 - Listen messages from a temporary queue.
 - Send messages to a temporary queue.
+- Get messages with specific correlationId from a fixed queue.
 
 ### Limitations
 
@@ -92,6 +93,39 @@ be like this:
 
 The amount of Sessions and MessageConsumers is related to the `concurrency` annotation attribute, it is based on JMS
 1.1.
+
+#### Listening for a specific message
+
+To listen for specific messages is enough with enable message listener selector with the next class annotation:
+
+```java
+@Configuration
+@EnableMQSelectorMessageListener
+public class AnyConfigurationComponentOrService {
+}
+```
+
+This annotation will create an available bean that offers the ability to get an specific message from a queue using the correlationId attribute, there are two bean options:
+
+For reactive projects will be `MQMessageSelectorListener` bean which has the next two methods:
+
+```java
+public interface MQMessageSelectorListener {  
+  Mono<Message> getMessage(String correlationId);  
+  Mono<Message> getMessage(String correlationId, long timeout, Destination destination);  
+}
+```
+
+For non-reactive projects will be `MQMessageSelectorListenerSync` bean which has the next two methods:
+
+```java
+public interface MQMessageSelectorListenerSync {  
+  Message getMessage(String correlationId);
+  Message getMessage(String correlationId, long timeout, Destination destination);  
+}
+```
+
+The above beans can throw a `JMSRuntimeException` or a `ReceiveTimeoutException`.
 
 ## Sending messages
 
