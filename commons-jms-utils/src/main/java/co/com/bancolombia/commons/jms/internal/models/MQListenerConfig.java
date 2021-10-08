@@ -18,4 +18,6 @@ public class MQListenerConfig {
     @Builder.Default
     private final MQQueueCustomizer customizer = ignored -> { //NOSONAR
     };
+    @Builder.Default
+    private final int maxRetries = -1; //NOSONAR
 }

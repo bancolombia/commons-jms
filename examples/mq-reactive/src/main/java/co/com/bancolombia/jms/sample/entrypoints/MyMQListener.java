@@ -23,7 +23,7 @@ public class MyMQListener {
     private final ReactiveReplyRouterUseCase useCase;
     private final ObjectMapper mapper;
 
-    @MQListener
+    @MQListener(maxRetries = "10")
     public Mono<Void> process(Message message) throws JMSException, JsonProcessingException {
         log.info("Received and processing");
         TextMessage textMessage = (TextMessage) message;

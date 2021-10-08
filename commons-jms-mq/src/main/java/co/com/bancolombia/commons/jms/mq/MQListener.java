@@ -43,4 +43,11 @@ public @interface MQListener {
      * default empty and uses available MQQueueCustomizer.class bean
      */
     String queueCustomizer() default "";
+
+    /**
+     * Max message processing retries when error handled
+     *
+     * @return max retries, specify a negative value for infinite retries
+     */
+    String maxRetries() default "10";
 }
