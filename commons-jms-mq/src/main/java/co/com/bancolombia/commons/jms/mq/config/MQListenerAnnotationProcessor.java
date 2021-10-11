@@ -34,10 +34,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static co.com.bancolombia.commons.jms.mq.config.utils.AnnotationUtils.*;
+
 @Log4j2
 @RequiredArgsConstructor
 @Configuration
 public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFactoryAware {
+    public static final int DEFAULT_MAX_RETRIES = 10;
     private final BeanFactory beanFactory;
     private StringValueResolver embeddedValueResolver;
 
@@ -73,7 +76,7 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
         MQProperties properties = resolveBeanWithName("", MQProperties.class);
         MQListenerConfig config = validateAnnotationConfig(mqListener, properties);
         Method invocableMethod = AopUtils.selectInvocableMethod(mostSpecificMethod, bean.getClass());
-        MessageListener processor = getEffectiveMessageListener(bean, invocableMethod, properties.isReactive());
+        MessageListener processor = getEffectiveMessageListener(bean, invocableMethod, properties.isReactive(), config);
         ConnectionFactory cf = resolveBeanWithName(mqListener.connectionFactory(), ConnectionFactory.class);
         MQTemporaryQueuesContainer temporaryQueuesContainer = beanFactory.getBean(MQTemporaryQueuesContainer.class);
         try {
@@ -84,10 +87,11 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
         }
     }
 
-    private MessageListener getEffectiveMessageListener(Object bean, Method invocableMethod, boolean isReactive) {
+    private MessageListener getEffectiveMessageListener(Object bean, Method invocableMethod, boolean isReactive,
+                                                        MQListenerConfig config) {
         return isReactive ?
-                MQReactiveMessageListener.fromBeanAndMethod(bean, invocableMethod) :
-                MQMessageListener.fromBeanAndMethod(bean, invocableMethod);
+                MQReactiveMessageListener.fromBeanAndMethod(bean, invocableMethod, config.getMaxRetries()) :
+                MQMessageListener.fromBeanAndMethod(bean, invocableMethod, config.getMaxRetries());
     }
 
     private MQListenerConfig validateAnnotationConfig(MQListener config, MQProperties properties) {
@@ -107,37 +111,20 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
         }
         String temporaryQueue = resolveQueue(config.tempQueueAlias(), queue, properties.getInputQueueAlias());
         String fixedQueue = resolveQueue(queue, temporaryQueue, properties.getInputQueue());
+        int finalConcurrency = resolveConcurrency(concurrency, properties.getInputConcurrency());
+        int maxRetries = resolveRetries(config.maxRetries());
         MQListenerConfig listenerConfig = MQListenerConfig.builder()
-                .concurrency(resolveConcurrency(concurrency, properties.getInputConcurrency()))
+                .concurrency(finalConcurrency)
                 .tempQueueAlias(temporaryQueue)
                 .queue(fixedQueue)
                 .connectionFactory(config.connectionFactory())
                 .customizer(customizer)
+                .maxRetries(maxRetries)
                 .build();
         if (!StringUtils.hasText(listenerConfig.getQueue()) && !StringUtils.hasText(listenerConfig.getTempQueueAlias())) {
             throw new MQInvalidListenerException("Invalid configuration, should define one of value or tempQueueAlias");
         }
         return listenerConfig;
-    }
-
-    private int resolveConcurrency(int concurrencyAnnotation, int concurrencyProperties) {
-        if (concurrencyAnnotation > 0) {
-            return concurrencyAnnotation;
-        }
-        if (concurrencyProperties > 0) {
-            return concurrencyProperties;
-        }
-        return MQProperties.DEFAULT_CONCURRENCY;
-    }
-
-    private String resolveQueue(String primaryAnnotation, String secondaryValue, String queueProperties) {
-        if (StringUtils.hasText(primaryAnnotation)) {
-            return primaryAnnotation;
-        }
-        if (!StringUtils.hasText(secondaryValue) && StringUtils.hasText(queueProperties)) {
-            return queueProperties;
-        }
-        return null;
     }
 
     private Map<Method, Set<MQListener>> getAnnotatedMethods(Class<?> targetClass) {

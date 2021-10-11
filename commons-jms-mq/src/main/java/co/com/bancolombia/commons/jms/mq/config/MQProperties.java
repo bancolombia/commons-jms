@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "commons.jms")
 public class MQProperties {
     public static final int DEFAULT_CONCURRENCY = 1;
+    public static final int DEFAULT_MAX_RETRIES = 10;
     private int outputConcurrency = DEFAULT_CONCURRENCY;
     private String outputQueue;
     private int inputConcurrency = DEFAULT_CONCURRENCY;

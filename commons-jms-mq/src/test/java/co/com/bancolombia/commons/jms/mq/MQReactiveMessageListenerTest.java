@@ -1,16 +1,18 @@
 package co.com.bancolombia.commons.jms.mq;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.handler.invocation.reactive.InvocableHandlerMethod;
 import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
+import javax.jms.JMSException;
 import javax.jms.Message;
 
+import static com.ibm.msg.client.jms.JmsConstants.JMSX_DELIVERY_COUNT;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,18 +21,40 @@ class MQReactiveMessageListenerTest {
     private InvocableHandlerMethod handlerMethod;
     @Mock
     private Message message;
-    @InjectMocks
     private MQReactiveMessageListener listener;
+
+    @BeforeEach
+    void setup() {
+        listener = new MQReactiveMessageListener(handlerMethod, 1);
+    }
 
     @Test
     void shouldListen() {
         // Arrange
         when(handlerMethod.invoke(any(), any())).thenReturn(Mono.empty());
         // Act
-        Mono<Object> listen = listener.onMessageAsync(message);
+        listener.onMessage(message);
+        // Assert
+        verify(handlerMethod, times(1)).invoke(any(), any(Message.class));
+    }
 
-        StepVerifier.create(listen)
-                .verifyComplete();
+    @Test
+    void shouldThrowError() throws JMSException {
+        // Arrange
+        when(handlerMethod.invoke(any(), any())).thenReturn(Mono.error(new RuntimeException()));
+        when(message.getIntProperty(JMSX_DELIVERY_COUNT)).thenReturn(0);
+        // Act
+        // Assert
+        assertThrows(RuntimeException.class, () -> listener.onMessage(message));
+    }
+
+    @Test
+    void shouldHandleErrorWhenReachedRetriesAttempts() throws JMSException {
+        // Arrange
+        when(handlerMethod.invoke(any(), any())).thenReturn(Mono.error(new RuntimeException()));
+        when(message.getIntProperty(JMSX_DELIVERY_COUNT)).thenReturn(2);
+        // Act
+        listener.onMessage(message);
         // Assert
         verify(handlerMethod, times(1)).invoke(any(), any(Message.class));
     }
