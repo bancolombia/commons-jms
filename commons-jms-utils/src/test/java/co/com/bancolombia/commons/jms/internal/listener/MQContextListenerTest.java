@@ -1,6 +1,8 @@
 package co.com.bancolombia.commons.jms.internal.listener;
 
+import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
+import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,8 @@ class MQContextListenerTest {
     @Mock
     private JMSContext context;
     @Mock
+    private MQBrokerUtils utils;
+    @Mock
     private Queue queue;
     @Mock
     private JMSConsumer consumer;
@@ -32,6 +36,8 @@ class MQContextListenerTest {
                 .config(MQListenerConfig.builder().queue("QUEUE.NAME").build())
                 .listener(listener)
                 .connectionFactory(connectionFactory)
+                .container(new MQQueuesContainerImp())
+                .utils(utils)
                 .build();
     }
 
