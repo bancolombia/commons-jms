@@ -28,10 +28,11 @@ public class MQUtils {
             AccessibleObject.setAccessible(new AccessibleObject[]{field}, false);
             String qmName = readable.getStringProperty(WMQ_QUEUE_MANAGER);
             log.info("Listening queue manager name got successfully: {}", qmName);
+            return qmName;
         } catch (NoSuchFieldException | JMSException | IllegalAccessException e) {
             log.warn("Error getting queue manager name from JMSContext", e);
+            return "";
         }
-        return "";
     }
 
     public static void setQMName(Queue queue, String qmName) {
