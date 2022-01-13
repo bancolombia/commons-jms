@@ -1,15 +1,23 @@
 package co.com.bancolombia.commons.jms.utils;
 
-import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
+import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MQMessageListenerUtilsTest {
@@ -18,7 +26,9 @@ class MQMessageListenerUtilsTest {
     @Mock
     private MessageListener listener;
     @Mock
-    private MQTemporaryQueuesContainer container;
+    private MQQueuesContainer container;
+    @Mock
+    private MQBrokerUtils utils;
     @Mock
     private Connection connection;
     @Mock
@@ -34,7 +44,7 @@ class MQMessageListenerUtilsTest {
                 .concurrency(5)
                 .build();
         // Act
-        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, config);
+        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config);
     }
 
     @Test
@@ -48,7 +58,7 @@ class MQMessageListenerUtilsTest {
         when(connection.createSession()).thenReturn(session);
         when(session.createTemporaryQueue()).thenReturn(queue);
         // Act
-        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, config);
+        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config);
         // Assert
         verify(connectionFactory, times(1)).createConnection();
     }

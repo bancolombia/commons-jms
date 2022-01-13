@@ -147,7 +147,7 @@ JMS 2.0.
 @EnableMQMessageSender
 public class SampleMQMessageSender {
     private final MQMessageSender sender;
-//  private final MQTemporaryQueuesContainer container; // Inject it to reference a temporary queue  
+//  private final MQQueuesContainer container; // Inject it to reference a temporary queue  
 
     public Mono<String> send(String message) {
         return sender.send(context -> {
@@ -168,7 +168,7 @@ public class SampleMQMessageSender {
 @EnableMQMessageSender
 public class SampleMQMessageSender {
     private final MQMessageSenderSync sender;
-//  private final MQTemporaryQueuesContainer container; // Inject it to reference a temporary queue  
+//  private final MQQueuesContainer container; // Inject it to reference a temporary queue  
 
     public String send(String message) {
         return sender.send(context -> {

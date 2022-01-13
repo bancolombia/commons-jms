@@ -1,6 +1,7 @@
 package co.com.bancolombia.commons.jms.utils;
 
-import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
+import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.internal.listener.MQContextListener;
 import co.com.bancolombia.commons.jms.internal.listener.MQMultiConnectionListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -21,7 +22,8 @@ public class MQMessageListenerUtils {
 
     public static void createListeners(ConnectionFactory cf,
                                        MessageListener listener,
-                                       MQTemporaryQueuesContainer container,
+                                       MQQueuesContainer container,
+                                       MQBrokerUtils utils,
                                        MQListenerConfig config) {
         if (log.isInfoEnabled()) {
             log.info("Creating {} listeners", config.getConcurrency());
@@ -29,19 +31,23 @@ public class MQMessageListenerUtils {
         if (StringUtils.isNotBlank(config.getTempQueueAlias())) {
             createListenersTemp(cf, listener, container, config);
         } else {
-            createListenersFixed(cf, listener, config);
+            createListenersFixed(cf, listener, container, utils, config);
         }
     }
 
     private static void createListenersFixed(ConnectionFactory cf,
                                              MessageListener listener,
+                                             MQQueuesContainer container,
+                                             MQBrokerUtils utils,
                                              MQListenerConfig config) {
         ExecutorService service = Executors.newFixedThreadPool(config.getConcurrency());
         IntStream.range(0, config.getConcurrency())
                 .mapToObj(number -> MQContextListener.builder()
                         .connectionFactory(cf)
+                        .utils(utils)
                         .config(config)
                         .listener(listener)
+                        .container(container)
                         .build())
                 .forEach(service::submit);
         if (log.isInfoEnabled()) {
@@ -51,7 +57,7 @@ public class MQMessageListenerUtils {
 
     private static void createListenersTemp(ConnectionFactory cf,
                                             MessageListener listener,
-                                            MQTemporaryQueuesContainer container,
+                                            MQQueuesContainer container,
                                             MQListenerConfig config) {
         MQMultiConnectionListener.builder()
                 .connectionFactory(cf)
