@@ -1,8 +1,11 @@
 package co.com.bancolombia.commons.jms.mq.config.utils;
 
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AnnotationUtils {
 
     public static int resolveRetries(String maxRetriesStr) {
