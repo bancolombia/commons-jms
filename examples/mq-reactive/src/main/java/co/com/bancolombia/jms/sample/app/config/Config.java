@@ -1,5 +1,7 @@
 package co.com.bancolombia.jms.sample.app.config;
 
+import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
+import co.com.bancolombia.jms.sample.domain.model.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.mq.spring.boot.MQConnectionFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -28,5 +30,10 @@ public class Config {
                 throw new JMSRuntimeException(e.getErrorCode(), e.getMessage(), e);
             }
         };
+    }
+
+    @Bean
+    public ReactiveReplyRouter<Result> resultReactiveReplyRouter() {
+        return new ReactiveReplyRouter<>();
     }
 }
