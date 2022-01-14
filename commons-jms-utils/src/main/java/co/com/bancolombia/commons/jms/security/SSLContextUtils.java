@@ -1,5 +1,7 @@
 package co.com.bancolombia.commons.jms.security;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import javax.net.ssl.CertPathTrustManagerParameters;
@@ -16,6 +18,7 @@ import java.security.cert.PKIXRevocationChecker;
 import java.security.cert.X509CertSelector;
 import java.util.EnumSet;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SSLContextUtils {
     public static final String TLS = "TLSv1.3";
     public static final String JKS = "JKS";

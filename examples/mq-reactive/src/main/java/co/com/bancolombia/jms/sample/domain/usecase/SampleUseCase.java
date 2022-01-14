@@ -1,5 +1,6 @@
 package co.com.bancolombia.jms.sample.domain.usecase;
 
+import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import co.com.bancolombia.jms.sample.domain.model.Request;
 import co.com.bancolombia.jms.sample.domain.model.RequestGateway;
 import co.com.bancolombia.jms.sample.domain.model.Result;
@@ -14,13 +15,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class SampleUseCase {
     private final RequestGateway gateway;
-    private final ReactiveReplyRouterUseCase replier;
+    private final ReactiveReplyRouter<Result> replier;
 
     public Mono<Result> sendAndListen() {
         return gateway.send(Request.builder()
-                .id(UUID.randomUUID().toString())
-                .createdAt(new Date().getTime())
-                .build())
+                        .id(UUID.randomUUID().toString())
+                        .createdAt(new Date().getTime())
+                        .build())
                 .doOnSuccess(id -> log.info("Message sent: {}", id))
                 .flatMap(replier::wait);
     }
