@@ -1,9 +1,9 @@
 package co.com.bancolombia.jms.sample.entrypoints;
 
 import co.com.bancolombia.commons.jms.mq.MQListener;
+import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import co.com.bancolombia.jms.sample.domain.model.Request;
 import co.com.bancolombia.jms.sample.domain.model.Result;
-import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Date;
 @Component
 @AllArgsConstructor
 public class MyMQListener {
-    private final ReactiveReplyRouter useCase;
+    private final ReactiveReplyRouter<Result> useCase;
     private final ObjectMapper mapper;
 
     @MQListener(maxRetries = "10")
