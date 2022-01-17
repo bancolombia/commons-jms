@@ -95,26 +95,12 @@ subprojects {
             withSourcesJar()
         }
 
-//        task sourcesJar(type: Jar, dependsOn: classes) {
-//            archiveClassifier = 'sources'
-//            from sourceSets.main.allSource
-//        }
-
         javadoc {
             if(JavaVersion.current().isJava9Compatible()) {
                 options.addBooleanOption('html5', true)
             }
         }
         javadoc.failOnError = false
-//        task javadocJar(type: Jar, dependsOn: javadoc) {
-//            archiveClassifier = 'javadoc'
-//            from javadoc.destinationDir
-//        }
-//
-//        artifacts {
-//            archives sourcesJar
-//            archives javadocJar
-//        }
 
         tasks.withType(GenerateModuleMetadata) {
             enabled = false
@@ -148,9 +134,6 @@ subprojects {
                     }
 
                     from components.java
-
-                    artifact sourcesJar
-                    artifact javadocJar
 
                     groupId = groupId
                     artifactId = artifactId
