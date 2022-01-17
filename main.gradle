@@ -90,21 +90,31 @@ subprojects {
             enabled = false
         }
 
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            archiveClassifier = 'sources'
-            from sourceSets.main.allSource
+        java {
+            withJavadocJar()
+            withSourcesJar()
         }
 
+//        task sourcesJar(type: Jar, dependsOn: classes) {
+//            archiveClassifier = 'sources'
+//            from sourceSets.main.allSource
+//        }
+
+        javadoc {
+            if(JavaVersion.current().isJava9Compatible()) {
+                options.addBooleanOption('html5', true)
+            }
+        }
         javadoc.failOnError = false
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            archiveClassifier = 'javadoc'
-            from javadoc.destinationDir
-        }
-
-        artifacts {
-            archives sourcesJar
-            archives javadocJar
-        }
+//        task javadocJar(type: Jar, dependsOn: javadoc) {
+//            archiveClassifier = 'javadoc'
+//            from javadoc.destinationDir
+//        }
+//
+//        artifacts {
+//            archives sourcesJar
+//            archives javadocJar
+//        }
 
         tasks.withType(GenerateModuleMetadata) {
             enabled = false
