@@ -7,6 +7,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=coverage)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=bugs)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=bancolombia_commons-jms&metric=code_smells)](https://sonarcloud.io/dashboard?id=bancolombia_commons-jms)
+[![Scorecards supply-chain security](https://github.com/bancolombia/commons-jms/actions/workflows/scorecards-analysis.yml/badge.svg)](https://github.com/bancolombia/commons-jms/actions/workflows/scorecards-analysis.yml)
 
 JMS Configuration Abstraction with Multi-Connection for queue listeners and producers, built on top of spring boot JMS.
 This library offers a performant setup for JMS Clients.
