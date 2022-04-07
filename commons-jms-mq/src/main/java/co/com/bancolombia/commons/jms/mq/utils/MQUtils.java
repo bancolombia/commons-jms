@@ -30,7 +30,7 @@ public class MQUtils {
             log.info("Listening queue manager name got successfully: {}", qmName);
             return qmName;
         } catch (NoSuchFieldException | JMSException | IllegalAccessException e) {
-            log.warn("Error getting queue manager name from JMSContext", e);
+            log.info("Queue manager name could not be got from the JMSContext", e);
             return "";
         }
     }
@@ -39,7 +39,7 @@ public class MQUtils {
         try {
             ((MQQueue) queue).setBaseQueueManagerName(qmName);
         } catch (JMSException e) {
-            log.warn("Error setting queue manager name to queue", e);
+            log.info("Error setting queue manager name to queue", e);
         }
     }
 }
