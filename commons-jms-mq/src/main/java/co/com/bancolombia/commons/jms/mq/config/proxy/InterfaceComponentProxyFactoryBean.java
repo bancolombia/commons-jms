@@ -37,7 +37,6 @@ import javax.jms.Message;
 import javax.jms.Queue;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Objects;
 
 import static co.com.bancolombia.commons.jms.mq.config.utils.AnnotationUtils.resolveConcurrency;
 import static co.com.bancolombia.commons.jms.mq.config.utils.AnnotationUtils.resolveQueue;
@@ -82,11 +81,11 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
         String className = ClassUtils.getShortName(metadata.getClassName());
         MQProperties properties = resolveBeanWithName("", MQProperties.class);
         MergedAnnotation<ReqReply> annotation = metadata.getAnnotations().get(ReqReply.class);
-        MQListenerConfig config = validateAnnotationConfig(properties, annotation, className);
+        MQListenerConfig config = validateAnnotationConfig(annotation, properties, className);
         ConnectionFactory cf = resolveBeanWithName(config.getConnectionFactory(), ConnectionFactory.class);
         MQBrokerUtils mqBrokerUtils = beanFactory.getBean(MQBrokerUtils.class);
 
-        Destination destination = resolveDestination(annotation.getString("requestQueue"), properties);
+        Destination destination = resolveDestination(annotation, properties);
 
         MQRequestReplyListener senderWithRouter = new MQRequestReplyListener(sender, router, container, destination,
                 config.getTempQueueAlias(), config.getMaxRetries());
@@ -101,7 +100,8 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
     }
 
     @SneakyThrows
-    private Destination resolveDestination(String requestQueue, MQProperties properties) {
+    private Destination resolveDestination(MergedAnnotation<ReqReply> annotation, MQProperties properties) {
+        String requestQueue = resolveValueFromAnnotation(annotation, "requestQueue");
         String name = StringUtils.hasText(requestQueue) ? requestQueue : properties.getOutputQueue();
         MQQueueCustomizer customizer = beanFactory.getBean(MQQueueCustomizer.class);
         Queue queue = new MQQueue(name);
@@ -109,17 +109,17 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
         return queue;
     }
 
-    private MQListenerConfig validateAnnotationConfig(MQProperties properties, MergedAnnotation<ReqReply> annotation,
+    private MQListenerConfig validateAnnotationConfig(MergedAnnotation<ReqReply> annotation, MQProperties properties,
                                                       String className) {
         // Annotation property
-        String concurrencyAnnotation = annotation.getString("concurrency");
-        String queueCustomizerAnnotation = annotation.getString("queueCustomizer");
-        String replyQueueTempAnnotation = annotation.getString("replyQueueTemp");
-        String maxRetriesAnnotation = annotation.getString("maxRetries");
-        String connectionFactoryAnnotation = annotation.getString("connectionFactory");
+        String concurrencyAnnotation = resolveValueFromAnnotation(annotation, "concurrency");
+        String queueCustomizerAnnotation = resolveValueFromAnnotation(annotation, "queueCustomizer");
+        String replyQueueTempAnnotation = resolveValueFromAnnotation(annotation, "replyQueueTemp");
+        String maxRetriesAnnotation = resolveValueFromAnnotation(annotation, "maxRetries");
+        String connectionFactoryAnnotation = resolveValueFromAnnotation(annotation, "connectionFactory");
 
         // Resolve dynamic values
-        int concurrency = Integer.parseInt(Objects.requireNonNull(embeddedValueResolver.resolveStringValue(concurrencyAnnotation)));
+        int concurrency = Integer.parseInt(concurrencyAnnotation);
         MQQueueCustomizer customizer = resolveBeanWithName(queueCustomizerAnnotation, MQQueueCustomizer.class);
         String temporaryQueue = resolveQueue(replyQueueTempAnnotation, "", className);
         int finalConcurrency = resolveConcurrency(concurrency, properties.getInputConcurrency());
@@ -148,6 +148,10 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
         ResolvableType resolvable = ResolvableType.forClassWithGenerics(ReactiveReplyRouter.class, Message.class);
         return (ReactiveReplyRouter<Message>) beanFactory.getBeanProvider(resolvable)
                 .getIfAvailable(() -> new ReactiveReplyRouter<Message>());
+    }
+
+    private String resolveValueFromAnnotation(MergedAnnotation<ReqReply> annotation, String property) {
+        return embeddedValueResolver.resolveStringValue(annotation.getString(property));
     }
 
     private <T> T resolveBeanWithName(String beanName, Class<T> tClass) {
