@@ -21,6 +21,7 @@ There are some scenarios covered by the library:
 - Listen messages from a temporary queue.
 - Send messages to a temporary queue.
 - Get messages with specific correlationId from a fixed queue.
+- Request Reply pattern with automatic temporary queue.
 
 ### Limitations
 
@@ -201,6 +202,73 @@ public String sendWithDestination(String message){
 
 This sample shows how you can pass any `Destination` as first parameter of send, with it you can send a message to any
 dynamic destination.
+
+### Request Reply
+
+This is a basic implementation of the Request Reply pattern, basically it creates a temporary queue for responses and
+starts listening it, it creates its listener and autogenerate an instance that can be pseudo defined by the user as an
+interface, which implements the interface.
+
+This approach is only implemented for reactive projects, so you can define your own interface with at least one of the
+next interface signatures:
+
+```java
+    Mono<Message> requestReply(String message);
+
+    Mono<Message> requestReply(String message, Duration timeout);
+
+    Mono<Message> requestReply(MQMessageCreator messageCreator);
+
+    Mono<Message> requestReply(MQMessageCreator messageCreator, Duration timeout);
+```
+
+For example, you define an interface like the next, so it could be auto implemented by the library:
+this [MyRequestReply](examples/mq-reactive/src/main/java/co/com/bancolombia/jms/sample/drivenadapters/reqreply/MyRequestReply.java)
+```java
+public interface MyRequestReply {
+    Mono<Message> requestReply(String message);
+}
+```
+
+To achieve the auto implementation, you should:
+
+  1. Annotate the application or a configuration bean with @EnableReqReply, optionally you can define the base package
+  ```java
+     @SpringBootApplication(scanBasePackages = "co.com.bancolombia")
+     @EnableReqReply(scanBasePackages = "co.com.bancolombia")
+     public class MainApplication {
+        public static void main(String[] args) {
+            SpringApplication.run(MainApplication.class);
+        }
+     }
+   ```
+
+  2. Annotate the interface with @ReqReply, for example
+  ```java
+      @ReqReply(requestQueue = "DEV.QUEUE.1", replyQueueTemp = "sample")
+      public interface MyRequestReply {
+        Mono<Message> requestReply(String message);
+      }
+   ```
+
+  3. Now you can inject your interface in any spring component.
+     [MyRequestReplyAdapter](examples/mq-reactive/src/main/java/co/com/bancolombia/jms/sample/drivenadapters/reqreply/MyRequestReplyAdapter.java)
+  ```java
+    @Component
+    @AllArgsConstructor
+    public class MyRequestReplyAdapter implements RequestGateway {
+        private final MyRequestReply requestReply;
+        ...
+    }
+  ```
+
+Is possible that you require to add the line before the `SpringApplication.run(MainApplication.class, args);` like:
+```java
+ public static void main(String[] args) {
+    System.setProperty("spring.devtools.restart.enabled", "false");
+    SpringApplication.run(MainApplication.class, args);
+}
+```
 
 ## Setup
 

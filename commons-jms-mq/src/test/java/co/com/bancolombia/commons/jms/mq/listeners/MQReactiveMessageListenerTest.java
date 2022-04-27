@@ -1,4 +1,4 @@
-package co.com.bancolombia.commons.jms.mq;
+package co.com.bancolombia.commons.jms.mq.listeners;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,10 @@ import javax.jms.Message;
 
 import static com.ibm.msg.client.jms.JmsConstants.JMSX_DELIVERY_COUNT;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MQReactiveMessageListenerTest {
