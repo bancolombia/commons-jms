@@ -82,8 +82,9 @@ subprojects {
         apply plugin: "maven-publish"
         apply plugin: "signing"
 
-        jar {
+        tasks.named("jar") {
             enabled = true
+            archiveClassifier = ''
         }
 
         bootJar {
@@ -96,7 +97,7 @@ subprojects {
         }
 
         javadoc {
-            if(JavaVersion.current().isJava9Compatible()) {
+            if (JavaVersion.current().isJava9Compatible()) {
                 options.addBooleanOption('html5', true)
             }
         }
@@ -172,4 +173,8 @@ task generateMergedReport(type: JacocoReport) {
         csv.enabled false
         html.enabled true
     }
+}
+
+tasks.named('wrapper') {
+    gradleVersion = '7.4.2'
 }

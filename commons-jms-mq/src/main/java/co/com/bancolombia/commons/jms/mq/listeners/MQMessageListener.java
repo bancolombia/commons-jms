@@ -1,4 +1,4 @@
-package co.com.bancolombia.commons.jms.mq;
+package co.com.bancolombia.commons.jms.mq.listeners;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;

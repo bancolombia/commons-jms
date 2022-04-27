@@ -6,10 +6,9 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.MQListener;
 import co.com.bancolombia.commons.jms.mq.MQListeners;
-import co.com.bancolombia.commons.jms.mq.MQMessageListener;
-import co.com.bancolombia.commons.jms.mq.MQReactiveMessageListener;
+import co.com.bancolombia.commons.jms.mq.listeners.MQMessageListener;
+import co.com.bancolombia.commons.jms.mq.listeners.MQReactiveMessageListener;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
-import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import co.com.bancolombia.commons.jms.utils.MQMessageListenerUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -44,7 +43,6 @@ import static co.com.bancolombia.commons.jms.mq.config.utils.AnnotationUtils.res
 @RequiredArgsConstructor
 @Configuration
 public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFactoryAware {
-    public static final int DEFAULT_MAX_RETRIES = 10;
     private final BeanFactory beanFactory;
     private StringValueResolver embeddedValueResolver;
 
