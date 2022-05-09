@@ -8,6 +8,8 @@ allprojects {
         mavenCentral()
     }
 
+    group 'com.github.bancolombia'
+
     sonarqube {
         properties {
             property "sonar.sourceEncoding", "UTF-8"
@@ -23,6 +25,12 @@ allprojects {
             property "sonar.exclusions", ".github/**"
             property 'sonar.coverage.exclusions', 'examples/**/*'
         }
+    }
+}
+
+nexusPublishing {
+    repositories {
+        sonatype()
     }
 }
 
@@ -139,16 +147,6 @@ subprojects {
                     groupId = groupId
                     artifactId = artifactId
                     version = project.property('version')
-                }
-            }
-            repositories {
-                maven {
-                    name = "OSSRH"
-                    url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                    credentials {
-                        username = System.getenv("MAVEN_USERNAME")
-                        password = System.getenv("MAVEN_PASSWORD")
-                    }
                 }
             }
         }
