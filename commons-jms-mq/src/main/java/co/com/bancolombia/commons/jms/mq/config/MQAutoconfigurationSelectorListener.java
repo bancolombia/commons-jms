@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.mq.config;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -27,7 +28,7 @@ public class MQAutoconfigurationSelectorListener {
     @Bean
     @ConditionalOnMissingBean(MQMultiContextMessageSelectorListenerSync.class)
     public MQMultiContextMessageSelectorListenerSync defaultMQMultiContextMessageSelectorListenerSync(
-            ConnectionFactory cf, MQListenerConfig config) {
+            ConnectionFactory cf, MQListenerConfig config, MQHealthListener healthListener) {
         if (config.getConcurrency() < 1) {
             throw new MQInvalidListenerException("Invalid property commons.jms.input-concurrency, minimum value 1, " +
                     "you have passed " + config.getConcurrency());
@@ -35,7 +36,7 @@ public class MQAutoconfigurationSelectorListener {
         if (log.isInfoEnabled()) {
             log.info("Creating {} listeners", config.getConcurrency());
         }
-        return new MQMultiContextMessageSelectorListenerSync(cf, config);
+        return new MQMultiContextMessageSelectorListenerSync(cf, config, healthListener);
     }
 
     @Bean

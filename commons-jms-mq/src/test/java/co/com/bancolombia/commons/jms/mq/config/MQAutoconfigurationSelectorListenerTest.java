@@ -1,6 +1,7 @@
 package co.com.bancolombia.commons.jms.mq.config;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,8 @@ class MQAutoconfigurationSelectorListenerTest {
     private ConnectionFactory connectionFactory;
     @Mock
     private JMSContext context;
+    @Mock
+    private MQHealthListener healthListener;
     @Mock
     private Queue queue;
     private final MQAutoconfigurationSelectorListener configurator = new MQAutoconfigurationSelectorListener();
@@ -48,7 +51,7 @@ class MQAutoconfigurationSelectorListenerTest {
         // Act
         // Assert
         assertThrows(MQInvalidListenerException.class,
-                () -> configurator.defaultMQMultiContextMessageSelectorListenerSync(null, config));
+                () -> configurator.defaultMQMultiContextMessageSelectorListenerSync(null, config, healthListener));
     }
 
     @Test
@@ -62,7 +65,7 @@ class MQAutoconfigurationSelectorListenerTest {
         when(context.createQueue(anyString())).thenReturn(queue);
         // Act
         MQMessageSelectorListenerSync listener = configurator.
-                defaultMQMultiContextMessageSelectorListenerSync(connectionFactory, config);
+                defaultMQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener);
         // Assert
         assertNotNull(listener);
     }

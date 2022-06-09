@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.utils;
 
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.MQContextListener;
 import co.com.bancolombia.commons.jms.internal.listener.MQMultiConnectionListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -24,14 +25,15 @@ public class MQMessageListenerUtils {
                                        MessageListener listener,
                                        MQQueuesContainer container,
                                        MQBrokerUtils utils,
-                                       MQListenerConfig config) {
+                                       MQListenerConfig config,
+                                       MQHealthListener healthListener) {
         if (log.isInfoEnabled()) {
             log.info("Creating {} listeners", config.getConcurrency());
         }
         if (StringUtils.isNotBlank(config.getTempQueueAlias())) {
-            createListenersTemp(cf, listener, container, config);
+            createListenersTemp(cf, listener, container, config, healthListener);
         } else {
-            createListenersFixed(cf, listener, container, utils, config);
+            createListenersFixed(cf, listener, container, utils, config, healthListener);
         }
     }
 
@@ -39,7 +41,8 @@ public class MQMessageListenerUtils {
                                              MessageListener listener,
                                              MQQueuesContainer container,
                                              MQBrokerUtils utils,
-                                             MQListenerConfig config) {
+                                             MQListenerConfig config,
+                                             MQHealthListener healthListener) {
         ExecutorService service = Executors.newFixedThreadPool(config.getConcurrency());
         IntStream.range(0, config.getConcurrency())
                 .mapToObj(number -> MQContextListener.builder()
@@ -47,6 +50,7 @@ public class MQMessageListenerUtils {
                         .utils(utils)
                         .config(config)
                         .listener(listener)
+                        .healthListener(healthListener)
                         .container(container)
                         .build())
                 .forEach(service::submit);
@@ -58,14 +62,16 @@ public class MQMessageListenerUtils {
     private static void createListenersTemp(ConnectionFactory cf,
                                             MessageListener listener,
                                             MQQueuesContainer container,
-                                            MQListenerConfig config) {
+                                            MQListenerConfig config,
+                                            MQHealthListener healthListener) {
         MQMultiConnectionListener.builder()
                 .connectionFactory(cf)
                 .config(config)
                 .listener(listener)
                 .container(container)
+                .healthListener(healthListener)
                 .build()
-                .start();
+                .call();
     }
 
 }

@@ -288,3 +288,4 @@ gradle-app.setting
 ### USER ###
 *.hprof
 *.log.*
+FFDC

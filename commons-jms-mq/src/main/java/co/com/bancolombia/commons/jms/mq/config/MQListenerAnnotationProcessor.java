@@ -3,12 +3,13 @@ package co.com.bancolombia.commons.jms.mq.config;
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.MQListener;
 import co.com.bancolombia.commons.jms.mq.MQListeners;
+import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.mq.listeners.MQMessageListener;
 import co.com.bancolombia.commons.jms.mq.listeners.MQReactiveMessageListener;
-import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.utils.MQMessageListenerUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -80,9 +81,10 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
         ConnectionFactory cf = resolveBeanWithName(mqListener.connectionFactory(), ConnectionFactory.class);
         MQQueuesContainer queuesContainer = beanFactory.getBean(MQQueuesContainer.class);
         MQBrokerUtils mqBrokerUtils = beanFactory.getBean(MQBrokerUtils.class);
+        MQHealthListener exceptionListener = beanFactory.getBean(MQHealthListener.class);
 
         try {
-            MQMessageListenerUtils.createListeners(cf, processor, queuesContainer, mqBrokerUtils, config);
+            MQMessageListenerUtils.createListeners(cf, processor, queuesContainer, mqBrokerUtils, config, exceptionListener);
         } catch (JMSRuntimeException ex) {
             throw new BeanInitializationException("Could not register MQ listener on [" + mostSpecificMethod + "], using ConnectionFactory: " + cf, ex);
         }

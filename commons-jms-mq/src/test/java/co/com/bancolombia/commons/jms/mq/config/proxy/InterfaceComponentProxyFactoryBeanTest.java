@@ -5,6 +5,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
@@ -46,11 +47,7 @@ public class InterfaceComponentProxyFactoryBeanTest {
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock
-    private MessageListener listener;
-    @Mock
-    private MQQueuesContainer container;
-    @Mock
-    private MQBrokerUtils utils;
+    private MQHealthListener healthListener;
     @Mock
     private Connection connection;
     @Mock
@@ -109,6 +106,9 @@ public class InterfaceComponentProxyFactoryBeanTest {
                     }
                     if (arguments.equals(ConnectionFactory.class)) {
                         return connectionFactory;
+                    }
+                    if (arguments.equals(MQHealthListener.class)) {
+                        return healthListener;
                     }
                     return null;
                 });

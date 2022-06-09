@@ -2,6 +2,7 @@ package co.com.bancolombia.jms.sample.selector.drivenadapters;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.mq.EnableMQMessageSender;
 import co.com.bancolombia.commons.jms.mq.EnableMQSelectorMessageListener;
 import co.com.bancolombia.jms.sample.selector.domain.exceptions.ParseMessageException;
@@ -10,6 +11,7 @@ import co.com.bancolombia.jms.sample.selector.domain.model.RequestGateway;
 import co.com.bancolombia.jms.sample.selector.domain.model.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.mq.jms.MQQueue;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -39,7 +41,9 @@ public class MyMQSender implements RequestGateway {
             } catch (JsonProcessingException e) {
                 throw new ParseMessageException(e);
             }
-            return ctx.createTextMessage(json);
+            Message message = ctx.createTextMessage(json);
+            message.setJMSReplyTo(new MQQueue("DEV.QUEUE.2"));
+            return message;
         });
     }
 

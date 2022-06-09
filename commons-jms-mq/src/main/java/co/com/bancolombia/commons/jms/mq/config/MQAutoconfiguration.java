@@ -4,6 +4,8 @@ import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.mq.config.health.MQListenerHealthIndicator;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import co.com.bancolombia.commons.jms.utils.MQTemporaryQueuesContainerImp;
@@ -53,5 +55,11 @@ public class MQAutoconfiguration {
             String qmName = MQUtils.extractQMName(context);
             MQUtils.setQMName(queue, qmName);
         };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MQHealthListener.class)
+    public MQHealthListener jmsConnections() {
+        return new MQListenerHealthIndicator();
     }
 }

@@ -1,6 +1,7 @@
 package co.com.bancolombia.commons.jms.internal.sender;
 
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,8 @@ class MQMultiContextSenderSyncTest {
     private TextMessage message;
     @Mock
     private MQProducerCustomizer customizer;
+    @Mock
+    private MQHealthListener healthListener;
 
     private MQMultiContextSenderSync senderSync;
 
@@ -39,7 +42,7 @@ class MQMultiContextSenderSyncTest {
         when(context.createQueue(anyString())).thenReturn(queue);
         when(context.createProducer()).thenReturn(producer);
         senderSync = new MQMultiContextSenderSync(connectionFactory, 2,
-                ctx -> ctx.createQueue("QUEUE.NAME"), customizer);
+                ctx -> ctx.createQueue("QUEUE.NAME"), customizer, healthListener);
     }
 
     @Test

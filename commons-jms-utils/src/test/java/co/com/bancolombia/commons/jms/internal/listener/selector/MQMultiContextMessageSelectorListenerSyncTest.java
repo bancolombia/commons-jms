@@ -1,6 +1,7 @@
 package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,8 @@ class MQMultiContextMessageSelectorListenerSyncTest {
     private Queue queue;
     @Mock
     private TextMessage message;
+    @Mock
+    private MQHealthListener healthListener;
 
     private MQMessageSelectorListenerSync listenerSync;
 
@@ -43,7 +46,7 @@ class MQMultiContextMessageSelectorListenerSyncTest {
                 .concurrency(1)
                 .queue("QUEUE")
                 .build();
-        listenerSync = new MQMultiContextMessageSelectorListenerSync(connectionFactory, config);
+        listenerSync = new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener);
     }
 
     @Test

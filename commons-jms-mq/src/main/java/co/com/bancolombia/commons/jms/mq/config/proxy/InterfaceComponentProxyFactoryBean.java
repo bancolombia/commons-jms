@@ -6,6 +6,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQRequestReply;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.ReqReply;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
@@ -32,6 +33,7 @@ import org.springframework.util.StringUtils;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
 import javax.jms.Queue;
@@ -84,13 +86,14 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
         MQListenerConfig config = validateAnnotationConfig(annotation, properties, className);
         ConnectionFactory cf = resolveBeanWithName(config.getConnectionFactory(), ConnectionFactory.class);
         MQBrokerUtils mqBrokerUtils = beanFactory.getBean(MQBrokerUtils.class);
+        MQHealthListener healthListener = beanFactory.getBean(MQHealthListener.class);
 
         Destination destination = resolveDestination(annotation, properties);
 
         MQRequestReplyListener senderWithRouter = new MQRequestReplyListener(sender, router, container, destination,
                 config.getTempQueueAlias(), config.getMaxRetries());
         try {
-            MQMessageListenerUtils.createListeners(cf, senderWithRouter, container, mqBrokerUtils, config);
+            MQMessageListenerUtils.createListeners(cf, senderWithRouter, container, mqBrokerUtils, config, healthListener);
         } catch (JMSRuntimeException ex) {
             throw new BeanInitializationException("Could not create request reply defined in " + className
                     + " connectionFactory: " + cf, ex);
