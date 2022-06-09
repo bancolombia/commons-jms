@@ -40,7 +40,6 @@ public class MQMultiContextSenderSync implements MQMessageSenderSync {
                         .healthListener(healthListener)
                         .build()
                         .call())
-                .map(x -> (MQContextSenderSync) x)
                 .collect(Collectors.toList());
     }
 
