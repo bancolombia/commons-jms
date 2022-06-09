@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.utils;
 
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,8 @@ class MQMessageListenerUtilsTest {
     private Session session;
     @Mock
     private TemporaryQueue queue;
+    @Mock
+    private MQHealthListener healthListener;
 
     @Test
     void shouldCreateFixedQueueListeners() {
@@ -44,7 +47,7 @@ class MQMessageListenerUtilsTest {
                 .concurrency(5)
                 .build();
         // Act
-        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config);
+        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config, healthListener);
     }
 
     @Test
@@ -58,7 +61,7 @@ class MQMessageListenerUtilsTest {
         when(connection.createSession()).thenReturn(session);
         when(session.createTemporaryQueue()).thenReturn(queue);
         // Act
-        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config);
+        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config, healthListener);
         // Assert
         verify(connectionFactory, times(1)).createConnection();
     }

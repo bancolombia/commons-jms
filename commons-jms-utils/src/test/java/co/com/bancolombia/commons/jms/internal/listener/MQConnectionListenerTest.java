@@ -6,10 +6,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.jms.*;
+import javax.jms.JMSException;
+import javax.jms.JMSRuntimeException;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MQConnectionListenerTest {
@@ -25,11 +32,13 @@ class MQConnectionListenerTest {
     private MQConnectionListener connectionListener;
 
     @BeforeEach
-    void setup() {
+    void setup() throws JMSException {
+        when(destination.getQueueName()).thenReturn("QM1/TEMPORARY.QUEUE?someArgument=value");
         connectionListener = MQConnectionListener.builder()
                 .session(session)
                 .destination(destination)
                 .listener(listener)
+                .sequence(1)
                 .build();
     }
 

@@ -1,6 +1,11 @@
 package co.com.bancolombia.commons.jms.mq.config;
 
-import co.com.bancolombia.commons.jms.api.*;
+import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
+import co.com.bancolombia.commons.jms.api.MQMessageSender;
+import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
+import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
+import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.sender.MQMultiContextSender;
 import co.com.bancolombia.commons.jms.internal.sender.MQMultiContextSenderSync;
@@ -28,13 +33,14 @@ public class MQAutoconfigurationSender {
     public MQMessageSenderSync defaultMQMessageSenderSync(ConnectionFactory cf,
                                                           MQDestinationProvider provider,
                                                           MQProducerCustomizer customizer,
-                                                          MQProperties properties) {
+                                                          MQProperties properties,
+                                                          MQHealthListener healthListener) {
         if (properties.getOutputConcurrency() < 1) {
             throw new MQInvalidSenderException("Invalid property commons.jms.output-concurrency, minimum value 1, " +
                     "you have passed " + properties.getOutputConcurrency());
         }
         log.info("Creating {} senders", properties.getOutputConcurrency());
-        return new MQMultiContextSenderSync(cf, properties.getOutputConcurrency(), provider, customizer);
+        return new MQMultiContextSenderSync(cf, properties.getOutputConcurrency(), provider, customizer, healthListener);
     }
 
     @Bean

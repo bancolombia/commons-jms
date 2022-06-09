@@ -3,9 +3,9 @@ package co.com.bancolombia.commons.jms.mq.config;
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.mq.MQListener;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
-import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +39,8 @@ class MQListenerAnnotationProcessorTest {
     private MQQueueCustomizer customizer;
     @Mock
     private MQBrokerUtils brokerUtils;
+    @Mock
+    private MQHealthListener healthListener;
     @InjectMocks
     private MQListenerAnnotationProcessor processor;
 
@@ -56,6 +58,7 @@ class MQListenerAnnotationProcessorTest {
         Object bean = new MyListener();
         doReturn(new MQProperties()).when(factory).getBean(MQProperties.class);
         doReturn(container).when(factory).getBean(MQQueuesContainer.class);
+        doReturn(healthListener).when(factory).getBean(MQHealthListener.class);
         doReturn(brokerUtils).when(factory).getBean(MQBrokerUtils.class);
         doReturn(cf).when(factory).getBean(ConnectionFactory.class);
         doReturn(cf).when(factory).getBean("custom", ConnectionFactory.class);
@@ -74,6 +77,7 @@ class MQListenerAnnotationProcessorTest {
         doReturn(properties).when(factory).getBean(MQProperties.class);
         doReturn(container).when(factory).getBean(MQQueuesContainer.class);
         doReturn(brokerUtils).when(factory).getBean(MQBrokerUtils.class);
+        doReturn(healthListener).when(factory).getBean(MQHealthListener.class);
         doReturn(cf).when(factory).getBean(ConnectionFactory.class);
         doReturn(cf).when(factory).getBean("custom", ConnectionFactory.class);
         // Act

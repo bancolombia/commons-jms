@@ -1,6 +1,7 @@
 package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 
 import javax.jms.ConnectionFactory;
@@ -13,17 +14,25 @@ import java.util.stream.IntStream;
 public class MQMultiContextMessageSelectorListenerSync implements MQMessageSelectorListenerSync {
     private final ConnectionFactory connectionFactory;
     private final MQListenerConfig config;
+    private final MQHealthListener healthListener;
     private List<MQContextMessageSelectorListenerSync> adapterList;
 
-    public MQMultiContextMessageSelectorListenerSync(ConnectionFactory connectionFactory, MQListenerConfig config) {
+    public MQMultiContextMessageSelectorListenerSync(ConnectionFactory connectionFactory, MQListenerConfig config,
+                                                     MQHealthListener healthListener) {
         this.connectionFactory = connectionFactory;
         this.config = config;
+        this.healthListener = healthListener;
         start();
     }
 
     public void start() {
         adapterList = IntStream.range(0, config.getConcurrency())
-                .mapToObj(idx -> new MQContextMessageSelectorListenerSync(connectionFactory, config))
+                .mapToObj(idx -> MQContextMessageSelectorListenerSync.builder()
+                        .connectionFactory(connectionFactory)
+                        .config(config)
+                        .healthListener(healthListener)
+                        .build()
+                        .call())
                 .collect(Collectors.toList());
     }
 

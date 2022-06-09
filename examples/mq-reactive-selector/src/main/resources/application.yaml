@@ -17,3 +17,7 @@ ibm:
     channel: "DEV.APP.SVRCONN"
     user: "app"
     queue-manager: QM1
+management:
+  endpoint:
+    health:
+      show-details: always

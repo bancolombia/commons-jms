@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +13,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import javax.jms.*;
+import javax.jms.ConnectionFactory;
+import javax.jms.Destination;
+import javax.jms.JMSConsumer;
+import javax.jms.JMSContext;
+import javax.jms.Message;
+import javax.jms.Queue;
+import javax.jms.TextMessage;
 import java.util.UUID;
 
 import static co.com.bancolombia.commons.jms.internal.listener.selector.MQContextMessageSelectorListenerSync.DEFAULT_TIMEOUT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +43,8 @@ class MQMultiContextMessageSelectorListenerTest {
     private Queue queue;
     @Mock
     private TextMessage message;
+    @Mock
+    private MQHealthListener healthListener;
 
     private MQMessageSelectorListener listener;
 
@@ -45,7 +57,7 @@ class MQMultiContextMessageSelectorListenerTest {
                 .queue("QUEUE")
                 .build();
         MQMessageSelectorListenerSync listenerSync =
-                new MQMultiContextMessageSelectorListenerSync(connectionFactory, config);
+                new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener);
         listener = new MQMultiContextMessageSelectorListener(listenerSync);
     }
 
