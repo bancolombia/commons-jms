@@ -31,6 +31,7 @@ import java.io.Serializable;
 
 import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_QUEUE_MANAGER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -75,6 +76,24 @@ class MQUtilsTest {
         MQUtils.setQMName(queue, "QM1");
         verify(queue, times(1)).setBaseQueueManagerName("QM1");
     }
+
+    @Test
+    void shouldExtractQMNameFromTemporaryQueue() {
+        TemporaryQueue temporaryQueue = mock(TemporaryQueue.class);
+        doReturn("queue://QM1/MY.TMP.QUEUE").when(temporaryQueue).toString();
+        JMSContext jmsContext = mock(JMSContext.class);
+        doReturn(temporaryQueue).when(jmsContext).createTemporaryQueue();
+        String name = MQUtils.extractQMNameWithTempQueue(jmsContext);
+        assertEquals("QM1", name);
+    }
+    @Test
+    void shouldCatchErrorQMNameFromTemporaryQueue() {
+        JMSContext jmsContext = mock(JMSContext.class);
+        doThrow(new JMSException("Error creating temporary queue")).when(jmsContext).createTemporaryQueue();
+        String name = MQUtils.extractQMNameWithTempQueue(jmsContext);
+        assertEquals("", name);
+    }
+
 
     @AllArgsConstructor
     public static class JmsContextImpl implements JMSContext {
