@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Queue;
+import javax.jms.TemporaryQueue;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 
@@ -19,6 +20,19 @@ import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_QUEUE_MANAGER;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MQUtils {
     private static final String CONNECTION_PROPERTY = "connection";
+
+    public static String extractQMNameWithTempQueue(JMSContext context) {
+        try {
+            TemporaryQueue queue = context.createTemporaryQueue();
+            String qmName = queue.toString().split("/")[2];
+            log.info("Listening queue manager name got successfully: {}", qmName);
+            queue.delete();
+            return qmName;
+        } catch (Exception e) {
+            log.info("Queue manager name could not be got through a temporary queue", e);
+            return "";
+        }
+    }
 
     public static String extractQMName(JMSContext context) {
         try {
