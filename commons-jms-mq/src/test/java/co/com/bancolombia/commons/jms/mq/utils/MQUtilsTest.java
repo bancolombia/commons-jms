@@ -17,6 +17,7 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.JMSProducer;
+import javax.jms.JMSRuntimeException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -89,7 +90,7 @@ class MQUtilsTest {
     @Test
     void shouldCatchErrorQMNameFromTemporaryQueue() {
         JMSContext jmsContext = mock(JMSContext.class);
-        doThrow(new JMSException("Error creating temporary queue")).when(jmsContext).createTemporaryQueue();
+        doThrow(new JMSRuntimeException("Error creating temporary queue")).when(jmsContext).createTemporaryQueue();
         String name = MQUtils.extractQMNameWithTempQueue(jmsContext);
         assertEquals("", name);
     }
