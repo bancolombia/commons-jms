@@ -296,6 +296,7 @@ application.yaml of your application.
 - `commons.jms.input-concurrency`: Equivalent to `concurrency` annotation property.
 - `commons.jms.input-queue`: Equivalent to `value` annotation property.
 - `commons.jms.input-queue-alias`: Equivalent to `tempQueueAlias` annotation property.
+- `input-queue-set-queue-manager`: Enable it to set queue manager using a temporary queue when needed.
 
 ### Sender properties
 
