@@ -4,7 +4,13 @@ import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.jms.*;
+import javax.jms.Destination;
+import javax.jms.JMSContext;
+import javax.jms.JMSException;
+import javax.jms.JMSRuntimeException;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TemporaryQueue;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MQQueueUtils {
@@ -12,6 +18,9 @@ public class MQQueueUtils {
     public static Destination setupFixedQueue(JMSContext context, MQListenerConfig config) {
         Queue queue = context.createQueue(config.getQueue());
         customize(queue, config);
+        if (config.getQmSetter() != null) {
+            config.getQmSetter().accept(context, queue);
+        }
         return queue;
     }
 

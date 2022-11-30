@@ -15,6 +15,7 @@ public class MQProperties {
     private int inputConcurrency = DEFAULT_CONCURRENCY;
     private String inputQueue;
     private String inputQueueAlias;
+    private boolean inputQueueSetQueueManager = false;
     private long producerTtl = 0;
     private boolean reactive = false;
 }
