@@ -2,6 +2,8 @@ package co.com.bancolombia.commons.jms.mq.config;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
+import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
@@ -9,6 +11,7 @@ import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +32,8 @@ public class MQAutoconfigurationSelectorListener {
     @Bean
     @ConditionalOnMissingBean(MQMultiContextMessageSelectorListenerSync.class)
     public MQMultiContextMessageSelectorListenerSync defaultMQMultiContextMessageSelectorListenerSync(
-            ConnectionFactory cf, MQListenerConfig config, MQHealthListener healthListener) {
+            ConnectionFactory cf, @Qualifier("messageSelectorListenerConfig") MQListenerConfig config,
+            MQHealthListener healthListener) {
         if (config.getConcurrency() < 1) {
             throw new MQInvalidListenerException("Invalid property commons.jms.input-concurrency, minimum value 1, " +
                     "you have passed " + config.getConcurrency());
@@ -41,22 +45,29 @@ public class MQAutoconfigurationSelectorListener {
     }
 
     @Bean
-    @ConditionalOnMissingBean(MQListenerConfig.class)
-    public MQListenerConfig defaultMQListenerConfig(MQProperties properties, MQQueueCustomizer customizer) {
+    public MQListenerConfig messageSelectorListenerConfig(MQProperties properties, MQQueueCustomizer customizer,
+                                                          MQQueueManagerSetter setter) {
         MQListenerConfig.MQListenerConfigBuilder builder = MQListenerConfig.builder()
                 .concurrency(properties.getInputConcurrency())
                 .queue(properties.getInputQueue())
                 .customizer(customizer);
 
         if (properties.isInputQueueSetQueueManager()) {
-            builder.qmSetter((jmsContext, queue) -> {
-                log.info("Self assigning Queue Manager to listening queue: {}", queue.toString());
-                String qm = MQUtils.extractQMNameWithTempQueue(jmsContext);
-                MQUtils.setQMName(queue, qm);
-            });
+            builder.qmSetter(setter);
         }
 
         return builder.build();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MQQueueManagerSetter.class)
+    public MQQueueManagerSetter qmSetter(MQProperties properties, MQQueuesContainer container) {
+        return (jmsContext, queue) -> {
+            log.info("Self assigning Queue Manager to listening queue: {}", queue.toString());
+            String qm = MQUtils.extractQMNameWithTempQueue(jmsContext);
+            MQUtils.setQMName(queue, qm);
+            container.registerQueue(properties.getInputQueue(), queue);
+        };
     }
 
 }
