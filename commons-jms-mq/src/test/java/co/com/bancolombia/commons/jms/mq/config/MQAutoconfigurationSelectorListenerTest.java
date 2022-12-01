@@ -1,9 +1,12 @@
 package co.com.bancolombia.commons.jms.mq.config;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
+import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import com.ibm.mq.jms.MQQueue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
-import javax.jms.Queue;
 import javax.jms.TemporaryQueue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
@@ -47,7 +50,7 @@ class MQAutoconfigurationSelectorListenerTest {
         properties.setInputConcurrency(inputConcurrency);
         properties.setInputQueue(queueName);
         // Act
-        MQListenerConfig config = configurator.defaultMQListenerConfig(properties, null);
+        MQListenerConfig config = configurator.messageSelectorListenerConfig(properties, null, null);
         // Assert
         assertEquals(inputConcurrency, config.getConcurrency());
         assertEquals(queueName, config.getQueue());
@@ -90,13 +93,16 @@ class MQAutoconfigurationSelectorListenerTest {
         properties.setInputConcurrency(inputConcurrency);
         properties.setInputQueue(queueName);
         properties.setInputQueueSetQueueManager(true);
+        MQQueuesContainer container = new MQQueuesContainerImp();
+        MQQueueManagerSetter setter = configurator.qmSetter(properties, container);
         // Act
-        MQListenerConfig config = configurator.defaultMQListenerConfig(properties, null);
+        MQListenerConfig config = configurator.messageSelectorListenerConfig(properties, null, setter);
         // Assert
         assertEquals(inputConcurrency, config.getConcurrency());
         assertEquals(queueName, config.getQueue());
         config.getQmSetter().accept(context, queue);
         verify(queue, atLeastOnce()).setBaseQueueManagerName("QM1");
+        assertEquals(container.get(queueName), queue);
     }
 
 }

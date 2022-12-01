@@ -1,12 +1,9 @@
 package co.com.bancolombia.commons.jms.internal.models;
 
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
+import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import lombok.Builder;
 import lombok.Getter;
-
-import javax.jms.JMSContext;
-import javax.jms.Queue;
-import java.util.function.BiConsumer;
 
 @Getter
 @Builder(toBuilder = true)
@@ -25,5 +22,5 @@ public class MQListenerConfig {
     @Builder.Default
     private final int maxRetries = -1; //NOSONAR
     @Builder.Default
-    private final BiConsumer<JMSContext, Queue> qmSetter = (ctx, queue) -> {}; //NOSONAR
+    private final MQQueueManagerSetter qmSetter = (ctx, queue) -> {}; //NOSONAR
 }
