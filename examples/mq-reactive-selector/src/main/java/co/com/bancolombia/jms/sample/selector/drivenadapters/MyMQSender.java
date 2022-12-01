@@ -31,6 +31,7 @@ public class MyMQSender implements RequestGateway {
     private final MQMessageSender sender;
     private final MQMessageSelectorListener listener;
     private final ObjectMapper mapper;
+    private final MQQueuesContainer container;
 
     @Override
     public Mono<String> send(Request request) {
@@ -42,7 +43,8 @@ public class MyMQSender implements RequestGateway {
                 throw new ParseMessageException(e);
             }
             Message message = ctx.createTextMessage(json);
-            message.setJMSReplyTo(new MQQueue("DEV.QUEUE.2"));
+            log.info(container.get("DEV.QUEUE.2").toString());
+            message.setJMSReplyTo(container.get("DEV.QUEUE.2"));
             return message;
         });
     }

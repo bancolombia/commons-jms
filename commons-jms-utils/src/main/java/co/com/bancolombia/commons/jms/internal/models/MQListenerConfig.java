@@ -5,10 +5,6 @@ import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.jms.JMSContext;
-import javax.jms.Queue;
-import java.util.function.BiConsumer;
-
 @Getter
 @Builder(toBuilder = true)
 public class MQListenerConfig {
