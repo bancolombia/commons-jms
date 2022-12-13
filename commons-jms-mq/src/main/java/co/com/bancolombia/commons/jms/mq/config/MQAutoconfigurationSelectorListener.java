@@ -64,8 +64,7 @@ public class MQAutoconfigurationSelectorListener {
     public MQQueueManagerSetter qmSetter(MQProperties properties, MQQueuesContainer container) {
         return (jmsContext, queue) -> {
             log.info("Self assigning Queue Manager to listening queue: {}", queue.toString());
-            String qm = MQUtils.extractQMNameWithTempQueue(jmsContext);
-            MQUtils.setQMName(queue, qm);
+            MQUtils.setQMNameIfNotSet(jmsContext, queue);
             container.registerQueue(properties.getInputQueue(), queue);
         };
     }
