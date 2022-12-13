@@ -62,7 +62,7 @@ public class MQUtils {
     }
 
     public static void setQMNameIfNotSet(JMSContext context, Queue queue, boolean useTemporaryQueue) {
-        if (((MQQueue) queue).getBaseQueueManagerName() != null) {
+        if (((MQQueue) queue).getBaseQueueManagerName() == null) {
             String qmName = useTemporaryQueue ? extractQMNameWithTempQueue(context) : extractQMName(context);
             setQMName(queue, qmName);
         }
