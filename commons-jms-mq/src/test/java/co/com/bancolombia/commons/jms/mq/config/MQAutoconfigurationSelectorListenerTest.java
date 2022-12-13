@@ -6,8 +6,10 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
+import co.com.bancolombia.commons.jms.mq.helper.JmsContextImpl;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import com.ibm.mq.jms.MQQueue;
+import com.ibm.msg.client.jms.JmsReadablePropertyContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -16,14 +18,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
-import javax.jms.TemporaryQueue;
 
+import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_RESOLVED_QUEUE_MANAGER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,11 +36,11 @@ class MQAutoconfigurationSelectorListenerTest {
     @Mock
     private JMSContext context;
     @Mock
+    private JmsReadablePropertyContext propertyContext;
+    @Mock
     private MQHealthListener healthListener;
     @Mock
     private MQQueue queue;
-    @Mock
-    private TemporaryQueue temporaryQueue;
     private final MQAutoconfigurationSelectorListener configurator = new MQAutoconfigurationSelectorListener();
 
     @Test
@@ -85,8 +87,8 @@ class MQAutoconfigurationSelectorListenerTest {
     @Test
     void shouldMapConfigurationWithQueueManager() throws JMSException {
         // Arrange
-        when(context.createTemporaryQueue()).thenReturn(temporaryQueue);
-        when(temporaryQueue.toString()).thenReturn("mq://QM1/TMP.QUEUE");
+        when(propertyContext.getStringProperty(WMQ_RESOLVED_QUEUE_MANAGER)).thenReturn("QM1");
+        doReturn(null).when(queue).getBaseQueueManagerName();
         int inputConcurrency = 1;
         String queueName = "QUEUE";
         MQProperties properties = new MQProperties();
@@ -100,7 +102,7 @@ class MQAutoconfigurationSelectorListenerTest {
         // Assert
         assertEquals(inputConcurrency, config.getConcurrency());
         assertEquals(queueName, config.getQueue());
-        config.getQmSetter().accept(context, queue);
+        config.getQmSetter().accept(new JmsContextImpl(propertyContext), queue);
         verify(queue, atLeastOnce()).setBaseQueueManagerName("QM1");
         assertEquals(container.get(queueName), queue);
     }

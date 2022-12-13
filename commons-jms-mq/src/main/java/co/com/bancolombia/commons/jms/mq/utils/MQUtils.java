@@ -14,7 +14,7 @@ import javax.jms.TemporaryQueue;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_QUEUE_MANAGER;
+import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_RESOLVED_QUEUE_MANAGER;
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -40,7 +40,7 @@ public class MQUtils {
             AccessibleObject.setAccessible(new AccessibleObject[]{field}, true);
             JmsReadablePropertyContext readable = (JmsReadablePropertyContext) field.get(context);
             AccessibleObject.setAccessible(new AccessibleObject[]{field}, false);
-            String qmName = readable.getStringProperty(WMQ_QUEUE_MANAGER);
+            String qmName = readable.getStringProperty(WMQ_RESOLVED_QUEUE_MANAGER);
             log.info("Listening queue manager name got successfully: {}", qmName);
             return qmName;
         } catch (NoSuchFieldException | JMSException | IllegalAccessException e) {
@@ -54,6 +54,17 @@ public class MQUtils {
             ((MQQueue) queue).setBaseQueueManagerName(qmName);
         } catch (JMSException e) {
             log.info("Error setting queue manager name to queue", e);
+        }
+    }
+
+    public static void setQMNameIfNotSet(JMSContext context, Queue queue) {
+        setQMNameIfNotSet(context, queue, false);
+    }
+
+    public static void setQMNameIfNotSet(JMSContext context, Queue queue, boolean useTemporaryQueue) {
+        if (((MQQueue) queue).getBaseQueueManagerName() == null) {
+            String qmName = useTemporaryQueue ? extractQMNameWithTempQueue(context) : extractQMName(context);
+            setQMName(queue, qmName);
         }
     }
 }
