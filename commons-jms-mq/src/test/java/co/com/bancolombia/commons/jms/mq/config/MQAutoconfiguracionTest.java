@@ -3,7 +3,6 @@ package co.com.bancolombia.commons.jms.mq.config;
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
-import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
 import com.ibm.mq.jms.MQQueue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,7 @@ class MQAutoconfiguracionTest {
     @Test
     void shouldCreateContainers() {
         MQQueuesContainer container = configuration.defaultMQQueuesContainer();
-        MQTemporaryQueuesContainer containerTemporary = configuration.defaultMQTemporaryQueuesContainer(container);
-        Assertions.assertNull(containerTemporary.get("non-existent"));
+        Assertions.assertNull(container.get("non-existent"));
     }
 
     @Test

@@ -37,7 +37,7 @@ public class MQUtils {
     public static String extractQMName(JMSContext context) {
         try {
             Field field = context.getClass().getDeclaredField(CONNECTION_PROPERTY);
-            AccessibleObject.setAccessible(new AccessibleObject[]{field}, true);
+            AccessibleObject.setAccessible(new AccessibleObject[]{field}, true);//NOSONAR
             JmsReadablePropertyContext readable = (JmsReadablePropertyContext) field.get(context);
             AccessibleObject.setAccessible(new AccessibleObject[]{field}, false);
             String qmName = readable.getStringProperty(WMQ_RESOLVED_QUEUE_MANAGER);

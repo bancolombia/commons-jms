@@ -27,7 +27,6 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 
@@ -38,7 +37,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class InterfaceComponentProxyFactoryBeanTest {
+class InterfaceComponentProxyFactoryBeanTest {
 
     @Mock
     private ConfigurableBeanFactory beanFactory;

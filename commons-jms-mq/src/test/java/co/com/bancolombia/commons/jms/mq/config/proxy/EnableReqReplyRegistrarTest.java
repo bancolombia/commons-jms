@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
-import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EnableReqReplyRegistrarTest {
+class EnableReqReplyRegistrarTest {
     private final BeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry();
     private EnableReqReplyRegistrar registrar;
 

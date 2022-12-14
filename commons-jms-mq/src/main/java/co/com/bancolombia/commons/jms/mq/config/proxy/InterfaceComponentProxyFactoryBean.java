@@ -33,7 +33,6 @@ import org.springframework.util.StringUtils;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.jms.ExceptionListener;
 import javax.jms.JMSRuntimeException;
 import javax.jms.Message;
 import javax.jms.Queue;
@@ -68,7 +67,7 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
     @Override
     public Object getObject() {
         log.info("Creating req reply bean for {}", getObjectType());
-        if (!InterfaceComponentProxyFactoryBean.class.getClassLoader().equals(getObjectType().getClassLoader())) {
+        if (getObjectType() != null && !InterfaceComponentProxyFactoryBean.class.getClassLoader().equals(getObjectType().getClassLoader())) {
             log.warn("Your class loader has been changed, please add System.setProperty(\"spring.devtools.restart.enabled\", \"false\"); before SpringApplication.run(...)");
         }
         return Proxy.newProxyInstance(InterfaceComponentProxyFactoryBean.class.getClassLoader(),
@@ -150,7 +149,7 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
     private ReactiveReplyRouter<Message> resolveReplier() {
         ResolvableType resolvable = ResolvableType.forClassWithGenerics(ReactiveReplyRouter.class, Message.class);
         return (ReactiveReplyRouter<Message>) beanFactory.getBeanProvider(resolvable)
-                .getIfAvailable(() -> new ReactiveReplyRouter<Message>());
+                .getIfAvailable(ReactiveReplyRouter::new);
     }
 
     private String resolveValueFromAnnotation(MergedAnnotation<ReqReply> annotation, String property) {
@@ -167,24 +166,24 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
 
     private static class Target implements InvocationHandler {
         private final Method matchedMethod;
-        private final Object target;
+        private final Object targetMethod;
 
-        public Target(Class<?> clazz, Object target) {
+        public Target(Class<?> clazz, Object targetMethod) {
             Method required = clazz.getDeclaredMethods()[0];
             Method selected = null;
-            for (Method method : target.getClass().getDeclaredMethods()) {
+            for (Method method : targetMethod.getClass().getDeclaredMethods()) {
                 if (matches(required, method)) {
                     selected = method;
                     break;
                 }
             }
             this.matchedMethod = selected;
-            this.target = target;
+            this.targetMethod = targetMethod;
         }
 
         @Override
         public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-            return matchedMethod.invoke(target, objects);
+            return matchedMethod.invoke(targetMethod, objects);
         }
 
         private static boolean matches(Method required, Method method) {
