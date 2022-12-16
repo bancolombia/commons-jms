@@ -1,7 +1,6 @@
 package co.com.bancolombia.commons.jms.utils;
 
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
-import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,14 +19,13 @@ class MQTemporaryQueuesContainerImpTest {
     @Test
     void shouldSaveAndGet() {
         // Arrange
-        MQQueuesContainer containerNew = new MQQueuesContainerImp();
-        MQTemporaryQueuesContainer container = new MQTemporaryQueuesContainerImp(containerNew);
+        MQQueuesContainer container = new MQQueuesContainerImp();
         String alias = "key";
         // Act
-        container.registerTemporaryQueue(alias, queue);
-        TemporaryQueue temporaryQueue = container.get(alias);
+        container.registerQueue(alias, queue);
+        Queue savedQueue = container.get(alias);
         // Assert
-        assertEquals(queue, temporaryQueue);
+        assertEquals(queue, savedQueue);
     }
 }
 

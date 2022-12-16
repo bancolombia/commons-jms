@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReqReplyBeanScannerTest {
+class ReqReplyBeanScannerTest {
     private final BeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry();
     private ReqReplyBeanScanner beanScanner;
 

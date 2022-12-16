@@ -11,7 +11,6 @@ import co.com.bancolombia.jms.sample.selector.domain.model.RequestGateway;
 import co.com.bancolombia.jms.sample.selector.domain.model.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.mq.jms.MQQueue;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;

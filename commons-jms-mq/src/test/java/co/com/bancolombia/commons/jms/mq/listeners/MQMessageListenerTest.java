@@ -12,12 +12,13 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MQMessageListenerTest {
+class MQMessageListenerTest {
     @Mock
     private InvocableHandlerMethod handlerMethod;
     @Mock
@@ -56,6 +57,7 @@ public class MQMessageListenerTest {
         // Act
         listener.onMessage(message);
         // Assert
+        verify(message, atLeastOnce()).getJMSMessageID();
     }
 
 }

@@ -3,12 +3,10 @@ package co.com.bancolombia.commons.jms.mq.config;
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
-import co.com.bancolombia.commons.jms.api.MQTemporaryQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.mq.config.health.MQListenerHealthIndicator;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
-import co.com.bancolombia.commons.jms.utils.MQTemporaryQueuesContainerImp;
 import com.ibm.mq.jms.MQQueue;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -40,12 +38,6 @@ public class MQAutoconfiguration {
     @ConditionalOnMissingBean(MQQueuesContainer.class)
     public MQQueuesContainer defaultMQQueuesContainer() {
         return new MQQueuesContainerImp();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(MQTemporaryQueuesContainer.class)
-    public MQTemporaryQueuesContainer defaultMQTemporaryQueuesContainer(MQQueuesContainer container) {
-        return new MQTemporaryQueuesContainerImp(container);
     }
 
     @Bean
