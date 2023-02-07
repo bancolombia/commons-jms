@@ -7,11 +7,11 @@ import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectabl
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import lombok.experimental.SuperBuilder;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
-import javax.jms.Message;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.Message;
 
 @SuperBuilder
 public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectable<MQContextMessageSelectorListenerSync> implements MQMessageSelectorListenerSync {

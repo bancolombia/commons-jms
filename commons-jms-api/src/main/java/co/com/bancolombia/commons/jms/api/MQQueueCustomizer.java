@@ -1,7 +1,7 @@
 package co.com.bancolombia.commons.jms.api;
 
-import javax.jms.JMSException;
-import javax.jms.Queue;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
 
 public interface MQQueueCustomizer {
     void customize(Queue queue) throws JMSException;

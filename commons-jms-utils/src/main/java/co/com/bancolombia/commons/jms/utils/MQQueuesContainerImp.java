@@ -2,7 +2,7 @@ package co.com.bancolombia.commons.jms.utils;
 
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 
-import javax.jms.Queue;
+import jakarta.jms.Queue;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

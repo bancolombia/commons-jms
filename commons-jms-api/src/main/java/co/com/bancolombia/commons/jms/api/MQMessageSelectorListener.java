@@ -2,8 +2,8 @@ package co.com.bancolombia.commons.jms.api;
 
 import reactor.core.publisher.Mono;
 
-import javax.jms.Destination;
-import javax.jms.Message;
+import jakarta.jms.Destination;
+import jakarta.jms.Message;
 
 public interface MQMessageSelectorListener {
     Mono<Message> getMessage(String correlationId);

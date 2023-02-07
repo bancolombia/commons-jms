@@ -2,7 +2,8 @@ allprojects {
     apply plugin: "java"
     apply plugin: "jacoco"
     apply plugin: 'org.sonarqube'
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_17
 
     repositories {
         mavenCentral()
@@ -174,5 +175,5 @@ task generateMergedReport(type: JacocoReport) {
 }
 
 tasks.named('wrapper') {
-    gradleVersion = '7.4.2'
+    gradleVersion = '7.6'
 }

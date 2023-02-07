@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import javax.jms.Message;
+import jakarta.jms.Message;
 
 @Component
 @AllArgsConstructor

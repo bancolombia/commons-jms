@@ -4,13 +4,13 @@ import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.jms.Destination;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.JMSRuntimeException;
-import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TemporaryQueue;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Queue;
+import jakarta.jms.Session;
+import jakarta.jms.TemporaryQueue;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MQQueueUtils {

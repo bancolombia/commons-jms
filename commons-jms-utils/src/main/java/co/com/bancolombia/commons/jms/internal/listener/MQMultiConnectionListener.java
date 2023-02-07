@@ -7,12 +7,12 @@ import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.JMSRuntimeException;
-import javax.jms.MessageListener;
-import javax.jms.TemporaryQueue;
+import jakarta.jms.Connection;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.MessageListener;
+import jakarta.jms.TemporaryQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

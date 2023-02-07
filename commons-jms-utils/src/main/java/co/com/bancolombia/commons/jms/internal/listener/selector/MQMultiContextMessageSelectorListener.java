@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import javax.jms.Destination;
-import javax.jms.Message;
+import jakarta.jms.Destination;
+import jakarta.jms.Message;
 
 @AllArgsConstructor
 public class MQMultiContextMessageSelectorListener implements MQMessageSelectorListener {

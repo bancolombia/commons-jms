@@ -10,8 +10,8 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
-import javax.jms.Destination;
-import javax.jms.Message;
+import jakarta.jms.Destination;
+import jakarta.jms.Message;
 import java.time.Duration;
 
 @Log4j2

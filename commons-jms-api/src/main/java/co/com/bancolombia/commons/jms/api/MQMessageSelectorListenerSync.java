@@ -1,7 +1,7 @@
 package co.com.bancolombia.commons.jms.api;
 
-import javax.jms.Destination;
-import javax.jms.Message;
+import jakarta.jms.Destination;
+import jakarta.jms.Message;
 
 public interface MQMessageSelectorListenerSync {
     Message getMessage(String correlationId);

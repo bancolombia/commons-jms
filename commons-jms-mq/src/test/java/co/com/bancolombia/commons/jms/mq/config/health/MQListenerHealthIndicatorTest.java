@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

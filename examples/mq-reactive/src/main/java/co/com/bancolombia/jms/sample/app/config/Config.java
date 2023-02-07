@@ -7,10 +7,10 @@ import com.ibm.mq.spring.boot.MQConnectionFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.jms.JMSException;
-import javax.jms.JMSRuntimeException;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
 
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CLIENT_RECONNECT;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CLIENT_RECONNECT;
 
 @Configuration
 public class Config {

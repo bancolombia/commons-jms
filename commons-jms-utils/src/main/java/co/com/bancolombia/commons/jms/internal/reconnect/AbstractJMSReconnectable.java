@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
-import javax.jms.JMSRuntimeException;
+import jakarta.jms.ExceptionListener;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

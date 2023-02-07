@@ -4,9 +4,9 @@ import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.Message;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.Message;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

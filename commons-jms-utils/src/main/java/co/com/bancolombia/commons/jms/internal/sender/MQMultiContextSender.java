@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 
 @AllArgsConstructor
 public class MQMultiContextSender implements MQMessageSender {

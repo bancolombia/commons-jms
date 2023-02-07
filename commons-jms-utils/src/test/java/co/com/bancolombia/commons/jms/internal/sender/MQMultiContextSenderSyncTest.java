@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.jms.*;
+import jakarta.jms.*;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

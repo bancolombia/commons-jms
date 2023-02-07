@@ -23,6 +23,14 @@ There are some scenarios covered by the library:
 - Get messages with specific correlationId from a fixed queue.
 - Request Reply pattern with automatic temporary queue.
 
+## Compatibility
+
+| Version | Spring Boot | Specification |
+|---------|-------------|---------------|
+| 0.6.0   | 2.7.6       | JMS 2 javax   |
+| 1.0.0   | 3.0.2       | JMS 3 jakarta |
+
+
 ### Limitations
 
 - Initially available for IBM MQ Clients.

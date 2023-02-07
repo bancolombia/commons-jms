@@ -19,7 +19,7 @@ package co.com.bancolombia.commons.jms.mq.config.proxy;
 import co.com.bancolombia.commons.jms.mq.ReqReply;
 import reactor.core.publisher.Mono;
 
-import javax.jms.Message;
+import jakarta.jms.Message;
 
 @ReqReply(requestQueue = "request.queue")
 public interface TestCustomAnnotation {
