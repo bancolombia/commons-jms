@@ -106,7 +106,7 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
         String requestQueue = resolveValueFromAnnotation(annotation, "requestQueue");
         String name = StringUtils.hasText(requestQueue) ? requestQueue : properties.getOutputQueue();
         MQQueueCustomizer customizer = beanFactory.getBean(MQQueueCustomizer.class);
-        Queue queue = new MQQueue();
+        Queue queue = new MQQueue(name);
         customizer.customize(queue);
         return queue;
     }
