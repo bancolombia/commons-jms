@@ -6,10 +6,10 @@ import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
 
-import static com.ibm.msg.client.jms.JmsConstants.JMSX_DELIVERY_COUNT;
+import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMSX_DELIVERY_COUNT;
 
 @Log4j2
 @AllArgsConstructor

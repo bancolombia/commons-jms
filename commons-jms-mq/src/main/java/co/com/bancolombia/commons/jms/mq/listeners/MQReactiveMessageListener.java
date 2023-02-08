@@ -6,8 +6,8 @@ import org.springframework.messaging.handler.invocation.reactive.InvocableHandle
 import org.springframework.messaging.support.MessageBuilder;
 import reactor.core.publisher.Mono;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
 import java.lang.reflect.Method;
 
 @Log4j2

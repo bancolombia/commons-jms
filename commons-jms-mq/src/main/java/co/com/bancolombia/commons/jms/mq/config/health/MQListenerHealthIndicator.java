@@ -6,7 +6,7 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

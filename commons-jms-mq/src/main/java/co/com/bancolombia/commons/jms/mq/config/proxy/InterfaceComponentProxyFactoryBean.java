@@ -14,7 +14,8 @@ import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerExce
 import co.com.bancolombia.commons.jms.mq.listeners.MQRequestReplyListener;
 import co.com.bancolombia.commons.jms.utils.MQMessageListenerUtils;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
-import com.ibm.mq.jms.MQQueue;
+import com.ibm.mq.jakarta.jms.MQQueue;
+import jakarta.jms.Queue;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.BeanFactory;
@@ -31,11 +32,10 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSRuntimeException;
-import javax.jms.Message;
-import javax.jms.Queue;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Message;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 

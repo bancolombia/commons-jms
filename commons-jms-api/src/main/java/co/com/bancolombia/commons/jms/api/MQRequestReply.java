@@ -2,7 +2,7 @@ package co.com.bancolombia.commons.jms.api;
 
 import reactor.core.publisher.Mono;
 
-import javax.jms.Message;
+import jakarta.jms.Message;
 import java.time.Duration;
 
 public interface MQRequestReply {

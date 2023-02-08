@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.MessageListener;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.MessageListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;

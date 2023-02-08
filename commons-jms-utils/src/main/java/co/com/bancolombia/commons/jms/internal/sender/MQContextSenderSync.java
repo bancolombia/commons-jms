@@ -8,13 +8,13 @@ import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectabl
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.JMSProducer;
-import javax.jms.JMSRuntimeException;
-import javax.jms.Message;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSProducer;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Message;
 
 @Log4j2
 @SuperBuilder

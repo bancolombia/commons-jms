@@ -17,9 +17,9 @@ import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import reactor.core.publisher.Mono;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.Message;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

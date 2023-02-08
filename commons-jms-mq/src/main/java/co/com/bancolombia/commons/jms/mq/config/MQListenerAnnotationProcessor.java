@@ -28,9 +28,9 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSRuntimeException;
-import javax.jms.MessageListener;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.MessageListener;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;

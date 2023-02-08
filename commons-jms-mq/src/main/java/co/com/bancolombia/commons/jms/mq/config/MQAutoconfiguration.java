@@ -7,16 +7,16 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.mq.config.health.MQListenerHealthIndicator;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
-import com.ibm.mq.jms.MQQueue;
+import com.ibm.mq.jakarta.jms.MQQueue;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_MQMD_READ_ENABLED;
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_MQMD_WRITE_ENABLED;
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_PUT_ASYNC_ALLOWED_ENABLED;
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_READ_AHEAD_ALLOWED_ENABLED;
-import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_TARGET_CLIENT;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_MQMD_READ_ENABLED;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_MQMD_WRITE_ENABLED;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_PUT_ASYNC_ALLOWED_ENABLED;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_READ_AHEAD_ALLOWED_ENABLED;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_TARGET_CLIENT;
 
 @Configuration
 public class MQAutoconfiguration {

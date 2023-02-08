@@ -3,11 +3,11 @@ package co.com.bancolombia.commons.jms.internal.listener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import javax.jms.JMSException;
-import javax.jms.JMSRuntimeException;
-import javax.jms.MessageListener;
-import javax.jms.Session;
-import javax.jms.TemporaryQueue;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.MessageListener;
+import jakarta.jms.Session;
+import jakarta.jms.TemporaryQueue;
 
 @Builder
 @AllArgsConstructor

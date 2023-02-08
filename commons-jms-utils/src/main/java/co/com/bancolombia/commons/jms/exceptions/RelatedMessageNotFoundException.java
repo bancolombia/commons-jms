@@ -1,6 +1,6 @@
 package co.com.bancolombia.commons.jms.exceptions;
 
-import javax.jms.JMSRuntimeException;
+import jakarta.jms.JMSRuntimeException;
 
 public class RelatedMessageNotFoundException extends JMSRuntimeException {
     public RelatedMessageNotFoundException(String correlationId) {

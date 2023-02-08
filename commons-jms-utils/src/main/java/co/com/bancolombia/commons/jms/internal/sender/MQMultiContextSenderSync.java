@@ -6,8 +6,8 @@ import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

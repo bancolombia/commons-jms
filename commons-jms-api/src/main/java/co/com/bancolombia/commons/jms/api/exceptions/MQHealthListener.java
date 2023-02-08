@@ -1,6 +1,6 @@
 package co.com.bancolombia.commons.jms.api.exceptions;
 
-import javax.jms.JMSException;
+import jakarta.jms.JMSException;
 
 public interface MQHealthListener {
     void onInit(String listener);

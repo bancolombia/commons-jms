@@ -1,6 +1,6 @@
 package co.com.bancolombia.commons.jms.api;
 
-import javax.jms.JMSProducer;
+import jakarta.jms.JMSProducer;
 
 public interface MQProducerCustomizer {
     void customize(JMSProducer producer);

@@ -8,12 +8,12 @@ import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
-import javax.jms.MessageListener;
-import javax.jms.Queue;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.MessageListener;
+import jakarta.jms.Queue;
 
 @Log4j2
 @SuperBuilder

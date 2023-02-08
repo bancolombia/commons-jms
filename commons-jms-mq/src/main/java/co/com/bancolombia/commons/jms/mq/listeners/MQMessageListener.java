@@ -7,11 +7,11 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 import org.springframework.messaging.support.MessageBuilder;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
 import java.lang.reflect.Method;
 
-import static com.ibm.msg.client.jms.JmsConstants.JMSX_DELIVERY_COUNT;
+import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMSX_DELIVERY_COUNT;
 
 @Log4j2
 @AllArgsConstructor
