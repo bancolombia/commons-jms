@@ -2,6 +2,8 @@ allprojects {
     apply plugin: "java"
     apply plugin: "jacoco"
     apply plugin: 'org.sonarqube'
+    apply plugin: "org.owasp.dependencycheck"
+
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_17
 
@@ -85,6 +87,13 @@ subprojects {
                 '-Amapstruct.suppressGeneratorTimestamp=true',
                 '-Amapstruct.suppressGeneratorVersionInfoComment=true'
         ]
+    }
+
+    check.dependsOn dependencyCheckAggregate
+
+    dependencyCheck {
+        format = 'JSON'
+        formats = ['JSON']
     }
 
     if (toPublish.split(',').contains(it.name)) {
