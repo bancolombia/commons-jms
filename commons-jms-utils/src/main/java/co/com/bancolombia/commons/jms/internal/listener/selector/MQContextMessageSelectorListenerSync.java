@@ -12,7 +12,9 @@ import jakarta.jms.Destination;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.Message;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @SuperBuilder
 public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectable<MQContextMessageSelectorListenerSync> implements MQMessageSelectorListenerSync {
     public static final long DEFAULT_TIMEOUT = 5000L;
@@ -29,9 +31,11 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
 
     @Override
     protected MQContextMessageSelectorListenerSync connect() {
+        log.info("Starting listener {}", getProcess());
         context = connectionFactory.createContext();
         context.setExceptionListener(this);
         destination = MQQueueUtils.setupFixedQueue(context, config);
+        log.info("Listener {} started successfully", getProcess());
         return this;
     }
 

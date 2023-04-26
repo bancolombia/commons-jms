@@ -8,10 +8,12 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +35,7 @@ public class MQAutoconfigurationSelectorListener {
     @ConditionalOnMissingBean(MQMultiContextMessageSelectorListenerSync.class)
     public MQMultiContextMessageSelectorListenerSync defaultMQMultiContextMessageSelectorListenerSync(
             ConnectionFactory cf, @Qualifier("messageSelectorListenerConfig") MQListenerConfig config,
-            MQHealthListener healthListener) {
+            MQHealthListener healthListener, MQProperties properties) {
         if (config.getConcurrency() < 1) {
             throw new MQInvalidListenerException("Invalid property commons.jms.input-concurrency, minimum value 1, " +
                     "you have passed " + config.getConcurrency());
@@ -41,7 +43,12 @@ public class MQAutoconfigurationSelectorListener {
         if (log.isInfoEnabled()) {
             log.info("Creating {} listeners", config.getConcurrency());
         }
-        return new MQMultiContextMessageSelectorListenerSync(cf, config, healthListener);
+        RetryableConfig retryableConfig = RetryableConfig.builder()
+                .maxRetries(properties.getMaxRetries())
+                .initialRetryIntervalMillis(properties.getInitialRetryIntervalMillis())
+                .multiplier(properties.getRetryMultiplier())
+                .build();
+        return new MQMultiContextMessageSelectorListenerSync(cf, config, healthListener, retryableConfig);
     }
 
     @Bean

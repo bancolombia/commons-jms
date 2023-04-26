@@ -28,7 +28,7 @@ There are some scenarios covered by the library:
 | Version | Spring Boot | Specification |
 |---------|-------------|---------------|
 | 0.6.0   | 2.7.6       | JMS 2 javax   |
-| 1.0.0   | 3.0.2       | JMS 3 jakarta |
+| 1.0.1   | 3.0.2       | JMS 3 jakarta |
 
 
 ### Limitations
@@ -407,6 +407,13 @@ There are three configuration properties:
 - `commons.jms.output-queue`: *Name of the default queue to send messages*.
 - `commons.jms.producer-ttl`: *Long value in milliseconds which sets the time to live of a message put onto a queue. A
   value of 0 means live indefinitely*.
+
+### Connection Retry properties
+- `commons.jms.max-retries`: Number of retries when the connection is lost.
+- `commons.jms.initial-retry-interval-millis`: Initial interval between retries in milliseconds.
+- `commons.jms.retry-multiplier`: Multiplier for the interval between retries.
+
+For more information about the connection retry properties, please refer to [Resilience4j Retry](https://resilience4j.readme.io/docs/retry)
 
 ### Connection Factory
 

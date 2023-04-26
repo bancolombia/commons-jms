@@ -62,10 +62,13 @@ class MQAutoconfigurationSelectorListenerTest {
     void shouldHandleError() {
         // Arrange
         MQListenerConfig config = MQListenerConfig.builder().concurrency(0).build();
+        MQProperties properties = new MQProperties();
+        properties.setMaxRetries(10);
+        properties.setInitialRetryIntervalMillis(1000);
         // Act
         // Assert
         assertThrows(MQInvalidListenerException.class,
-                () -> configurator.defaultMQMultiContextMessageSelectorListenerSync(null, config, healthListener));
+                () -> configurator.defaultMQMultiContextMessageSelectorListenerSync(null, config, healthListener, properties));
     }
 
     @Test
@@ -75,11 +78,14 @@ class MQAutoconfigurationSelectorListenerTest {
                 .concurrency(1)
                 .queue("QUEUE")
                 .build();
+        MQProperties properties = new MQProperties();
+        properties.setMaxRetries(10);
+        properties.setInitialRetryIntervalMillis(1000);
         when(connectionFactory.createContext()).thenReturn(context);
         when(context.createQueue(anyString())).thenReturn(queue);
         // Act
         MQMessageSelectorListenerSync listener = configurator.
-                defaultMQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener);
+                defaultMQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener, properties);
         // Assert
         assertNotNull(listener);
     }

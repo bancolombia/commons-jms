@@ -1,5 +1,6 @@
 package co.com.bancolombia.commons.jms.utils;
 
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
@@ -7,13 +8,12 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class RetryableTask {
-    private static final int MAX_ATTEMPTS = 10;
-    private static final int INITIAL_INTERVAL_MILLIS = 1000;
 
-    public static void runWithRetries(String name, Runnable runnable) {
+    public static void runWithRetries(String name, RetryableConfig retryableConfig, Runnable runnable) {
         RetryConfig retryConfig = RetryConfig.custom()
-                .intervalFunction(IntervalFunction.ofExponentialBackoff(INITIAL_INTERVAL_MILLIS))
-                .maxAttempts(MAX_ATTEMPTS)
+                .intervalFunction(IntervalFunction
+                        .ofExponentialBackoff(retryableConfig.getInitialRetryIntervalMillis(), retryableConfig.getMultiplier()))
+                .maxAttempts(retryableConfig.getMaxRetries())
                 .build();
         Retry.decorateRunnable(Retry.of(name, retryConfig), runnable).run();
     }

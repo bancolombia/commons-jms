@@ -5,6 +5,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,8 +57,14 @@ class MQMultiContextMessageSelectorListenerTest {
                 .concurrency(1)
                 .queue("QUEUE")
                 .build();
+        RetryableConfig retryableConfig = RetryableConfig
+                .builder()
+                .maxRetries(10)
+                .initialRetryIntervalMillis(1000)
+                .multiplier(1.5)
+                .build();
         MQMessageSelectorListenerSync listenerSync =
-                new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener);
+                new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener, retryableConfig);
         listener = new MQMultiContextMessageSelectorListener(listenerSync);
     }
 
