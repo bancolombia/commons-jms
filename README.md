@@ -28,7 +28,7 @@ There are some scenarios covered by the library:
 | Version | Spring Boot | Specification |
 |---------|-------------|---------------|
 | 0.6.0   | 2.7.6       | JMS 2 javax   |
-| 1.0.1   | 3.0.2       | JMS 3 jakarta |
+| 1.0.1   | 3.0.6       | JMS 3 jakarta |
 
 
 ### Limitations
