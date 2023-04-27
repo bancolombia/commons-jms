@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.internal.sender;
 
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,8 +42,14 @@ class MQMultiContextSenderSyncTest {
         when(connectionFactory.createContext()).thenReturn(context);
         when(context.createQueue(anyString())).thenReturn(queue);
         when(context.createProducer()).thenReturn(producer);
+        RetryableConfig retryableConfig = RetryableConfig
+                .builder()
+                .maxRetries(10)
+                .initialRetryIntervalMillis(1000)
+                .multiplier(1.5)
+                .build();
         senderSync = new MQMultiContextSenderSync(connectionFactory, 2,
-                ctx -> ctx.createQueue("QUEUE.NAME"), customizer, healthListener);
+                ctx -> ctx.createQueue("QUEUE.NAME"), customizer, healthListener, retryableConfig);
     }
 
     @Test

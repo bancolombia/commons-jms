@@ -1,6 +1,7 @@
 package co.com.bancolombia.commons.jms.internal.reconnect;
 
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.utils.RetryableTask;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -17,6 +18,8 @@ import java.util.concurrent.Executors;
 @SuperBuilder
 public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, Callable<T> {
     private final MQHealthListener healthListener;
+    private final RetryableConfig retryableConfig;
+
     @Getter
     private String process;
 
@@ -43,7 +46,7 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
             Thread.currentThread().setName("reconnection-" + process);
             try {
                 log.warn("Starting reconnection for {}", process);
-                RetryableTask.runWithRetries(process, this::connect);
+                RetryableTask.runWithRetries(process, retryableConfig, this::connect);
                 markAsStarted();
                 log.warn("Reconnection successful for {}", process);
             } catch (JMSRuntimeException ex) {

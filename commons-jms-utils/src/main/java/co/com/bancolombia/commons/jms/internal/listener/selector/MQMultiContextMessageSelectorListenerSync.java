@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.Message;
@@ -16,12 +17,14 @@ public class MQMultiContextMessageSelectorListenerSync implements MQMessageSelec
     private final MQListenerConfig config;
     private final MQHealthListener healthListener;
     private List<MQContextMessageSelectorListenerSync> adapterList;
+    private final RetryableConfig retryableConfig;
 
     public MQMultiContextMessageSelectorListenerSync(ConnectionFactory connectionFactory, MQListenerConfig config,
-                                                     MQHealthListener healthListener) {
+                                                     MQHealthListener healthListener, RetryableConfig retryableConfig) {
         this.connectionFactory = connectionFactory;
         this.config = config;
         this.healthListener = healthListener;
+        this.retryableConfig = retryableConfig;
         start();
     }
 
@@ -31,6 +34,7 @@ public class MQMultiContextMessageSelectorListenerSync implements MQMessageSelec
                         .connectionFactory(connectionFactory)
                         .config(config)
                         .healthListener(healthListener)
+                        .retryableConfig(retryableConfig)
                         .build()
                         .call())
                 .collect(Collectors.toList());

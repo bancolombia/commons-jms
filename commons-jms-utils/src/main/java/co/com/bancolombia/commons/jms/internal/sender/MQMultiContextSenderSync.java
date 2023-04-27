@@ -6,6 +6,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import java.util.List;
@@ -19,15 +20,17 @@ public class MQMultiContextSenderSync implements MQMessageSenderSync {
     private final MQDestinationProvider provider;
     private final MQProducerCustomizer customizer;
     private final MQHealthListener healthListener;
+    private final RetryableConfig retryableConfig;
 
     public MQMultiContextSenderSync(ConnectionFactory connectionFactory, int connections,
                                     MQDestinationProvider provider, MQProducerCustomizer customizer,
-                                    MQHealthListener healthListener) {
+                                    MQHealthListener healthListener, RetryableConfig retryableConfig) {
         this.connectionFactory = connectionFactory;
         this.connections = connections;
         this.provider = provider;
         this.customizer = customizer;
         this.healthListener = healthListener;
+        this.retryableConfig = retryableConfig;
         start();
     }
 
@@ -38,6 +41,7 @@ public class MQMultiContextSenderSync implements MQMessageSenderSync {
                         .customizer(customizer)
                         .provider(provider)
                         .healthListener(healthListener)
+                        .retryableConfig(retryableConfig)
                         .build()
                         .call())
                 .collect(Collectors.toList());

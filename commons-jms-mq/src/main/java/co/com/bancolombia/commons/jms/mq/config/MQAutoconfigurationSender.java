@@ -7,6 +7,7 @@ import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.internal.sender.MQMultiContextSender;
 import co.com.bancolombia.commons.jms.internal.sender.MQMultiContextSenderSync;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidSenderException;
@@ -39,8 +40,16 @@ public class MQAutoconfigurationSender {
             throw new MQInvalidSenderException("Invalid property commons.jms.output-concurrency, minimum value 1, " +
                     "you have passed " + properties.getOutputConcurrency());
         }
-        log.info("Creating {} senders", properties.getOutputConcurrency());
-        return new MQMultiContextSenderSync(cf, properties.getOutputConcurrency(), provider, customizer, healthListener);
+        if (log.isInfoEnabled()) {
+            log.info("Creating {} senders", properties.getOutputConcurrency());
+        }
+        RetryableConfig retryableConfig = RetryableConfig.builder()
+                .maxRetries(properties.getMaxRetries())
+                .initialRetryIntervalMillis(properties.getInitialRetryIntervalMillis())
+                .multiplier(properties.getRetryMultiplier())
+                .build();
+        return new MQMultiContextSenderSync(cf, properties.getOutputConcurrency(), provider, customizer, healthListener,
+                retryableConfig);
     }
 
     @Bean

@@ -8,6 +8,7 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQRequestReply;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.ReqReply;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
@@ -91,8 +92,15 @@ public class InterfaceComponentProxyFactoryBean implements FactoryBean<Object>, 
 
         MQRequestReplyListener senderWithRouter = new MQRequestReplyListener(sender, router, container, destination,
                 config.getTempQueueAlias(), config.getMaxRetries());
+
+        RetryableConfig retryableConfig = RetryableConfig.builder()
+                .maxRetries(properties.getMaxRetries())
+                .initialRetryIntervalMillis(properties.getInitialRetryIntervalMillis())
+                .multiplier(properties.getRetryMultiplier())
+                .build();
         try {
-            MQMessageListenerUtils.createListeners(cf, senderWithRouter, container, mqBrokerUtils, config, healthListener);
+            MQMessageListenerUtils.createListeners(cf, senderWithRouter, container, mqBrokerUtils, config, healthListener,
+                    retryableConfig);
         } catch (JMSRuntimeException ex) {
             throw new BeanInitializationException("Could not create request reply defined in " + className
                     + " connectionFactory: " + cf, ex);

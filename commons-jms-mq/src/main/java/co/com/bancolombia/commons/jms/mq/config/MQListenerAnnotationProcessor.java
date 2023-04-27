@@ -5,6 +5,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.MQListener;
 import co.com.bancolombia.commons.jms.mq.MQListeners;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
@@ -31,6 +32,7 @@ import org.springframework.util.StringValueResolver;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.MessageListener;
+
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
@@ -82,9 +84,15 @@ public class MQListenerAnnotationProcessor implements BeanPostProcessor, BeanFac
         MQQueuesContainer queuesContainer = beanFactory.getBean(MQQueuesContainer.class);
         MQBrokerUtils mqBrokerUtils = beanFactory.getBean(MQBrokerUtils.class);
         MQHealthListener exceptionListener = beanFactory.getBean(MQHealthListener.class);
+        RetryableConfig retryableConfig = RetryableConfig.builder()
+                .maxRetries(properties.getMaxRetries())
+                .initialRetryIntervalMillis(properties.getInitialRetryIntervalMillis())
+                .multiplier(properties.getRetryMultiplier())
+                .build();
 
         try {
-            MQMessageListenerUtils.createListeners(cf, processor, queuesContainer, mqBrokerUtils, config, exceptionListener);
+            MQMessageListenerUtils.createListeners(cf, processor, queuesContainer, mqBrokerUtils, config,
+                    exceptionListener, retryableConfig);
         } catch (JMSRuntimeException ex) {
             throw new BeanInitializationException("Could not register MQ listener on [" + mostSpecificMethod + "], using ConnectionFactory: " + cf, ex);
         }

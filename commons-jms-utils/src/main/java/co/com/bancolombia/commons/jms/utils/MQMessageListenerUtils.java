@@ -6,6 +6,7 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.MQContextListener;
 import co.com.bancolombia.commons.jms.internal.listener.MQMultiConnectionListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
+import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,14 +27,15 @@ public class MQMessageListenerUtils {
                                        MQQueuesContainer container,
                                        MQBrokerUtils utils,
                                        MQListenerConfig config,
-                                       MQHealthListener healthListener) {
+                                       MQHealthListener healthListener,
+                                       RetryableConfig retryableConfig) {
         if (log.isInfoEnabled()) {
             log.info("Creating {} listeners", config.getConcurrency());
         }
         if (StringUtils.isNotBlank(config.getTempQueueAlias())) {
-            createListenersTemp(cf, listener, container, config, healthListener);
+            createListenersTemp(cf, listener, container, config, healthListener, retryableConfig);
         } else {
-            createListenersFixed(cf, listener, container, utils, config, healthListener);
+            createListenersFixed(cf, listener, container, utils, config, healthListener, retryableConfig);
         }
     }
 
@@ -42,7 +44,8 @@ public class MQMessageListenerUtils {
                                              MQQueuesContainer container,
                                              MQBrokerUtils utils,
                                              MQListenerConfig config,
-                                             MQHealthListener healthListener) {
+                                             MQHealthListener healthListener,
+                                             RetryableConfig retryableConfig) {
         ExecutorService service = Executors.newFixedThreadPool(config.getConcurrency());
         IntStream.range(0, config.getConcurrency())
                 .mapToObj(number -> MQContextListener.builder()
@@ -50,8 +53,9 @@ public class MQMessageListenerUtils {
                         .utils(utils)
                         .config(config)
                         .listener(listener)
-                        .healthListener(healthListener)
                         .container(container)
+                        .healthListener(healthListener)
+                        .retryableConfig(retryableConfig)
                         .build())
                 .forEach(service::submit);
         if (log.isInfoEnabled()) {
@@ -63,13 +67,15 @@ public class MQMessageListenerUtils {
                                             MessageListener listener,
                                             MQQueuesContainer container,
                                             MQListenerConfig config,
-                                            MQHealthListener healthListener) {
+                                            MQHealthListener healthListener,
+                                            RetryableConfig retryableConfig) {
         MQMultiConnectionListener.builder()
                 .connectionFactory(cf)
                 .config(config)
                 .listener(listener)
                 .container(container)
                 .healthListener(healthListener)
+                .retryableConfig(retryableConfig)
                 .build()
                 .call();
     }
