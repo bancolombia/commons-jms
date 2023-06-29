@@ -76,10 +76,10 @@ subprojects {
     jacocoTestReport {
         dependsOn test
         reports {
-            xml.enabled true
-            xml.destination file("${buildDir}/reports/jacoco.xml")
-            csv.enabled false
-            html.destination file("${buildDir}/reports/jacocoHtml")
+            xml.setRequired true
+            xml.setOutputLocation file("${buildDir}/reports/jacoco.xml")
+            csv.setRequired false
+            html.setOutputLocation file("${buildDir}/reports/jacocoHtml")
         }
     }
     compileJava {
@@ -170,19 +170,22 @@ subprojects {
 
 }
 
-task generateMergedReport(type: JacocoReport) {
-    dependsOn = subprojects.test
+tasks.register('generateMergedReport', JacocoReport) {
+    dependsOn test
+    dependsOn subprojects.test
+    dependsOn subprojects.javadoc
+    dependsOn subprojects.jacocoTestReport
     additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
     sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories.setFrom files(subprojects.sourceSets.main.output)
     executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
     reports {
-        xml.enabled true
-        csv.enabled false
-        html.enabled true
+        xml.setRequired true
+        csv.setRequired false
+        html.setRequired true
     }
 }
 
 tasks.named('wrapper') {
-    gradleVersion = '7.6'
+    gradleVersion = '8.1.1'
 }

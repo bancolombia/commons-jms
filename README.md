@@ -29,6 +29,7 @@ There are some scenarios covered by the library:
 |---------|-------------|---------------|
 | 0.6.0   | 2.7.6       | JMS 2 javax   |
 | 1.0.1   | 3.0.6       | JMS 3 jakarta |
+| 1.1.0   | 3.1.1       | JMS 3 jakarta |
 
 
 ### Limitations
