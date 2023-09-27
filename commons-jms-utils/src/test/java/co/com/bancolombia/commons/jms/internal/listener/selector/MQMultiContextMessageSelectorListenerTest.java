@@ -84,6 +84,21 @@ class MQMultiContextMessageSelectorListenerTest {
     }
 
     @Test
+    void shouldGetMessageWithTimeout() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
+        // Act
+        Mono<Message> receiveMessage = listener.getMessage(messageID, DEFAULT_TIMEOUT);
+        // Assert
+        StepVerifier.create(receiveMessage)
+                .assertNext(receivedMessage -> assertEquals(message, receivedMessage))
+                .verifyComplete();
+        verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
     void shouldHandleTimeoutErrorWithCustomTimeout() {
         // Arrange
         String messageID = UUID.randomUUID().toString();
@@ -91,6 +106,49 @@ class MQMultiContextMessageSelectorListenerTest {
         when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(null);
         // Act
         Mono<Message> receiveMessage = listener.getMessage(messageID, DEFAULT_TIMEOUT, queue);
+        // Assert
+        StepVerifier.create(receiveMessage)
+                .expectError(ReceiveTimeoutException.class)
+                .verify();
+    }
+    @Test
+    void shouldGetMessageBySelector() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
+        // Act
+        Mono<Message> receiveMessage = listener.getMessageBySelector("JMSMessageID='" + messageID + "'");
+        // Assert
+        StepVerifier.create(receiveMessage)
+                .assertNext(receivedMessage -> assertEquals(message, receivedMessage))
+                .verifyComplete();
+        verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    void shouldGetMessageBySelectorWithTimeout() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
+        // Act
+        Mono<Message> receiveMessage = listener.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT);
+        // Assert
+        StepVerifier.create(receiveMessage)
+                .assertNext(receivedMessage -> assertEquals(message, receivedMessage))
+                .verifyComplete();
+        verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    void shouldHandleTimeoutErrorWithCustomTimeoutBySelector() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(null);
+        // Act
+        Mono<Message> receiveMessage = listener.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT, queue);
         // Assert
         StepVerifier.create(receiveMessage)
                 .expectError(ReceiveTimeoutException.class)

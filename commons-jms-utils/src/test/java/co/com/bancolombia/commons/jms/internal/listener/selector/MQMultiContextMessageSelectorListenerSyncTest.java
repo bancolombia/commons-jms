@@ -70,6 +70,45 @@ class MQMultiContextMessageSelectorListenerSyncTest {
     }
 
     @Test
+    void shouldGetMessageWithTimeout() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
+        // Act
+        Message receivedMessage = listenerSync.getMessage(messageID, DEFAULT_TIMEOUT);
+        // Assert
+        assertEquals(message, receivedMessage);
+        verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    void shouldGetMessageBySelector() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
+        // Act
+        Message receivedMessage = listenerSync.getMessageBySelector("JMSMessageID='" + messageID + "'");
+        // Assert
+        assertEquals(message, receivedMessage);
+        verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    void shouldGetMessageBySelectorWithTimeout() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
+        // Act
+        Message receivedMessage = listenerSync.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT);
+        // Assert
+        assertEquals(message, receivedMessage);
+        verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
     void shouldHandleTimeoutErrorWithCustomTimeout() {
         // Arrange
         String messageID = UUID.randomUUID().toString();
@@ -78,6 +117,17 @@ class MQMultiContextMessageSelectorListenerSyncTest {
         // Act
         // Assert
         assertThrows(ReceiveTimeoutException.class, () -> listenerSync.getMessage(messageID, DEFAULT_TIMEOUT, queue));
+    }
+
+    @Test
+    void shouldHandleTimeoutErrorWithCustomTimeoutBySelector() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(null);
+        // Act
+        // Assert
+        assertThrows(ReceiveTimeoutException.class, () -> listenerSync.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT, queue));
     }
 
 }

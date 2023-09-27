@@ -11,14 +11,12 @@ import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
+import jakarta.jms.ConnectionFactory;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-
-import jakarta.jms.ConnectionFactory;
 
 @Log4j2
 public class MQAutoconfigurationSelectorListener {
@@ -71,7 +69,9 @@ public class MQAutoconfigurationSelectorListener {
     public MQQueueManagerSetter qmSetter(MQProperties properties, MQQueuesContainer container) {
         return (jmsContext, queue) -> {
             log.info("Self assigning Queue Manager to listening queue: {}", queue.toString());
-            MQUtils.setQMNameIfNotSet(jmsContext, queue);
+            if (properties.isInputQueueSetQueueManager()) {
+                MQUtils.setQMNameIfNotSet(jmsContext, queue);
+            }
             container.registerQueue(properties.getInputQueue(), queue);
         };
     }
