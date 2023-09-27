@@ -20,8 +20,32 @@ public class MQMultiContextMessageSelectorListener implements MQMessageSelectorL
     }
 
     @Override
+    public Mono<Message> getMessage(String correlationId, long timeout) {
+        return Mono.defer(() -> Mono.just(listenerSync.getMessage(correlationId, timeout)))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
     public Mono<Message> getMessage(String correlationId, long timeout, Destination destination) {
         return Mono.defer(() -> Mono.just(listenerSync.getMessage(correlationId, timeout, destination)))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<Message> getMessageBySelector(String selector) {
+        return Mono.defer(() -> Mono.just(listenerSync.getMessageBySelector(selector)))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<Message> getMessageBySelector(String selector, long timeout) {
+        return Mono.defer(() -> Mono.just(listenerSync.getMessageBySelector(selector, timeout)))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<Message> getMessageBySelector(String selector, long timeout, Destination destination) {
+        return Mono.defer(() -> Mono.just(listenerSync.getMessageBySelector(selector, timeout, destination)))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 }
