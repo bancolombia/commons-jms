@@ -40,11 +40,30 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     public Message getMessage(String correlationId) {
-        return getMessage(correlationId, DEFAULT_TIMEOUT, destination);
+        return getMessageBySelector(buildSelector(correlationId));
     }
 
+    @Override
+    public Message getMessage(String correlationId, long timeout) {
+        return getMessageBySelector(buildSelector(correlationId), timeout);
+    }
+
+    @Override
     public Message getMessage(String correlationId, long timeout, Destination destination) {
-        try (JMSConsumer consumer = context.createConsumer(destination, buildSelector(correlationId))) {
+        return getMessageBySelector(buildSelector(correlationId), timeout, destination);
+    }
+
+    public Message getMessageBySelector(String selector) {
+        return getMessageBySelector(selector, DEFAULT_TIMEOUT, destination);
+    }
+
+    @Override
+    public Message getMessageBySelector(String selector, long timeout) {
+        return getMessageBySelector(selector, timeout, destination);
+    }
+
+    public Message getMessageBySelector(String selector, long timeout, Destination destination) {
+        try (JMSConsumer consumer = context.createConsumer(destination, selector)) {
             Message message = consumer.receive(timeout);
             if (message == null) {
                 throw new ReceiveTimeoutException("Message not received in " + timeout);
