@@ -1,13 +1,14 @@
 package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
-import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextSharedStrategy;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorStrategy;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
-import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.jms.JMSRuntimeException;
@@ -21,8 +22,9 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     public static final long DEFAULT_TIMEOUT = 5000L;
     private final ConnectionFactory connectionFactory;
     private final MQListenerConfig config;
+    private final SelectorModeProvider selectorModeProvider;
+    private SelectorStrategy strategy;
     private Destination destination;
-    private JMSContext context;
 
     @Override
     protected String name() {
@@ -40,9 +42,10 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
         synchronized ("connectSelectorListener") {
             if (handled > lastSuccess.get()) {
                 log.info("Starting listener {}", getProcess());
-                context = connectionFactory.createContext();
+                JMSContext context = connectionFactory.createContext();
                 context.setExceptionListener(this);
                 destination = MQQueueUtils.setupFixedQueue(context, config);
+                strategy = selectorModeProvider.get(connectionFactory, context);
                 log.info("Listener {} started successfully", getProcess());
                 lastSuccess.set(System.currentTimeMillis());
             } else {
@@ -80,16 +83,12 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     public Message getMessageBySelector(String selector, long timeout, Destination destination, boolean retry) {
-        try (JMSConsumer consumer = context.createConsumer(destination, selector)) {
-            log.info("Waiting message with selector {}", selector);
-            Message message = consumer.receive(timeout);
-            if (message == null) {
-                throw new ReceiveTimeoutException("Message not received in " + timeout);
-            }
-            return message;
+        try {
+            return strategy.getMessageBySelector(selector, timeout, destination);
         } catch (JMSRuntimeException e) {
             // Connection is broken
-            if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().contains("CONNECTION_BROKEN")) {
+            if (strategy instanceof ContextSharedStrategy && e.getCause() != null && e.getCause().getMessage() != null
+                    && e.getCause().getMessage().contains("CONNECTION_BROKEN")) {
                 connect();
             }
             if (retry) {

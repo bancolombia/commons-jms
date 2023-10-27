@@ -7,6 +7,9 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextSharedStrategy;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
@@ -16,6 +19,7 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Message;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +44,15 @@ public class MQAutoconfigurationSelectorListener {
     }
 
     @Bean
+    @ConditionalOnMissingBean(SelectorModeProvider.class)
+    public SelectorModeProvider defaultSelectorModeProvider(@Value("${commons.jms.selector-mode:DEFAULT}") String mode) {
+        if (MQListenerConfig.SelectorMode.CONTEXT_PER_MESSAGE.name().equals(mode)) {
+            return (factory, context) -> new ContextPerMessageStrategy(factory);
+        }
+        return SelectorModeProvider.defaultSelector();
+    }
+
+    @Bean
     @ConditionalOnMissingBean(ReactiveReplyRouter.class)
     public ReactiveReplyRouter<Message> selectorReactiveReplyRouter() {
         return new ReactiveReplyRouter<>();
@@ -59,7 +72,7 @@ public class MQAutoconfigurationSelectorListener {
     @ConditionalOnMissingBean(MQMultiContextMessageSelectorListenerSync.class)
     public MQMultiContextMessageSelectorListenerSync defaultMQMultiContextMessageSelectorListenerSync(
             ConnectionFactory cf, @Qualifier("messageSelectorListenerConfig") MQListenerConfig config,
-            MQHealthListener healthListener, MQProperties properties) {
+            MQHealthListener healthListener, MQProperties properties, SelectorModeProvider selectorModeProvider) {
         if (config.getConcurrency() < 1) {
             throw new MQInvalidListenerException("Invalid property commons.jms.input-concurrency, minimum value 1, " +
                     "you have passed " + config.getConcurrency());
@@ -72,7 +85,7 @@ public class MQAutoconfigurationSelectorListener {
                 .initialRetryIntervalMillis(properties.getInitialRetryIntervalMillis())
                 .multiplier(properties.getRetryMultiplier())
                 .build();
-        return new MQMultiContextMessageSelectorListenerSync(cf, config, healthListener, retryableConfig);
+        return new MQMultiContextMessageSelectorListenerSync(cf, config, healthListener, retryableConfig, selectorModeProvider);
     }
 
     @Bean

@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
@@ -66,7 +67,8 @@ class MQMultiContextMessageSelectorListenerTest {
                 .multiplier(1.5)
                 .build();
         MQMessageSelectorListenerSync listenerSync =
-                new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener, retryableConfig);
+                new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
+                        retryableConfig, SelectorModeProvider.defaultSelector());
         listener = new MQMultiContextMessageSelectorListener(listenerSync, Executors.newCachedThreadPool(),
                 new ReactiveReplyRouter<>());
     }

@@ -16,6 +16,7 @@ commons:
     input-queue: "DEV.QUEUE.2"
     input-queue-alias: ""
     input-queue-set-queue-manager: true # enable it to set queue manager using a temporary queue
+    selector-mode: CONTEXT_PER_MESSAGE # CONTEXT_SHARED | CONTEXT_PER_MESSAGE
 ibm:
   mq:
     channel: "DEV.APP.SVRCONN"
