@@ -5,13 +5,14 @@ import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
-import lombok.experimental.SuperBuilder;
-
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.Message;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -27,6 +28,15 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     protected String name() {
         String[] parts = this.toString().split("\\.");
         return parts[parts.length - 1];
+    }
+
+    @Override
+    protected void disconnect() throws JMSException {
+        if (context != null) {
+            log.warn("STOP: status {}", context.getMetaData());
+            context.stop();
+            context.close();
+        }
     }
 
     @Override
@@ -64,11 +74,18 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
 
     public Message getMessageBySelector(String selector, long timeout, Destination destination) {
         try (JMSConsumer consumer = context.createConsumer(destination, selector)) {
+            log.info("Waiting");
             Message message = consumer.receive(timeout);
             if (message == null) {
                 throw new ReceiveTimeoutException("Message not received in " + timeout);
             }
             return message;
+        } catch (JMSRuntimeException e) {
+            // Connection is broken
+            if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().contains("CONNECTION_BROKEN")) {
+                onException(e); // Handle for reconnection
+            }
+            throw e;
         }
     }
 

@@ -11,14 +11,14 @@ import co.com.bancolombia.jms.sample.selector.domain.model.RequestGateway;
 import co.com.bancolombia.jms.sample.selector.domain.model.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.jms.Message;
+import jakarta.jms.TextMessage;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import jakarta.jms.Message;
-import jakarta.jms.TextMessage;
 import java.util.Date;
 
 @Component
@@ -42,16 +42,13 @@ public class MyMQSender implements RequestGateway {
                 throw new ParseMessageException(e);
             }
             Message message = ctx.createTextMessage(json);
-            log.info(container.get("DEV.QUEUE.2").toString());
+//            log.info(container.get("DEV.QUEUE.2").toString());
             message.setJMSReplyTo(container.get("DEV.QUEUE.2"));
             return message;
         });
     }
 
     public Mono<Result> getResult(String correlationId) {
-        if (log.isInfoEnabled()) {
-            log.info("Received and processing");
-        }
         return listener.getMessage(correlationId)
                 .map(this::extractResponse);
     }

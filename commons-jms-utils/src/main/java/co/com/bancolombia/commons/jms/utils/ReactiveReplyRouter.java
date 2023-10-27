@@ -36,6 +36,18 @@ public class ReactiveReplyRouter<T> {
         }
     }
 
+    public void error(String correlationID, Throwable error){
+        if (correlationID != null) {
+            log.info("Replying with id: {}", correlationID);
+            final Sinks.One<T> processor = processors.remove(correlationID);
+            if (processor == null) {
+                throw new RelatedMessageNotFoundException(correlationID);
+            } else {
+                processor.tryEmitError(error);
+            }
+        }
+    }
+
     public void clean(String correlationId) {
         processors.remove(correlationId);
     }
