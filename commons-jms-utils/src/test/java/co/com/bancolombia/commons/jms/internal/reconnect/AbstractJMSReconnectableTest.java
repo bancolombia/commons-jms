@@ -61,6 +61,11 @@ class AbstractJMSReconnectableTest {
         }
 
         @Override
+        protected void disconnect() throws JMSException {
+
+        }
+
+        @Override
         protected String name() {
             return "test-name";
         }

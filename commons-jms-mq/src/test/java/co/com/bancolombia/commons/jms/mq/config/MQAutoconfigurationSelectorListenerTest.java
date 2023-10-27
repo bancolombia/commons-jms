@@ -4,6 +4,8 @@ import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.mq.helper.JmsContextImpl;
@@ -65,10 +67,12 @@ class MQAutoconfigurationSelectorListenerTest {
         MQProperties properties = new MQProperties();
         properties.setMaxRetries(10);
         properties.setInitialRetryIntervalMillis(1000);
+        SelectorModeProvider provider = SelectorModeProvider.defaultSelector();
         // Act
         // Assert
         assertThrows(MQInvalidListenerException.class,
-                () -> configurator.defaultMQMultiContextMessageSelectorListenerSync(null, config, healthListener, properties));
+                () -> configurator.defaultMQMultiContextMessageSelectorListenerSync(null, config, healthListener,
+                        properties, provider));
     }
 
     @Test
@@ -85,7 +89,8 @@ class MQAutoconfigurationSelectorListenerTest {
         when(context.createQueue(anyString())).thenReturn(queue);
         // Act
         MQMessageSelectorListenerSync listener = configurator.
-                defaultMQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener, properties);
+                defaultMQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
+                        properties, SelectorModeProvider.defaultSelector());
         // Assert
         assertNotNull(listener);
     }

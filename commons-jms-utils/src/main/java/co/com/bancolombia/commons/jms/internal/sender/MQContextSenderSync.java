@@ -5,9 +5,6 @@ import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.log4j.Log4j2;
-
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
@@ -15,6 +12,8 @@ import jakarta.jms.JMSException;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.Message;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @SuperBuilder
@@ -31,6 +30,13 @@ public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSende
     protected String name() {
         String[] parts = this.toString().split("\\.");
         return parts[parts.length - 1];
+    }
+
+    @Override
+    protected void disconnect() throws JMSException {
+        if (context != null) {
+            context.close();
+        }
     }
 
     @Override
@@ -58,6 +64,11 @@ public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSende
             return message.getJMSMessageID();
         } catch (JMSException e) {
             throw new JMSRuntimeException(e.getMessage(), e.getErrorCode(), e);
+        } catch (JMSRuntimeException ex) {
+            if ("JMSCC0008".equals(ex.getErrorCode())) { // Connection is closed
+                onException(ex); // Handle for reconnection
+            }
+            throw ex;
         }
     }
 }

@@ -1,17 +1,19 @@
 package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
-import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextSharedStrategy;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorStrategy;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
-import lombok.experimental.SuperBuilder;
-
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
-import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.Message;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -20,8 +22,9 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     public static final long DEFAULT_TIMEOUT = 5000L;
     private final ConnectionFactory connectionFactory;
     private final MQListenerConfig config;
+    private final SelectorModeProvider selectorModeProvider;
+    private SelectorStrategy strategy;
     private Destination destination;
-    private JMSContext context;
 
     @Override
     protected String name() {
@@ -30,12 +33,26 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     @Override
+    protected void disconnect() throws JMSException {
+        // do not disconnect to avoid another thread exceptions
+    }
+
+    @Override
     protected MQContextMessageSelectorListenerSync connect() {
-        log.info("Starting listener {}", getProcess());
-        context = connectionFactory.createContext();
-        context.setExceptionListener(this);
-        destination = MQQueueUtils.setupFixedQueue(context, config);
-        log.info("Listener {} started successfully", getProcess());
+        long handled = System.currentTimeMillis();
+        synchronized (this) {
+            if (handled > lastSuccess.get()) {
+                log.info("Starting listener {}", getProcess());
+                JMSContext context = connectionFactory.createContext();
+                context.setExceptionListener(this);
+                destination = MQQueueUtils.setupFixedQueue(context, config);
+                strategy = selectorModeProvider.get(connectionFactory, context);
+                log.info("Listener {} started successfully", getProcess());
+                lastSuccess.set(System.currentTimeMillis());
+            } else {
+                log.warn("Reconnection ignored because already connected");
+            }
+        }
         return this;
     }
 
@@ -63,12 +80,25 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     public Message getMessageBySelector(String selector, long timeout, Destination destination) {
-        try (JMSConsumer consumer = context.createConsumer(destination, selector)) {
-            Message message = consumer.receive(timeout);
-            if (message == null) {
-                throw new ReceiveTimeoutException("Message not received in " + timeout);
+        return getMessageBySelector(selector, timeout, destination, true);
+    }
+
+    protected Message getMessageBySelector(String selector, long timeout, Destination destination, boolean retry) {
+        try {
+            return strategy.getMessageBySelector(selector, timeout, destination);
+        } catch (JMSRuntimeException e) {
+            // Connection is broken
+            if (strategy instanceof ContextSharedStrategy && e.getCause() != null && e.getCause().getMessage() != null
+                    && e.getCause().getMessage().contains("CONNECTION_BROKEN")) {
+                connect();
             }
-            return message;
+            if (retry) {
+                log.warn("Retrying because: {}", e.getMessage());
+                return getMessageBySelector(selector, timeout, destination, false);
+            } else {
+                log.warn("Retry has failed with {}, this will rethrow", e.getMessage());
+                throw e;
+            }
         }
     }
 

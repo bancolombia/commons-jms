@@ -22,5 +22,14 @@ public class MQListenerConfig {
     @Builder.Default
     private final int maxRetries = -1; //NOSONAR
     @Builder.Default
-    private final MQQueueManagerSetter qmSetter = (ctx, queue) -> {}; //NOSONAR
+    private final MQQueueManagerSetter qmSetter = (ctx, queueName) -> {
+    }; //NOSONAR
+
+    @Builder.Default
+    SelectorMode selectorMode = SelectorMode.CONTEXT_SHARED;
+
+    public enum SelectorMode {
+        CONTEXT_SHARED,
+        CONTEXT_PER_MESSAGE
+    }
 }
