@@ -34,12 +34,13 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
 
     @Override
     protected void disconnect() throws JMSException {
+        // do not disconnect to avoid another thread exceptions
     }
 
     @Override
     protected MQContextMessageSelectorListenerSync connect() {
         long handled = System.currentTimeMillis();
-        synchronized ("connectSelectorListener") {
+        synchronized (this) {
             if (handled > lastSuccess.get()) {
                 log.info("Starting listener {}", getProcess());
                 JMSContext context = connectionFactory.createContext();
@@ -82,7 +83,7 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
         return getMessageBySelector(selector, timeout, destination, true);
     }
 
-    public Message getMessageBySelector(String selector, long timeout, Destination destination, boolean retry) {
+    protected Message getMessageBySelector(String selector, long timeout, Destination destination, boolean retry) {
         try {
             return strategy.getMessageBySelector(selector, timeout, destination);
         } catch (JMSRuntimeException e) {

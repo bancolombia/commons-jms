@@ -72,7 +72,7 @@ public class MQMultiContextMessageSelectorListenerSync implements MQMessageSelec
         return getRandom().getMessageBySelector(selector, timeout, destination);
     }
 
-    private MQMessageSelectorListenerSync getRandom() {
+    protected MQMessageSelectorListenerSync getRandom() {
         int selectIndex = (int) (System.currentTimeMillis() % config.getConcurrency());
         return adapterList.get(selectIndex);
     }

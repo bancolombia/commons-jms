@@ -31,8 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class MQAutoconfigurationSelectorListener {
-    public static int MAX_THREADS = 200;
-    public static long KEEP_ALIVE_SECONDS = 5L;
+    public static final int MAX_THREADS = 200;
+    public static final long KEEP_ALIVE_SECONDS = 5L;
 
     @Bean
     @ConditionalOnMissingBean(ExecutorService.class)

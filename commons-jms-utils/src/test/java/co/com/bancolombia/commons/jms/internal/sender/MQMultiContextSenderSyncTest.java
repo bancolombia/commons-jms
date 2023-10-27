@@ -90,4 +90,16 @@ class MQMultiContextSenderSyncTest {
         });
     }
 
+    @Test
+    void shouldReconnectWhenHandleError() {
+        // Arrange
+        // Assert
+        assertThrows(JMSRuntimeException.class, () -> {
+            // Act
+            senderSync.send(ctx -> {
+                throw new JMSRuntimeException("Error", "JMSCC0008", new Exception());
+            });
+        });
+    }
+
 }

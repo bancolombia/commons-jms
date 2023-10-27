@@ -67,11 +67,12 @@ class MQAutoconfigurationSelectorListenerTest {
         MQProperties properties = new MQProperties();
         properties.setMaxRetries(10);
         properties.setInitialRetryIntervalMillis(1000);
+        SelectorModeProvider provider = SelectorModeProvider.defaultSelector();
         // Act
         // Assert
         assertThrows(MQInvalidListenerException.class,
                 () -> configurator.defaultMQMultiContextMessageSelectorListenerSync(null, config, healthListener,
-                        properties, SelectorModeProvider.defaultSelector()));
+                        properties, provider));
     }
 
     @Test

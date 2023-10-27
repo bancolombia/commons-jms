@@ -4,17 +4,17 @@ import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageListener;
+import jakarta.jms.Queue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.JMSConsumer;
-import jakarta.jms.JMSContext;
-import jakarta.jms.MessageListener;
-import jakarta.jms.Queue;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -61,5 +61,18 @@ class MQContextListenerTest {
         contextListener.call();
         // Assert
         verify(consumer, times(1)).setMessageListener(listener);
+    }
+
+    @Test
+    void shouldDisconnectAndConnectOnException() throws JMSException {
+        // Arrange
+        when(connectionFactory.createContext()).thenReturn(context);
+        when(context.createQueue(anyString())).thenReturn(queue);
+        when(context.createConsumer(queue)).thenReturn(consumer);
+        contextListener.call();
+        // Act
+        contextListener.disconnect();
+        // Assert
+        verify(consumer, times(1)).close();
     }
 }

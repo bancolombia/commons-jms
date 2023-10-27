@@ -1,26 +1,37 @@
 package co.com.bancolombia.commons.jms.internal.listener.selector;
 
-import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Message;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import jakarta.jms.*;
 import java.util.UUID;
 
 import static co.com.bancolombia.commons.jms.internal.listener.selector.MQContextMessageSelectorListenerSync.DEFAULT_TIMEOUT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -37,8 +48,12 @@ class MQMultiContextMessageSelectorListenerSyncTest {
     private TextMessage message;
     @Mock
     private MQHealthListener healthListener;
+    @Mock
+    private Destination destination;
+    @Mock
+    private SelectorModeProvider selectorModeProvider;
 
-    private MQMessageSelectorListenerSync listenerSync;
+    private MQMultiContextMessageSelectorListenerSync listenerSync;
 
     private final MQListenerConfig config = MQListenerConfig
             .builder()
@@ -56,8 +71,10 @@ class MQMultiContextMessageSelectorListenerSyncTest {
     void setup() {
         when(connectionFactory.createContext()).thenReturn(context);
         when(context.createQueue(anyString())).thenReturn(queue);
+        when(selectorModeProvider.get(any(), any()))
+                .thenReturn(SelectorModeProvider.defaultSelector().get(connectionFactory, context));
         listenerSync = new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
-                retryableConfig, SelectorModeProvider.defaultSelector());
+                retryableConfig, selectorModeProvider);
     }
 
     @Test
@@ -74,6 +91,7 @@ class MQMultiContextMessageSelectorListenerSyncTest {
         assertEquals(message, receivedMessage);
         verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
     }
+
     @Test
     void shouldGetMessage() {
         listenerSync = new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
@@ -129,6 +147,50 @@ class MQMultiContextMessageSelectorListenerSyncTest {
     }
 
     @Test
+    void shouldRetrySelectMessageById() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenThrow(new JMSRuntimeException("")).thenReturn(message);
+        // Act
+        Message receivedMessage = listenerSync.getMessage(messageID, DEFAULT_TIMEOUT, destination);
+        // Assert
+        assertEquals(message, receivedMessage);
+        verify(connectionFactory, times(1)).createContext();
+        verify(consumer, times(2)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    void shouldReconnectWhenErrorBroken() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT))
+                .thenThrow(new JMSRuntimeException("error", "code", new Exception("Error CONNECTION_BROKEN")))
+                .thenReturn(message);
+        // Act
+        Message receivedMessage = listenerSync.getMessage(messageID, DEFAULT_TIMEOUT, destination);
+        // Assert
+        assertEquals(message, receivedMessage);
+        verify(connectionFactory, times(2)).createContext();
+        verify(consumer, times(2)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    void shouldHandleErrorWhenRetryError() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT))
+                .thenThrow(new JMSRuntimeException("error"))
+                .thenThrow(new JMSRuntimeException("error"));
+        // Act
+        assertThrows(JMSRuntimeException.class, () -> listenerSync.getMessage(messageID, DEFAULT_TIMEOUT, destination));
+        // Assert
+        verify(consumer, times(2)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
     void shouldHandleTimeoutErrorWithCustomTimeout() {
         // Arrange
         String messageID = UUID.randomUUID().toString();
@@ -148,6 +210,16 @@ class MQMultiContextMessageSelectorListenerSyncTest {
         // Act
         // Assert
         assertThrows(ReceiveTimeoutException.class, () -> listenerSync.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT, queue));
+    }
+
+    @Test
+    void shouldNotDisconnect() throws JMSException {
+        // Arrange
+        MQContextMessageSelectorListenerSync listener = (MQContextMessageSelectorListenerSync) listenerSync.getRandom();
+        // Act
+        listener.disconnect();
+        // Assert
+        verify(consumer, never()).close();
     }
 
 }
