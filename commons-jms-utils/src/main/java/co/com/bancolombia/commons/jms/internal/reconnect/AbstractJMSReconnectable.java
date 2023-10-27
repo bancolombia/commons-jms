@@ -21,7 +21,7 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
     private final MQHealthListener healthListener;
     private final RetryableConfig retryableConfig;
     private final ExecutorService service = Executors.newSingleThreadExecutor();
-    private final AtomicLong lastSuccess = new AtomicLong();
+    protected final AtomicLong lastSuccess = new AtomicLong();
 
     @Getter
     private String process;
@@ -60,7 +60,9 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
         long handled = System.currentTimeMillis();
         service.submit(() -> {
             if (handled > lastSuccess.get()) {
-                reconnect();
+                this.reconnect();
+            } else {
+                log.warn("Reconnection ignored because already reconnected");
             }
         });
     }

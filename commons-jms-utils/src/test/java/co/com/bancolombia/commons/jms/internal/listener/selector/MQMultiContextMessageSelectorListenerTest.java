@@ -6,6 +6,14 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
+import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
+import jakarta.jms.Message;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.Destination;
-import jakarta.jms.JMSConsumer;
-import jakarta.jms.JMSContext;
-import jakarta.jms.Message;
-import jakarta.jms.Queue;
-import jakarta.jms.TextMessage;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 import static co.com.bancolombia.commons.jms.internal.listener.selector.MQContextMessageSelectorListenerSync.DEFAULT_TIMEOUT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,7 +67,8 @@ class MQMultiContextMessageSelectorListenerTest {
                 .build();
         MQMessageSelectorListenerSync listenerSync =
                 new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener, retryableConfig);
-        listener = new MQMultiContextMessageSelectorListener(listenerSync);
+        listener = new MQMultiContextMessageSelectorListener(listenerSync, Executors.newCachedThreadPool(),
+                new ReactiveReplyRouter<>());
     }
 
     @Test
@@ -111,6 +114,7 @@ class MQMultiContextMessageSelectorListenerTest {
                 .expectError(ReceiveTimeoutException.class)
                 .verify();
     }
+
     @Test
     void shouldGetMessageBySelector() {
         // Arrange

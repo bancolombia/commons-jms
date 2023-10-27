@@ -21,85 +21,85 @@ public class MQMultiContextMessageSelectorListener implements MQMessageSelectorL
 
     @Override
     public Mono<Message> getMessage(String correlationId) {
-        executorService.submit(() -> {
-            try {
-                Message message = listenerSync.getMessage(correlationId);
-                router.reply(correlationId, message);
-            } catch (Exception e) {
-                log.warn("Error getting message with correlationId: {}", correlationId, e);
-                router.error(correlationId, e);
-            }
-        });
-        return router.wait(correlationId);
+        return router.wait(correlationId)
+                .doOnSubscribe(s -> executorService.submit(() -> {
+                    try {
+                        Message message = listenerSync.getMessage(correlationId);
+                        router.reply(correlationId, message);
+                    } catch (Exception e) {
+                        log.warn("Error getting message with correlationId: {}", correlationId, e);
+                        router.error(correlationId, e);
+                    }
+                }));
     }
 
     @Override
     public Mono<Message> getMessage(String correlationId, long timeout) {
-        executorService.submit(() -> {
-            try {
-                Message message = listenerSync.getMessage(correlationId, timeout);
-                router.reply(correlationId, message);
-            } catch (Exception e) {
-                log.warn("Error getting message with correlationId: {}", correlationId, e);
-                router.error(correlationId, e);
-            }
-        });
-        return router.wait(correlationId, Duration.ofMillis(timeout));
+        return router.wait(correlationId, Duration.ofMillis(timeout))
+                .doOnSubscribe(s -> executorService.submit(() -> {
+                    try {
+                        Message message = listenerSync.getMessage(correlationId, timeout);
+                        router.reply(correlationId, message);
+                    } catch (Exception e) {
+                        log.warn("Error getting message with correlationId: {}", correlationId, e);
+                        router.error(correlationId, e);
+                    }
+                }));
     }
 
     @Override
     public Mono<Message> getMessage(String correlationId, long timeout, Destination destination) {
-        executorService.submit(() -> {
-            try {
-                Message message = listenerSync.getMessage(correlationId, timeout, destination);
-                router.reply(correlationId, message);
-            } catch (Exception e) {
-                log.warn("Error getting message with correlationId: {}", correlationId, e);
-                router.error(correlationId, e);
-            }
-        });
-        return router.wait(correlationId, Duration.ofMillis(timeout));
+        return router.wait(correlationId, Duration.ofMillis(timeout))
+                .doOnSubscribe(s -> executorService.submit(() -> {
+                    try {
+                        Message message = listenerSync.getMessage(correlationId, timeout, destination);
+                        router.reply(correlationId, message);
+                    } catch (Exception e) {
+                        log.warn("Error getting message with correlationId: {}", correlationId, e);
+                        router.error(correlationId, e);
+                    }
+                }));
     }
 
     @Override
     public Mono<Message> getMessageBySelector(String selector) {
-        executorService.submit(() -> {
-            try {
-                Message message = listenerSync.getMessageBySelector(selector);
-                router.reply(selector, message);
-            } catch (Exception e) {
-                log.warn("Error getting message with selector: {}", selector, e);
-                router.error(selector, e);
-            }
-        });
-        return router.wait(selector);
+        return router.wait(selector)
+                .doOnSubscribe(s -> executorService.submit(() -> {
+                    try {
+                        Message message = listenerSync.getMessageBySelector(selector);
+                        router.reply(selector, message);
+                    } catch (Exception e) {
+                        log.warn("Error getting message with selector: {}", selector, e);
+                        router.error(selector, e);
+                    }
+                }));
     }
 
     @Override
     public Mono<Message> getMessageBySelector(String selector, long timeout) {
-        executorService.submit(() -> {
-            try {
-                Message message = listenerSync.getMessageBySelector(selector, timeout);
-                router.reply(selector, message);
-            } catch (Exception e) {
-                log.warn("Error getting message with selector: {}", selector, e);
-                router.error(selector, e);
-            }
-        });
-        return router.wait(selector, Duration.ofMillis(timeout));
+        return router.wait(selector, Duration.ofMillis(timeout))
+                .doOnSubscribe(s -> executorService.submit(() -> {
+                    try {
+                        Message message = listenerSync.getMessageBySelector(selector, timeout);
+                        router.reply(selector, message);
+                    } catch (Exception e) {
+                        log.warn("Error getting message with selector: {}", selector, e);
+                        router.error(selector, e);
+                    }
+                }));
     }
 
     @Override
     public Mono<Message> getMessageBySelector(String selector, long timeout, Destination destination) {
-        executorService.submit(() -> {
-            try {
-                Message message = listenerSync.getMessageBySelector(selector, timeout, destination);
-                router.reply(selector, message);
-            } catch (Exception e) {
-                log.warn("Error getting message with selector: {}", selector, e);
-                router.error(selector, e);
-            }
-        });
-        return router.wait(selector, Duration.ofMillis(timeout));
+        return router.wait(selector, Duration.ofMillis(timeout))
+                .doOnSubscribe(s -> executorService.submit(() -> {
+                    try {
+                        Message message = listenerSync.getMessageBySelector(selector, timeout, destination);
+                        router.reply(selector, message);
+                    } catch (Exception e) {
+                        log.warn("Error getting message with selector: {}", selector, e);
+                        router.error(selector, e);
+                    }
+                }));
     }
 }

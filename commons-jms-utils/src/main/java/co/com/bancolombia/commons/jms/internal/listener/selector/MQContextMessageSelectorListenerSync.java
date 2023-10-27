@@ -32,20 +32,23 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
 
     @Override
     protected void disconnect() throws JMSException {
-        if (context != null) {
-            log.warn("STOP: status {}", context.getMetaData());
-            context.stop();
-            context.close();
-        }
     }
 
     @Override
     protected MQContextMessageSelectorListenerSync connect() {
-        log.info("Starting listener {}", getProcess());
-        context = connectionFactory.createContext();
-        context.setExceptionListener(this);
-        destination = MQQueueUtils.setupFixedQueue(context, config);
-        log.info("Listener {} started successfully", getProcess());
+        long handled = System.currentTimeMillis();
+        synchronized ("connectSelectorListener") {
+            if (handled > lastSuccess.get()) {
+                log.info("Starting listener {}", getProcess());
+                context = connectionFactory.createContext();
+                context.setExceptionListener(this);
+                destination = MQQueueUtils.setupFixedQueue(context, config);
+                log.info("Listener {} started successfully", getProcess());
+                lastSuccess.set(System.currentTimeMillis());
+            } else {
+                log.warn("Reconnection ignored because already connected");
+            }
+        }
         return this;
     }
 
@@ -73,8 +76,12 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     public Message getMessageBySelector(String selector, long timeout, Destination destination) {
+        return getMessageBySelector(selector, timeout, destination, true);
+    }
+
+    public Message getMessageBySelector(String selector, long timeout, Destination destination, boolean retry) {
         try (JMSConsumer consumer = context.createConsumer(destination, selector)) {
-            log.info("Waiting");
+            log.info("Waiting message with selector {}", selector);
             Message message = consumer.receive(timeout);
             if (message == null) {
                 throw new ReceiveTimeoutException("Message not received in " + timeout);
@@ -83,9 +90,15 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
         } catch (JMSRuntimeException e) {
             // Connection is broken
             if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().contains("CONNECTION_BROKEN")) {
-                onException(e); // Handle for reconnection
+                connect();
             }
-            throw e;
+            if (retry) {
+                log.warn("Retrying because: {}", e.getMessage());
+                return getMessageBySelector(selector, timeout, destination, false);
+            } else {
+                log.warn("Retry has failed with {}, this will rethrow", e.getMessage());
+                throw e;
+            }
         }
     }
 
