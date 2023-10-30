@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: "mq-reactive"
+logging:
+  level:
+    root: WARN
 commons:
   jms:
     output-concurrency: 2

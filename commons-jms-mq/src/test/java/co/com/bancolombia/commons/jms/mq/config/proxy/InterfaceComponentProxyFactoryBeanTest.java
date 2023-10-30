@@ -9,6 +9,8 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
+import com.ibm.msg.client.jakarta.wmq.compat.jms.internal.JMSC;
+import jakarta.jms.JMSContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,9 +50,7 @@ class InterfaceComponentProxyFactoryBeanTest {
     @Mock
     private MQHealthListener healthListener;
     @Mock
-    private Connection connection;
-    @Mock
-    private Session session;
+    private JMSContext context;
     @Mock
     private TemporaryQueue queue;
     @Mock
@@ -112,9 +112,8 @@ class InterfaceComponentProxyFactoryBeanTest {
                     return null;
                 });
         // Listener mocks
-        when(connectionFactory.createConnection()).thenReturn(connection);
-        when(connection.createSession()).thenReturn(session);
-        when(session.createTemporaryQueue()).thenReturn(queue);
+        when(connectionFactory.createContext()).thenReturn(context);
+        when(context.createTemporaryQueue()).thenReturn(queue);
         // Sender Mock
         when(sender.send(any(Destination.class), any(MQMessageCreator.class))).thenReturn(Mono.empty());
         // Act

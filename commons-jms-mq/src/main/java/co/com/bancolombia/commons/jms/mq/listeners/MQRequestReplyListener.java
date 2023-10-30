@@ -6,12 +6,13 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQRequestReply;
 import co.com.bancolombia.commons.jms.exceptions.RelatedMessageNotFoundException;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
+import jakarta.jms.Destination;
+import jakarta.jms.Message;
+import jakarta.jms.Queue;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
-import jakarta.jms.Destination;
-import jakarta.jms.Message;
 import java.time.Duration;
 
 @Log4j2
@@ -60,7 +61,11 @@ public final class MQRequestReplyListener extends MQMessageListenerRetries imple
     private MQMessageCreator defaultCreator(String message) {
         return ctx -> {
             Message jmsMessage = ctx.createTextMessage(message);
-            jmsMessage.setJMSReplyTo(container.get(replyQueue));
+            Queue queue = container.get(replyQueue);
+            jmsMessage.setJMSReplyTo(queue);
+            if (log.isInfoEnabled() && queue != null) {
+                log.info("Setting queue for reply to: {}", queue.getQueueName());
+            }
             return jmsMessage;
         };
     }

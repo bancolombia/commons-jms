@@ -25,12 +25,14 @@ public class MQAutoconfiguration {
     @ConditionalOnMissingBean(MQQueueCustomizer.class)
     public MQQueueCustomizer defaultMQQueueCustomizer() {
         return queue -> {
-            MQQueue customized = (MQQueue) queue;
-            customized.setProperty(WMQ_TARGET_CLIENT, "1");
-            customized.setProperty(WMQ_MQMD_READ_ENABLED, "true");
-            customized.setProperty(WMQ_MQMD_WRITE_ENABLED, "true");
-            customized.setPutAsyncAllowed(WMQ_PUT_ASYNC_ALLOWED_ENABLED);
-            customized.setReadAheadAllowed(WMQ_READ_AHEAD_ALLOWED_ENABLED);
+            if (queue instanceof MQQueue) {
+                MQQueue customized = (MQQueue) queue;
+                customized.setProperty(WMQ_TARGET_CLIENT, "1");
+                customized.setProperty(WMQ_MQMD_READ_ENABLED, "true");
+                customized.setProperty(WMQ_MQMD_WRITE_ENABLED, "true");
+                customized.setPutAsyncAllowed(WMQ_PUT_ASYNC_ALLOWED_ENABLED);
+                customized.setReadAheadAllowed(WMQ_READ_AHEAD_ALLOWED_ENABLED);
+            }
         };
     }
 

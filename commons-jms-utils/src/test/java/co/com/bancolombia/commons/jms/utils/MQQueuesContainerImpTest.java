@@ -45,4 +45,16 @@ class MQQueuesContainerImpTest {
         // Assert
         assertEquals(queue, temporaryQueue);
     }
+
+    @Test
+    void shouldSaveAndGetWhenGroup() {
+        // Arrange
+        MQQueuesContainer container = new MQQueuesContainerImp();
+        String alias = "key";
+        // Act
+        container.registerToQueueGroup(alias, queue);
+        Queue temporaryQueue = container.get(alias);
+        // Assert
+        assertEquals(queue, temporaryQueue);
+    }
 }
