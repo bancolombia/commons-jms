@@ -54,6 +54,13 @@ public class MQContextListener extends AbstractJMSReconnectable<MQContextListene
                 // ignore because disconnection
             }
         }
+        if (tempQueue != null) {
+            try {
+                tempQueue.delete();
+            } catch (Exception ignored) {
+                // ignore because disconnection
+            }
+        }
         if (context != null) {
             try {
                 context.close();
