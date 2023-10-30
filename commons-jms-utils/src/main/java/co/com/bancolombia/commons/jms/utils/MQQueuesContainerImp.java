@@ -19,7 +19,7 @@ public class MQQueuesContainerImp implements MQQueuesContainer {
 
     @Override
     public void registerToQueueGroup(String groupId, Queue queue) {
-        tempQueueGroups.computeIfAbsent(groupId, _key -> Collections.synchronizedList(new ArrayList<>()))
+        tempQueueGroups.computeIfAbsent(groupId, ignored -> Collections.synchronizedList(new ArrayList<>()))
                 .add(queue);
     }
 

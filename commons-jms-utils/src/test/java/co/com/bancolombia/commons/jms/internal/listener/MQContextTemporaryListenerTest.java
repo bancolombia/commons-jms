@@ -40,7 +40,7 @@ class MQContextTemporaryListenerTest {
     @Mock
     private JMSConsumer consumer;
 
-    private MQContextTemporaryListener contextTemporaryListener;
+    private MQContextListener contextTemporaryListener;
 
     @BeforeEach
     void setup() throws JMSException {
@@ -48,8 +48,9 @@ class MQContextTemporaryListenerTest {
         when(context.createTemporaryQueue()).thenReturn(tmpQueue);
         when(context.createConsumer(any())).thenReturn(consumer);
         when(tmpQueue.getQueueName()).thenReturn("AMQ.QUEUE");
-        contextTemporaryListener = MQContextTemporaryListener.builder()
+        contextTemporaryListener = MQContextListener.builder()
                 .listener(listener)
+                .temporary(true)
                 .connectionFactory(connectionFactory)
                 .container(new MQQueuesContainerImp())
                 .healthListener(healthListener)
@@ -75,18 +76,5 @@ class MQContextTemporaryListenerTest {
         // Assert
         verify(context, times(1)).close();
     }
-//
-//
-//    @Test
-//    void shouldHandleError() throws JMSException {
-//        // Arrange
-//        when(session.createConsumer(destination)).thenThrow(new JMSException("Any Error"));
-//        // Assert
-//        assertThrows(JMSRuntimeException.class, () -> {
-//            // Act
-//            connectionListener.run();
-//        });
-//    }
-
 
 }
