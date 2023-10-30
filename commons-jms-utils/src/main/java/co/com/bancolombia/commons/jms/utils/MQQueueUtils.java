@@ -1,17 +1,15 @@
 package co.com.bancolombia.commons.jms.utils;
 
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
-import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.Queue;
-import jakarta.jms.Session;
 import jakarta.jms.TemporaryQueue;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MQQueueUtils {
 
@@ -24,22 +22,18 @@ public class MQQueueUtils {
         return queue;
     }
 
-    public static TemporaryQueue setupTemporaryQueue(Session session, MQListenerConfig config) {
-        try {
-            TemporaryQueue queue = session.createTemporaryQueue();
-            customize(queue, config);
-            return queue;
-        } catch (JMSException ex) {
-            throw new JMSRuntimeException(ex.getMessage(), ex.getErrorCode(), ex);
-        }
+    public static TemporaryQueue setupTemporaryQueue(JMSContext context, MQListenerConfig config) {
+        TemporaryQueue queue = context.createTemporaryQueue();
+        customize(queue, config);
+        return queue;
     }
 
     private static <T extends Queue> void customize(T queue, MQListenerConfig config) {
         if (config.getCustomizer() != null) {
             try {
                 config.getCustomizer().customize(queue);
-            } catch (JMSException ex) {
-                throw new JMSRuntimeException(ex.getMessage(), ex.getErrorCode(), ex);
+            } catch (Exception ex) {
+                log.warn("Error customizing queue", ex);
             }
         }
     }

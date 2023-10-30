@@ -5,6 +5,7 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
+import jakarta.jms.JMSContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,6 +18,7 @@ import jakarta.jms.MessageListener;
 import jakarta.jms.Session;
 import jakarta.jms.TemporaryQueue;
 
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,9 +34,7 @@ class MQMessageListenerUtilsTest {
     @Mock
     private MQBrokerUtils utils;
     @Mock
-    private Connection connection;
-    @Mock
-    private Session session;
+    private JMSContext context;
     @Mock
     private TemporaryQueue queue;
     @Mock
@@ -70,12 +70,11 @@ class MQMessageListenerUtilsTest {
                 .initialRetryIntervalMillis(1000)
                 .multiplier(1.5)
                 .build();
-        when(connectionFactory.createConnection()).thenReturn(connection);
-        when(connection.createSession()).thenReturn(session);
-        when(session.createTemporaryQueue()).thenReturn(queue);
+        when(connectionFactory.createContext()).thenReturn(context);
+        when(context.createTemporaryQueue()).thenReturn(queue);
         // Act
         MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config, healthListener, retryableConfig);
         // Assert
-        verify(connectionFactory, times(1)).createConnection();
+        verify(connectionFactory, atLeastOnce()).createContext();
     }
 }

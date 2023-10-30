@@ -61,7 +61,7 @@ class AbstractJMSReconnectableTest {
         }
 
         @Override
-        protected void disconnect() throws JMSException {
+        protected void disconnect() {
 
         }
 

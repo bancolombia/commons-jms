@@ -5,6 +5,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
+import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
@@ -33,21 +34,27 @@ public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSende
     }
 
     @Override
-    protected void disconnect() throws JMSException {
-        if (context != null) {
-            context.close();
-        }
+    protected void disconnect() {
+        // do not disconnect to avoid another thread exceptions
     }
 
     @Override
     protected MQContextSenderSync connect() {
-        log.info("Starting sender {}", getProcess());
-        this.context = connectionFactory.createContext();
-        this.context.setExceptionListener(this);
-        this.producer = context.createProducer();
-        customizer.customize(producer);
-        this.defaultDestination = provider.create(context);
-        log.info("Sender {} started successfully", getProcess());
+        long handled = System.currentTimeMillis();
+        synchronized (this) {
+            if (handled > lastSuccess.get()) {
+                log.info("Starting sender {}", getProcess());
+                this.context = connectionFactory.createContext();
+                this.context.setExceptionListener(this);
+                this.producer = context.createProducer();
+                customizer.customize(producer);
+                this.defaultDestination = provider.create(context);
+                log.info("Sender {} started successfully", getProcess());
+                lastSuccess.set(System.currentTimeMillis());
+            } else {
+                log.warn("Reconnection ignored because already connected");
+            }
+        }
         return this;
     }
 
@@ -58,15 +65,32 @@ public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSende
 
     @Override
     public String send(Destination destination, MQMessageCreator messageCreator) {
+        return send(destination, messageCreator, true);
+    }
+
+    private String send(Destination destination, MQMessageCreator messageCreator, boolean retry) {
         try {
             Message message = messageCreator.create(context);
             producer.send(destination, message);
             return message.getJMSMessageID();
         } catch (JMSException e) {
-            throw new JMSRuntimeException(e.getMessage(), e.getErrorCode(), e);
+            if (retry) {
+                return send(destination, messageCreator, false);
+            } else {
+                log.warn("JMSException in MQContextSenderSync", e);
+                throw new JMSRuntimeException(e.getMessage(), e.getErrorCode(), e);
+            }
         } catch (JMSRuntimeException ex) {
-            if ("JMSCC0008".equals(ex.getErrorCode())) { // Connection is closed
-                onException(ex); // Handle for reconnection
+            log.warn("JMSRuntimeException in MQContextSenderSync", ex);
+            if ("JMSCC0008".equals(ex.getErrorCode()) || (ex.getCause() != null
+                    && ex.getCause().getMessage().contains("CONNECTION_BROKEN"))) { // Connection is closed
+                if (retry) {
+                    log.warn("Retrying send");
+                    connect();
+                    return send(destination, messageCreator, false);
+                } else {
+                    onException(ex); // Handle for reconnection
+                }
             }
             throw ex;
         }

@@ -33,7 +33,7 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     @Override
-    protected void disconnect() throws JMSException {
+    protected void disconnect() {
         // do not disconnect to avoid another thread exceptions
     }
 

@@ -28,7 +28,7 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
 
     protected abstract T connect();
 
-    protected abstract void disconnect() throws JMSException;
+    protected abstract void disconnect();
 
     protected abstract String name();
 
@@ -37,16 +37,24 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
     public T call() {
         this.process = name();
         healthListener.onInit(process);
+        return start();
+    }
+
+    protected T start() {
+        try {
+            this.disconnect();
+        } catch (Exception e) {
+            log.info("Error disconnecting but ignore it because is in reconnection process", e);
+        }
         try {
             T result = connect();
             markAsStarted();
             return result;
-        } catch (JMSRuntimeException e) {
-            log.warn("JMSRuntimeException in {}", process, e);
+        } catch (Exception e) {
+            log.warn("Exception in {}", process, e);
             throw e;
         }
     }
-
 
     public void onException(JMSRuntimeException exception) {
         onException(new JMSException(exception.getMessage(), exception.getErrorCode(),
@@ -71,15 +79,7 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
         Thread.currentThread().setName("reconnection-" + process);
         try {
             log.warn("Starting reconnection for {}", process);
-            RetryableTask.runWithRetries(process, retryableConfig, () -> {
-                try {
-                    this.disconnect();
-                } catch (Exception e) {
-                    log.info("Error disconnecting but ignore it because is in reconnection process", e);
-                }
-                this.connect();
-            });
-            markAsStarted();
+            RetryableTask.runWithRetries(process, retryableConfig, this::start);
             log.warn("Reconnection successful for {}", process);
         } catch (JMSRuntimeException ex) {
             log.warn("Reconnection error for {}", process, ex);

@@ -3,13 +3,12 @@ package co.com.bancolombia.commons.jms.internal.listener;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
-import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.jms.JMSRuntimeException;
-import jakarta.jms.MessageConsumer;
 import jakarta.jms.MessageListener;
-import jakarta.jms.Session;
 import jakarta.jms.TemporaryQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,21 +16,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.concurrent.Executors;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MQMultiConnectionListenerTest {
-    @Mock
-    private Session session;
+class MQContextTemporaryListenerTest {
     @Mock
     private MessageListener listener;
     @Mock
-    private Connection connection;
+    private JMSContext context;
 
     @Mock
     private ConnectionFactory connectionFactory;
@@ -41,22 +37,23 @@ class MQMultiConnectionListenerTest {
 
     @Mock
     private TemporaryQueue tmpQueue;
+    @Mock
+    private JMSConsumer consumer;
 
-    private MQMultiConnectionListener connectionListener;
+    private MQContextTemporaryListener contextTemporaryListener;
 
     @BeforeEach
     void setup() throws JMSException {
-        when(connectionFactory.createConnection()).thenReturn(connection);
-        when(connection.createSession()).thenReturn(session);
-        when(session.createTemporaryQueue()).thenReturn(tmpQueue);
-        connectionListener = MQMultiConnectionListener.builder()
+        when(connectionFactory.createContext()).thenReturn(context);
+        when(context.createTemporaryQueue()).thenReturn(tmpQueue);
+        when(context.createConsumer(any())).thenReturn(consumer);
+        when(tmpQueue.getQueueName()).thenReturn("AMQ.QUEUE");
+        contextTemporaryListener = MQContextTemporaryListener.builder()
                 .listener(listener)
-                .connection(connection)
                 .connectionFactory(connectionFactory)
                 .container(new MQQueuesContainerImp())
                 .healthListener(healthListener)
                 .config(MQListenerConfig.builder().build())
-                .service(Executors.newCachedThreadPool())
                 .build();
     }
 
@@ -64,20 +61,32 @@ class MQMultiConnectionListenerTest {
     void shouldStartListener() throws JMSException {
         // Arrange
         // Act
-        connectionListener.call();
+        contextTemporaryListener.call();
         // Assert
-        verify(connection, times(1)).start();
+        verify(consumer, times(1)).setMessageListener(listener);
     }
 
     @Test
     void shouldDisconnect() throws JMSException {
         // Arrange
-        connectionListener.call();
+        contextTemporaryListener.call();
         // Act
-        connectionListener.disconnect();
+        contextTemporaryListener.disconnect();
         // Assert
-        verify(connection, times(1)).close();
+        verify(context, times(1)).close();
     }
+//
+//
+//    @Test
+//    void shouldHandleError() throws JMSException {
+//        // Arrange
+//        when(session.createConsumer(destination)).thenThrow(new JMSException("Any Error"));
+//        // Assert
+//        assertThrows(JMSRuntimeException.class, () -> {
+//            // Act
+//            connectionListener.run();
+//        });
+//    }
 
 
 }
