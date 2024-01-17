@@ -19,7 +19,7 @@ Please note that this project is released with a [Contributor Code of Conduct][c
    ```
 0. Check and correct new possible issues with sonar
    ```shell
-   gradlew sonarqube
+   gradlew sonar
    ```
 0. Check the global coverage
    ```shell
