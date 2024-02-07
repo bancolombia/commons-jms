@@ -42,9 +42,11 @@ class MQContextListenerTest {
     @BeforeEach
     void setup() {
         contextListener = MQContextListener.builder()
-                .config(MQListenerConfig.builder().queue("QUEUE.NAME").build())
-                .listener(listener)
-                .connectionFactory(connectionFactory)
+                .listenerConfig(MQListenerConfig.builder()
+                        .messageListener(listener)
+                        .connectionFactory(connectionFactory)
+                        .listeningQueue("QUEUE.NAME")
+                        .build())
                 .container(new MQQueuesContainerImp())
                 .healthListener(healthListener)
                 .utils(utils)

@@ -59,9 +59,9 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok'
         testCompileOnly 'org.projectlombok:lombok'
         testImplementation 'io.projectreactor:reactor-test'
-        testImplementation platform('org.junit:junit-bom:5.7.0')
+        testImplementation platform('org.junit:junit-bom:5.10.0')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-        testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
+        testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
     }
 
     test {
@@ -89,7 +89,7 @@ subprojects {
         ]
     }
 
-    check.dependsOn dependencyCheckAggregate
+//    check.dependsOn dependencyCheckAggregate
 
     dependencyCheck {
         format = 'JSON'

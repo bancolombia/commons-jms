@@ -2,20 +2,29 @@ package co.com.bancolombia.commons.jms.internal.sender;
 
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.models.MQSenderConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.JMSProducer;
+import jakarta.jms.JMSRuntimeException;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import jakarta.jms.*;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -48,8 +57,15 @@ class MQMultiContextSenderSyncTest {
                 .initialRetryIntervalMillis(1000)
                 .multiplier(1.5)
                 .build();
-        senderSync = new MQMultiContextSenderSync(connectionFactory, 2,
-                ctx -> ctx.createQueue("QUEUE.NAME"), customizer, healthListener, retryableConfig);
+        MQSenderConfig config = MQSenderConfig.builder()
+                .producerCustomizer(customizer)
+                .healthListener(healthListener)
+                .retryableConfig(retryableConfig)
+                .destinationProvider(ctx -> ctx.createQueue("QUEUE.NAME"))
+                .connectionFactory(connectionFactory)
+                .concurrency(2)
+                .build();
+        senderSync = new MQMultiContextSenderSync(config);
     }
 
     @Test

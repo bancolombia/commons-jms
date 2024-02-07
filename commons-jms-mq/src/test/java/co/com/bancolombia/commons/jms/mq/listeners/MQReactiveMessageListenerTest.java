@@ -1,5 +1,7 @@
 package co.com.bancolombia.commons.jms.mq.listeners;
 
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,10 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.handler.invocation.reactive.InvocableHandlerMethod;
 import reactor.core.publisher.Mono;
 
-import jakarta.jms.JMSException;
-import jakarta.jms.Message;
+import java.lang.reflect.Method;
 
 import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMSX_DELIVERY_COUNT;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
@@ -22,6 +24,10 @@ import static org.mockito.Mockito.when;
 class MQReactiveMessageListenerTest {
     @Mock
     private InvocableHandlerMethod handlerMethod;
+//    @Mock
+//    private Object bean;
+//    @Mock
+//    private Method method;
     @Mock
     private Message message;
     private MQReactiveMessageListener listener;
@@ -40,6 +46,15 @@ class MQReactiveMessageListenerTest {
         // Assert
         verify(handlerMethod, times(1)).invoke(any(), any(Message.class));
     }
+
+//    @Test
+//    void shouldCreateFromBean() {
+//        // Arrange
+//        // Act
+//        MQReactiveMessageListener listener1 = MQReactiveMessageListener.fromBeanAndMethod(bean, method, 1);
+//        // Assert
+//        assertNotNull(listener1);
+//    }
 
     @Test
     void shouldThrowError() throws JMSException {

@@ -5,23 +5,18 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
-import jakarta.jms.JMSContext;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import jakarta.jms.Connection;
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.JMSException;
-import jakarta.jms.MessageListener;
-import jakarta.jms.Session;
-import jakarta.jms.TemporaryQueue;
-
+import static co.com.bancolombia.commons.jms.internal.models.MQListenerConfig.QueueType.TEMPORARY;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MQMessageListenerUtilsTest {
@@ -34,18 +29,16 @@ class MQMessageListenerUtilsTest {
     @Mock
     private MQBrokerUtils utils;
     @Mock
-    private JMSContext context;
-    @Mock
-    private TemporaryQueue queue;
-    @Mock
     private MQHealthListener healthListener;
 
     @Test
     void shouldCreateFixedQueueListeners() {
         // Arrange
         MQListenerConfig config = MQListenerConfig.builder()
-                .queue("QUEUE.NAME")
+                .listeningQueue("QUEUE.NAME")
                 .concurrency(5)
+                .messageListener(listener)
+                .connectionFactory(connectionFactory)
                 .build();
         RetryableConfig retryableConfig = RetryableConfig
                 .builder()
@@ -54,27 +47,27 @@ class MQMessageListenerUtilsTest {
                 .multiplier(1.5)
                 .build();
         // Act
-        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config, healthListener, retryableConfig);
+        MQMessageListenerUtils.createListeners(config, container, utils, healthListener, retryableConfig);
     }
 
     @Test
     void shouldCreateTemporaryQueueListeners() throws JMSException {
         // Arrange
-        MQListenerConfig config = MQListenerConfig.builder()
-                .tempQueueAlias("alias")
+        MQListenerConfig config = spy(MQListenerConfig.builder()
+                .listeningQueue("alias")
+                .connectionFactory(connectionFactory)
+                .queueType(TEMPORARY)
                 .concurrency(5)
-                .build();
+                .build());
         RetryableConfig retryableConfig = RetryableConfig
                 .builder()
                 .maxRetries(10)
                 .initialRetryIntervalMillis(1000)
                 .multiplier(1.5)
                 .build();
-        when(connectionFactory.createContext()).thenReturn(context);
-        when(context.createTemporaryQueue()).thenReturn(queue);
         // Act
-        MQMessageListenerUtils.createListeners(connectionFactory, listener, container, utils, config, healthListener, retryableConfig);
+        MQMessageListenerUtils.createListeners(config, container, utils, healthListener, retryableConfig);
         // Assert
-        verify(connectionFactory, atLeastOnce()).createContext();
+        verify(config, atLeastOnce()).getConcurrency();
     }
 }

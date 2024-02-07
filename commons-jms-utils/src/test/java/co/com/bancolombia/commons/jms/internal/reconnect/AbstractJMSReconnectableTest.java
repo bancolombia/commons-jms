@@ -1,14 +1,13 @@
 package co.com.bancolombia.commons.jms.internal.reconnect;
 
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import jakarta.jms.JMSException;
 import lombok.experimental.SuperBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import jakarta.jms.JMSException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.atLeastOnce;

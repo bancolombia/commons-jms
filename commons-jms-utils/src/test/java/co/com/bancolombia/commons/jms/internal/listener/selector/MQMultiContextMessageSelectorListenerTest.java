@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
@@ -49,6 +50,8 @@ class MQMultiContextMessageSelectorListenerTest {
     private TextMessage message;
     @Mock
     private MQHealthListener healthListener;
+    @Mock
+    private MQQueuesContainer container;
 
     private MQMessageSelectorListener listener;
 
@@ -58,7 +61,8 @@ class MQMultiContextMessageSelectorListenerTest {
         when(context.createQueue(anyString())).thenReturn(queue);
         MQListenerConfig config = MQListenerConfig.builder()
                 .concurrency(1)
-                .queue("QUEUE")
+                .connectionFactory(connectionFactory)
+                .listeningQueue("QUEUE")
                 .build();
         RetryableConfig retryableConfig = RetryableConfig
                 .builder()
@@ -67,8 +71,8 @@ class MQMultiContextMessageSelectorListenerTest {
                 .multiplier(1.5)
                 .build();
         MQMessageSelectorListenerSync listenerSync =
-                new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
-                        retryableConfig, SelectorModeProvider.defaultSelector());
+                new MQMultiContextMessageSelectorListenerSync(config, healthListener,
+                        retryableConfig, SelectorModeProvider.defaultSelector(), container);
         listener = new MQMultiContextMessageSelectorListener(listenerSync, Executors.newCachedThreadPool(),
                 new ReactiveReplyRouter<>());
     }

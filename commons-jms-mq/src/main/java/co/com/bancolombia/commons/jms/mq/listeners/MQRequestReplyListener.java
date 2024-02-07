@@ -20,20 +20,20 @@ public final class MQRequestReplyListener extends MQMessageListenerRetries imple
     public static final int SECONDS_TIMEOUT = 30;
     private final MQMessageSender sender;
     private final ReactiveReplyRouter<Message> router;
-    private final MQQueuesContainer container;
+    private final MQQueuesContainer queuesContainer;
     private final Destination requestQueue;
     private final String replyQueue;
 
     public MQRequestReplyListener(MQMessageSender sender,
                                   ReactiveReplyRouter<Message> router,
-                                  MQQueuesContainer container,
+                                  MQQueuesContainer queuesContainer,
                                   Destination requestQueue,
                                   String replyQueue,
                                   int maxRetries) {
         super(maxRetries);
         this.sender = sender;
         this.router = router;
-        this.container = container;
+        this.queuesContainer = queuesContainer;
         this.requestQueue = requestQueue;
         this.replyQueue = replyQueue;
     }
@@ -61,7 +61,7 @@ public final class MQRequestReplyListener extends MQMessageListenerRetries imple
     private MQMessageCreator defaultCreator(String message) {
         return ctx -> {
             Message jmsMessage = ctx.createTextMessage(message);
-            Queue queue = container.get(replyQueue);
+            Queue queue = queuesContainer.get(replyQueue);
             jmsMessage.setJMSReplyTo(queue);
             if (log.isInfoEnabled() && queue != null) {
                 log.info("Setting queue for reply to: {}", queue.getQueueName());

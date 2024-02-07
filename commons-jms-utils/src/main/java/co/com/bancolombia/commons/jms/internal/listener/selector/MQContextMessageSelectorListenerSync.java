@@ -1,18 +1,18 @@
 package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextSharedStrategy;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorStrategy;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
-import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
 import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.Message;
+import jakarta.jms.Queue;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
 
@@ -20,9 +20,9 @@ import lombok.extern.log4j.Log4j2;
 @SuperBuilder
 public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectable<MQContextMessageSelectorListenerSync> implements MQMessageSelectorListenerSync {
     public static final long DEFAULT_TIMEOUT = 5000L;
-    private final ConnectionFactory connectionFactory;
     private final MQListenerConfig config;
     private final SelectorModeProvider selectorModeProvider;
+    private final MQQueuesContainer container;
     private SelectorStrategy strategy;
     private Destination destination;
 
@@ -43,10 +43,11 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
         synchronized (this) {
             if (handled > lastSuccess.get()) {
                 log.info("Starting listener {}", getProcess());
-                JMSContext context = connectionFactory.createContext();
+                JMSContext context = config.getConnectionFactory().createContext();
                 context.setExceptionListener(this);
                 destination = MQQueueUtils.setupFixedQueue(context, config);
-                strategy = selectorModeProvider.get(connectionFactory, context);
+                container.registerQueue(config.getListeningQueue(), (Queue) destination);
+                strategy = selectorModeProvider.get(config.getConnectionFactory(), context);
                 log.info("Listener {} started successfully", getProcess());
                 lastSuccess.set(System.currentTimeMillis());
             } else {

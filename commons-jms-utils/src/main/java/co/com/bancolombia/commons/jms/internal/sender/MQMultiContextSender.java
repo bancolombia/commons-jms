@@ -3,11 +3,10 @@ package co.com.bancolombia.commons.jms.internal.sender;
 import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
+import jakarta.jms.Destination;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
-import jakarta.jms.Destination;
 
 @AllArgsConstructor
 public class MQMultiContextSender implements MQMessageSender {

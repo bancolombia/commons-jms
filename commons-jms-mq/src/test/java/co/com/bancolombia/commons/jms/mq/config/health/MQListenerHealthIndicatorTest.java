@@ -1,12 +1,11 @@
 package co.com.bancolombia.commons.jms.mq.config.health;
 
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import jakarta.jms.JMSException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
-
-import jakarta.jms.JMSException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

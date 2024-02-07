@@ -38,8 +38,8 @@ class MQQueueUtilsTest {
     @BeforeEach
     void setup() {
         config = MQListenerConfig.builder()
-                .queue("QUEUE.NAME")
-                .customizer(customizer)
+                .listeningQueue("QUEUE.NAME")
+                .queueCustomizer(customizer)
                 .build();
     }
 
@@ -49,8 +49,8 @@ class MQQueueUtilsTest {
         when(context.createQueue(anyString())).thenReturn(queue);
         // Act
         Destination destination = MQQueueUtils.setupFixedQueue(context, MQListenerConfig.builder()
-                .queue("QUEUE.NAME")
-                .customizer(null)
+                .listeningQueue("QUEUE.NAME")
+                .queueCustomizer(null)
                 .build());
         // Assert
         verify(context, times(1)).createQueue(anyString());
@@ -63,8 +63,8 @@ class MQQueueUtilsTest {
         when(context.createQueue(anyString())).thenReturn(queue);
         // Act
         Destination destination = MQQueueUtils.setupFixedQueue(context, MQListenerConfig.builder()
-                .queue("QUEUE.NAME")
-                .customizer(Queue::getQueueName)
+                .listeningQueue("QUEUE.NAME")
+                .queueCustomizer(Queue::getQueueName)
                 .build());
         // Assert
         verify(context, times(1)).createQueue(anyString());

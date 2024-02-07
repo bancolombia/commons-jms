@@ -1,5 +1,6 @@
 package co.com.bancolombia.commons.jms.internal.listener.selector;
 
+import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
@@ -52,14 +53,12 @@ class MQMultiContextMessageSelectorListenerSyncTest {
     private Destination destination;
     @Mock
     private SelectorModeProvider selectorModeProvider;
+    @Mock
+    private MQQueuesContainer container;
 
     private MQMultiContextMessageSelectorListenerSync listenerSync;
 
-    private final MQListenerConfig config = MQListenerConfig
-            .builder()
-            .concurrency(1)
-            .queue("QUEUE")
-            .build();
+    private MQListenerConfig config;
     private final RetryableConfig retryableConfig = RetryableConfig
             .builder()
             .maxRetries(10)
@@ -69,19 +68,25 @@ class MQMultiContextMessageSelectorListenerSyncTest {
 
     @BeforeEach
     void setup() {
-        when(connectionFactory.createContext()).thenReturn(context);
-        when(context.createQueue(anyString())).thenReturn(queue);
         when(selectorModeProvider.get(any(), any()))
                 .thenReturn(SelectorModeProvider.defaultSelector().get(connectionFactory, context));
-        listenerSync = new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
-                retryableConfig, selectorModeProvider);
+        when(connectionFactory.createContext()).thenReturn(context);
+        when(context.createQueue(anyString())).thenReturn(queue);
+        config = MQListenerConfig
+                .builder()
+                .concurrency(1)
+                .connectionFactory(connectionFactory)
+                .listeningQueue("QUEUE")
+                .build();
+        listenerSync = new MQMultiContextMessageSelectorListenerSync(config, healthListener,
+                retryableConfig, selectorModeProvider, container);
     }
 
     @Test
     void shouldGetMessageWithContextPerMessage() {
-        listenerSync = new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
-                retryableConfig, (factory, ignored) -> new ContextPerMessageStrategy(factory));
         // Arrange
+        listenerSync = new MQMultiContextMessageSelectorListenerSync(config, healthListener,
+                retryableConfig, (factory, ignored) -> new ContextPerMessageStrategy(factory), container);
         String messageID = UUID.randomUUID().toString();
         when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
         when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
@@ -93,10 +98,25 @@ class MQMultiContextMessageSelectorListenerSyncTest {
     }
 
     @Test
-    void shouldGetMessage() {
-        listenerSync = new MQMultiContextMessageSelectorListenerSync(connectionFactory, config, healthListener,
-                retryableConfig, SelectorModeProvider.defaultSelector());
+    void shouldGetMessageWithContextPerMessageWithErrorTimeout() {
         // Arrange
+        listenerSync = new MQMultiContextMessageSelectorListenerSync(config, healthListener,
+                retryableConfig, (factory, ignored) -> new ContextPerMessageStrategy(factory), container);
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(null);
+        // Assert
+        assertThrows(ReceiveTimeoutException.class, () -> {
+            // Act
+            listenerSync.getMessage(messageID);
+        });
+    }
+
+    @Test
+    void shouldGetMessage() {
+        // Arrange
+        listenerSync = new MQMultiContextMessageSelectorListenerSync(config, healthListener,
+                retryableConfig, SelectorModeProvider.defaultSelector(), container);
         String messageID = UUID.randomUUID().toString();
         when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
         when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
@@ -144,6 +164,19 @@ class MQMultiContextMessageSelectorListenerSyncTest {
         // Assert
         assertEquals(message, receivedMessage);
         verify(consumer, times(1)).receive(DEFAULT_TIMEOUT);
+    }
+
+    @Test
+    void shouldGetMessageBySelectorWithTimeoutError() {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
+        when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(null);
+        // Assert
+        assertThrows(ReceiveTimeoutException.class, () -> {
+            // Act
+            listenerSync.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT);
+        });
     }
 
     @Test

@@ -4,7 +4,6 @@ import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class AnnotationUtilsTest {
 
@@ -27,9 +26,9 @@ class AnnotationUtilsTest {
 
     @Test
     void shouldResolveQueue() {
-        assertEquals("Q1", AnnotationUtils.resolveQueue("Q1", "Q2", "Q3"));
-        assertNull(AnnotationUtils.resolveQueue("", "Q2", "Q3"));
-        assertNull(AnnotationUtils.resolveQueue("", "", ""));
-        assertEquals("Q3", AnnotationUtils.resolveQueue("", "", "Q3"));
+        assertEquals("Q1", AnnotationUtils.resolve("Q1", "Q2"));
+        assertEquals("Q2", AnnotationUtils.resolve("", "Q2"));
+        assertEquals("", AnnotationUtils.resolve("", ""));
+        assertEquals("", AnnotationUtils.resolve(null, ""));
     }
 }

@@ -5,6 +5,12 @@ import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.Queue;
+import jakarta.jms.TextMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,12 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import jakarta.jms.Destination;
-import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
-import jakarta.jms.Message;
-import jakarta.jms.Queue;
-import jakarta.jms.TextMessage;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,7 +91,7 @@ class MQRequestReplyListenerTest {
         assertEquals(message, createdMessage);
     }
 
-    @Test()
+    @Test
     void shouldNotFailWhenNoRelatedMessage() throws JMSException {
         // Arrange
         when(message.getJMSCorrelationID()).thenReturn("non-existing-id");

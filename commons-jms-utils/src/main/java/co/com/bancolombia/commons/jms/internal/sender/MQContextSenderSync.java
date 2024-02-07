@@ -1,12 +1,9 @@
 package co.com.bancolombia.commons.jms.internal.sender;
 
-import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
 import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
-import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
+import co.com.bancolombia.commons.jms.internal.models.MQSenderConfig;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
-import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
-import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
@@ -19,9 +16,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @SuperBuilder
 public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSenderSync> implements MQMessageSenderSync {
-    private final ConnectionFactory connectionFactory;
-    private final MQDestinationProvider provider;
-    private final MQProducerCustomizer customizer;
+    private final MQSenderConfig senderConfig;
 
     private JMSContext context;
     private JMSProducer producer;
@@ -44,11 +39,11 @@ public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSende
         synchronized (this) {
             if (handled > lastSuccess.get()) {
                 log.info("Starting sender {}", getProcess());
-                this.context = connectionFactory.createContext();
+                this.context = senderConfig.getConnectionFactory().createContext();
                 this.context.setExceptionListener(this);
                 this.producer = context.createProducer();
-                customizer.customize(producer);
-                this.defaultDestination = provider.create(context);
+                senderConfig.getProducerCustomizer().customize(producer);
+                this.defaultDestination = senderConfig.getDestinationProvider().create(context);
                 log.info("Sender {} started successfully", getProcess());
                 lastSuccess.set(System.currentTimeMillis());
             } else {
