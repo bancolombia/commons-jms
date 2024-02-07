@@ -17,11 +17,9 @@ This library offers a performant setup for JMS Clients.
 There are some scenarios covered by the library:
 
 - Listen messages from a fixed queue.
-- Send messages to a fixed queue.
-- Listen messages from a temporary queue.
-- Send messages to a temporary queue.
-- Get messages with specific correlationId from a fixed queue.
+- Send messages to a fixed and temporary queues.
 - Request Reply pattern with automatic temporary queue.
+- Request Reply pattern with automatic get message by selector from fixed queue.
 
 ## Compatibility
 
@@ -214,7 +212,7 @@ next interface signatures:
 ```
 
 For example, you define an interface like the next, so it could be auto implemented by the library:
-this [MyRequestReplyTmp](examples/mq-reactive/src/main/java/co/com/bancolombia/jms/sample/drivenadapters/reqreply/MyRequestReplyTmp.java)
+this [MyRequestReplyTmp](examples/mq-reactive/src/main/java/co/com/bancolombia/sample/drivenadapters/reqreply/MyRequestReplyTmp.java)
 
 To achieve the auto implementation, you should:
 
@@ -237,7 +235,7 @@ To achieve the auto implementation, you should:
    ```
 
   3. Now you can inject your interface in any spring component.
-     [MyRequestReplyAdapter](examples/mq-reactive/src/main/java/co/com/bancolombia/jms/sample/drivenadapters/reqreply/MyRequestReplyAdapter.java)
+     [MyRequestReplyAdapter](examples/mq-reactive/src/main/java/co/com/bancolombia/sample/drivenadapters/reqreply/MyRequestReplyAdapter.java)
   ```java
     @Component
     @AllArgsConstructor
