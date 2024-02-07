@@ -1,7 +1,7 @@
 package co.com.bancolombia.commons.jms.mq;
 
+import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import org.springframework.core.annotation.AliasFor;
-import org.springframework.stereotype.Service;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,16 +10,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Service
 public @interface ReqReply {
-
-    /**
-     * Queue for request
-     *
-     * @return Queue Name
-     */
-    @AliasFor("requestQueue")
-    String value() default "";
+    // Shared
 
     /**
      * @return Amount of connections to mq
@@ -34,8 +26,18 @@ public @interface ReqReply {
      */
     String connectionFactory() default "";
 
+    // Sender
+
     /**
-     * Queue for listening
+     * Queue for request
+     *
+     * @return Queue Name
+     */
+    @AliasFor(value = "requestQueue")
+    String value() default "";
+
+    /**
+     * Queue for send request
      *
      * @return Queue Name
      */
@@ -43,25 +45,71 @@ public @interface ReqReply {
     String requestQueue() default "";
 
     /**
-     * Alias to register a temporary queue in the MQContainer bean
+     * Queue Customizer for request queue
      *
-     * @return temporary queue alias
-     * default empty and uses value() for listen a fixed queue
+     * @return bean name
+     * default empty and uses available {@link co.com.bancolombia.commons.jms.api.MQQueueCustomizer} bean
      */
-    String replyQueueTemp() default "";
+    String queueCustomizer() default "";
+
+    /**
+     * Queue Customizer for producer queue
+     *
+     * @return bean name
+     * default empty and uses available {@link co.com.bancolombia.commons.jms.api.MQProducerCustomizer} bean
+     */
+    String producerCustomizer() default "";
+
+    /**
+     * Retry config
+     *
+     * @return max retries, specify a negative value for infinite retries
+     */
+    String retryConfig() default "";
+
+    // Listener
+
+    /**
+     * Alias to register a temporary queue in the MQContainer bean when queueType = TEMPORARY
+     * Fixed queue name when queueType = FIXED
+     * {@link MQListenerConfig.QueueType}
+     *
+     * @return temporary queue alias or queue name
+     * default empty
+     */
+    String replyQueue() default "";
 
     /**
      * Queue Customizer for listening queue
      *
      * @return bean name
-     * default empty and uses available MQQueueCustomizer.class bean
+     * default empty and uses available {@link co.com.bancolombia.commons.jms.api.MQQueueCustomizer} bean
      */
-    String queueCustomizer() default "";
+    String replyQueueCustomizer() default "";
 
     /**
-     * Max message processing retries when error handled
+     * Listener retries when temporary queues
      *
      * @return max retries, specify a negative value for infinite retries
      */
     String maxRetries() default "10";
+
+    /**
+     * Type of reply queue: TEMPORARY | FIXED
+     * {@link MQListenerConfig.QueueType}
+     *
+     * @return temporary queue alias
+     * default empty
+     */
+    MQListenerConfig.QueueType queueType() default MQListenerConfig.QueueType.TEMPORARY;
+
+    /**
+     * Type of context to retrieve the message
+     *
+     * @return selector mode: CONTEXT_SHARED | CONTEXT_PER_MESSAGE
+     * default CONTEXT_SHARED
+     */
+    MQListenerConfig.SelectorMode selectorMode() default MQListenerConfig.SelectorMode.CONTEXT_SHARED;
+
+
 }

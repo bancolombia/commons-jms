@@ -1,47 +1,30 @@
 package co.com.bancolombia.commons.jms.internal.sender;
 
-import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
 import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
-import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
-import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
-
-import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
-import jakarta.jms.ConnectionFactory;
+import co.com.bancolombia.commons.jms.internal.models.MQSenderConfig;
 import jakarta.jms.Destination;
+import lombok.extern.log4j.Log4j2;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Log4j2
 public class MQMultiContextSenderSync implements MQMessageSenderSync {
-    private final ConnectionFactory connectionFactory;
-    private List<MQMessageSenderSync> adapterList;
+    private final List<MQMessageSenderSync> adapterList;
     private final int connections;
-    private final MQDestinationProvider provider;
-    private final MQProducerCustomizer customizer;
-    private final MQHealthListener healthListener;
-    private final RetryableConfig retryableConfig;
 
-    public MQMultiContextSenderSync(ConnectionFactory connectionFactory, int connections,
-                                    MQDestinationProvider provider, MQProducerCustomizer customizer,
-                                    MQHealthListener healthListener, RetryableConfig retryableConfig) {
-        this.connectionFactory = connectionFactory;
-        this.connections = connections;
-        this.provider = provider;
-        this.customizer = customizer;
-        this.healthListener = healthListener;
-        this.retryableConfig = retryableConfig;
-        start();
-    }
-
-    public void start() {
-        adapterList = IntStream.range(0, connections)
+    public MQMultiContextSenderSync(MQSenderConfig senderConfig) {
+        this.connections = senderConfig.getConcurrency();
+        if (log.isInfoEnabled()) {
+            log.info("Generating {} senders", connections);
+        }
+        adapterList = IntStream.range(0, senderConfig.getConcurrency())
                 .mapToObj(idx -> MQContextSenderSync.builder()
-                        .connectionFactory(connectionFactory)
-                        .customizer(customizer)
-                        .provider(provider)
-                        .healthListener(healthListener)
-                        .retryableConfig(retryableConfig)
+                        .senderConfig(senderConfig)
+                        .healthListener(senderConfig.getHealthListener())
+                        .retryableConfig(senderConfig.getRetryableConfig())
                         .build()
                         .call())
                 .collect(Collectors.toList());

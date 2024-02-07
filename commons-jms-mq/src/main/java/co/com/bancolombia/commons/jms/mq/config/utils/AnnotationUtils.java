@@ -30,13 +30,13 @@ public class AnnotationUtils {
         return MQProperties.DEFAULT_CONCURRENCY;
     }
 
-    public static String resolveQueue(String primaryAnnotation, String secondaryValue, String queueProperties) {
-        if (StringUtils.hasText(primaryAnnotation)) {
-            return primaryAnnotation;
+    public static String resolve(String fromAnnotation, String defaultValue) {
+        if (StringUtils.hasText(fromAnnotation)) {
+            return fromAnnotation;
         }
-        if (!StringUtils.hasText(secondaryValue) && StringUtils.hasText(queueProperties)) {
-            return queueProperties;
+        if (StringUtils.hasText(defaultValue)) {
+            return defaultValue;
         }
-        return null;
+        return "";
     }
 }

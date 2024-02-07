@@ -1,8 +1,6 @@
 package co.com.bancolombia.commons.jms.mq.helper;
 
 import com.ibm.msg.client.jakarta.jms.JmsReadablePropertyContext;
-import lombok.AllArgsConstructor;
-
 import jakarta.jms.BytesMessage;
 import jakarta.jms.ConnectionMetaData;
 import jakarta.jms.Destination;
@@ -20,6 +18,8 @@ import jakarta.jms.TemporaryQueue;
 import jakarta.jms.TemporaryTopic;
 import jakarta.jms.TextMessage;
 import jakarta.jms.Topic;
+import lombok.AllArgsConstructor;
+
 import java.io.Serializable;
 
 @AllArgsConstructor

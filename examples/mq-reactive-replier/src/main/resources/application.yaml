@@ -2,7 +2,7 @@ server:
   port: 8080
 logging:
   level:
-    root: WARN
+    root: INFO
 spring:
   application:
     name: "mq-reactive-replier"
@@ -14,7 +14,6 @@ commons:
     reactive: true
     input-concurrency: 5
     input-queue: "DEV.QUEUE.1"
-    input-queue-alias: ""
 ibm:
   mq:
     channel: "DEV.APP.SVRCONN"

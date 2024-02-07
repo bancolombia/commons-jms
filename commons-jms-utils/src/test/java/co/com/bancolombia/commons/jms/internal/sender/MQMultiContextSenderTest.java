@@ -1,5 +1,7 @@
 package co.com.bancolombia.commons.jms.internal.sender;
 
+import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,8 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import jakarta.jms.Destination;
-import jakarta.jms.JMSContext;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;

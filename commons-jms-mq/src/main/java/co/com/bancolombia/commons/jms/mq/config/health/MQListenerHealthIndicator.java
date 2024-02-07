@@ -1,12 +1,12 @@
 package co.com.bancolombia.commons.jms.mq.config.health;
 
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import jakarta.jms.JMSException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
 
-import jakarta.jms.JMSException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -10,7 +10,6 @@ commons:
     producer-ttl: 60
     input-concurrency: 2
     input-queue: "DEV.QUEUE.1"
-    input-queue-alias: ""
 ibm:
   mq:
     channel: "DEV.APP.SVRCONN"

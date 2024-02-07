@@ -6,12 +6,9 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.MQContextListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.MessageListener;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,11 +18,9 @@ import java.util.stream.IntStream;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MQMessageListenerUtils {
 
-    public static void createListeners(ConnectionFactory cf,
-                                       MessageListener listener,
+    public static void createListeners(MQListenerConfig config,
                                        MQQueuesContainer container,
                                        MQBrokerUtils utils,
-                                       MQListenerConfig config,
                                        MQHealthListener healthListener,
                                        RetryableConfig retryableConfig) {
         if (log.isInfoEnabled()) {
@@ -34,18 +29,15 @@ public class MQMessageListenerUtils {
         ExecutorService service = Executors.newFixedThreadPool(config.getConcurrency());
         IntStream.range(0, config.getConcurrency())
                 .mapToObj(number -> MQContextListener.builder()
-                        .connectionFactory(cf)
-                        .temporary(StringUtils.isNotBlank(config.getTempQueueAlias()))
-                        .utils(utils)
-                        .config(config)
-                        .listener(listener)
+                        .listenerConfig(config)
                         .container(container)
+                        .utils(utils)
                         .healthListener(healthListener)
                         .retryableConfig(retryableConfig)
                         .build())
                 .forEach(service::submit);
         if (log.isInfoEnabled()) {
-            log.info("{} listeners created for {}", config.getConcurrency(), config.getQueue());
+            log.info("{} listeners created for {}", config.getConcurrency(), config.getListeningQueue());
         }
     }
 

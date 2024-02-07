@@ -7,7 +7,6 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
-import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.MessageListener;
 import jakarta.jms.TemporaryQueue;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static co.com.bancolombia.commons.jms.internal.models.MQListenerConfig.QueueType.TEMPORARY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,12 +48,14 @@ class MQContextTemporaryListenerTest {
         when(context.createConsumer(any())).thenReturn(consumer);
         when(tmpQueue.getQueueName()).thenReturn("AMQ.QUEUE");
         contextTemporaryListener = MQContextListener.builder()
-                .listener(listener)
-                .temporary(true)
-                .connectionFactory(connectionFactory)
+                .listenerConfig(MQListenerConfig.builder()
+                        .listeningQueue("alias")
+                        .messageListener(listener)
+                        .queueType(TEMPORARY)
+                        .connectionFactory(connectionFactory)
+                        .build())
                 .container(new MQQueuesContainerImp())
                 .healthListener(healthListener)
-                .config(MQListenerConfig.builder().build())
                 .build();
     }
 

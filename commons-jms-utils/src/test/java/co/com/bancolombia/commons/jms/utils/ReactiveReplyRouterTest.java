@@ -21,6 +21,12 @@ class ReactiveReplyRouterTest {
     }
 
     @Test
+    void shouldFailNotFoundWhenError() {
+        router.error(null, new Exception("Some Error"));
+        assertThrows(RelatedMessageNotFoundException.class, () -> router.error("1234", new Exception("Some Error")));
+    }
+
+    @Test
     void shouldFailNotFound() {
         assertThrows(RelatedMessageNotFoundException.class, () -> router.reply("1234", "result"));
     }

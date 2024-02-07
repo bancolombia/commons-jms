@@ -1,8 +1,7 @@
 package co.com.bancolombia.commons.jms.api;
 
-import reactor.core.publisher.Mono;
-
 import jakarta.jms.Destination;
+import reactor.core.publisher.Mono;
 
 public interface MQMessageSender {
     Mono<String> send(Destination destination, MQMessageCreator messageCreator);

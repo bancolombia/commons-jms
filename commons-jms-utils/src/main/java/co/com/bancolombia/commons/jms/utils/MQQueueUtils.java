@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j2;
 public class MQQueueUtils {
 
     public static Destination setupFixedQueue(JMSContext context, MQListenerConfig config) {
-        Queue queue = context.createQueue(config.getQueue());
+        Queue queue = context.createQueue(config.getListeningQueue());
         customize(queue, config);
         if (config.getQmSetter() != null) {
             config.getQmSetter().accept(context, queue);
@@ -29,9 +29,9 @@ public class MQQueueUtils {
     }
 
     private static <T extends Queue> void customize(T queue, MQListenerConfig config) {
-        if (config.getCustomizer() != null) {
+        if (config.getQueueCustomizer() != null) {
             try {
-                config.getCustomizer().customize(queue);
+                config.getQueueCustomizer().customize(queue);
             } catch (Exception ex) {
                 log.warn("Error customizing queue", ex);
             }

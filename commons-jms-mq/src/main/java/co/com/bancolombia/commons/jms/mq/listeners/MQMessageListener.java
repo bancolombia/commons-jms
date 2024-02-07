@@ -1,5 +1,7 @@
 package co.com.bancolombia.commons.jms.mq.listeners;
 
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -7,8 +9,6 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.invocation.InvocableHandlerMethod;
 import org.springframework.messaging.support.MessageBuilder;
 
-import jakarta.jms.Message;
-import jakarta.jms.MessageListener;
 import java.lang.reflect.Method;
 
 import static com.ibm.msg.client.jakarta.jms.JmsConstants.JMSX_DELIVERY_COUNT;
