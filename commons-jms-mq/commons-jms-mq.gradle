@@ -5,6 +5,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-actuator'
 }
 
+configurations.configureEach {
+    resolutionStrategy {
+        force 'org.json:json:20240205' // to avoid CVE-2023-5072
+    }
+}
+
 ext {
     artifactId = 'commons-jms-mq'
     artifactDescription = 'Commons JMS MQ'
