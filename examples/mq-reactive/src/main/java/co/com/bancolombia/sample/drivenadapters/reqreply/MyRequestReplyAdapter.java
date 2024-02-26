@@ -19,6 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class MyRequestReplyAdapter implements RequestGateway {
     private final MyRequestReply requestReply; // domainB
+    private final MyRequestReplySingleInstance requestReplyFixedSingle; // domainB fixed single instance (no selector)
     private final MyRequestReplyTmp requestReplyTmp; // default domain
     private final ObjectMapper mapper;
 

@@ -31,7 +31,14 @@ public class MQListenerConfig {
     }
 
     public enum QueueType {
+        /**
+         * Used to get messages by selector
+         */
         FIXED,
+        /**
+         * This assumes that you have a location transparency router or have a single instance of this consumer
+         */
+        FIXED_SINGLE_INSTANCE,
         TEMPORARY
     }
 }
