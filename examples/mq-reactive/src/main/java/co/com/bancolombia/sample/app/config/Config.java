@@ -14,6 +14,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.jms.JmsProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -52,11 +53,11 @@ public class Config {
     @Bean
     @Primary
     @SneakyThrows
-    public ConnectionFactory cachingJmsConnectionFactory(MQConfigurationProperties properties, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
+    public ConnectionFactory cachingJmsConnectionFactory(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
         JmsProperties.Cache cacheProperties = jmsProperties.getCache();
         properties.setQueueManager("QM1");
         properties.setConnName("localhost(1414)");
-        MQConnectionFactory wrappedConnectionFactory = createConnectionFactory(properties, factoryCustomizers);
+        MQConnectionFactory wrappedConnectionFactory = createConnectionFactory(properties, sslBundles, factoryCustomizers);
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(wrappedConnectionFactory);
         connectionFactory.setCacheConsumers(cacheProperties.isConsumers());
         connectionFactory.setCacheProducers(cacheProperties.isProducers());
@@ -66,11 +67,11 @@ public class Config {
 
     @Bean
     @SneakyThrows
-    public ConnectionFactory domainB(MQConfigurationProperties properties, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
+    public ConnectionFactory domainB(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
         JmsProperties.Cache cacheProperties = jmsProperties.getCache();
         properties.setQueueManager("QM2");
         properties.setConnName("localhost(1415)");
-        MQConnectionFactory wrappedConnectionFactory = createConnectionFactory(properties, factoryCustomizers);
+        MQConnectionFactory wrappedConnectionFactory = createConnectionFactory(properties, sslBundles, factoryCustomizers);
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(wrappedConnectionFactory);
         connectionFactory.setCacheConsumers(cacheProperties.isConsumers());
         connectionFactory.setCacheProducers(cacheProperties.isProducers());
@@ -78,8 +79,8 @@ public class Config {
         return connectionFactory;
     }
 
-    private static MQConnectionFactory createConnectionFactory(MQConfigurationProperties properties, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers) {
-        return (new MQConnectionFactoryFactory(properties, factoryCustomizers.getIfAvailable())).createConnectionFactory(MQConnectionFactory.class);
+    private static MQConnectionFactory createConnectionFactory(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers) {
+        return (new MQConnectionFactoryFactory(properties, (SslBundles) sslBundles.getIfAvailable(), (List) factoryCustomizers.getIfAvailable())).createConnectionFactory(MQConnectionFactory.class);
     }
 
 }

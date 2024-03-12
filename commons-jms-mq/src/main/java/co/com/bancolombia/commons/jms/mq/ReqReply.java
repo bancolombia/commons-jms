@@ -109,7 +109,7 @@ public @interface ReqReply {
      * @return selector mode: CONTEXT_SHARED | CONTEXT_PER_MESSAGE
      * default CONTEXT_SHARED
      */
-    MQListenerConfig.SelectorMode selectorMode() default MQListenerConfig.SelectorMode.CONTEXT_SHARED;
+    String selectorMode() default "CONTEXT_SHARED";
 
 
 }

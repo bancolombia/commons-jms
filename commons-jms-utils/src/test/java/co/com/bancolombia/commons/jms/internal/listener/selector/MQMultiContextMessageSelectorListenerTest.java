@@ -5,10 +5,10 @@ import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.MultiContextSharedStrategy;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
-import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSConsumer;
@@ -25,7 +25,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.UUID;
-import java.util.concurrent.Executors;
 
 import static co.com.bancolombia.commons.jms.internal.listener.selector.MQContextMessageSelectorListenerSync.DEFAULT_TIMEOUT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,11 +69,11 @@ class MQMultiContextMessageSelectorListenerTest {
                 .initialRetryIntervalMillis(1000)
                 .multiplier(1.5)
                 .build();
+        SelectorModeProvider provider = (cf, context) -> new MultiContextSharedStrategy(cf, 2);
         MQMessageSelectorListenerSync listenerSync =
                 new MQMultiContextMessageSelectorListenerSync(config, healthListener,
-                        retryableConfig, SelectorModeProvider.defaultSelector(), container);
-        listener = new MQMultiContextMessageSelectorListener(listenerSync, Executors.newCachedThreadPool(),
-                new ReactiveReplyRouter<>());
+                        retryableConfig, provider, container);
+        listener = new MQMultiContextMessageSelectorListener(listenerSync);
     }
 
     @Test
