@@ -62,7 +62,8 @@ public class MQReqReplyFactory {
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
         Destination destination = resolveDestination(annotation, resolver, properties);
         if (listenerConfig.getQueueType() == MQListenerConfig.QueueType.FIXED) {
-            SelectorModeProvider selectorModeProvider = getSelectorModeProvider(resolver, annotation.selectorMode(),
+            String selectorMode = resolver.resolveString(annotation.selectorMode());
+            SelectorModeProvider selectorModeProvider = getSelectorModeProvider(resolver, selectorMode,
                     listenerConfig.getConcurrency());
             MQMultiContextMessageSelectorListenerSync selectorListener = new MQMultiContextMessageSelectorListenerSync(
                     listenerConfig,
