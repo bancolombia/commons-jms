@@ -23,10 +23,11 @@ public class MQListenerConfig {
     private final MQQueueManagerSetter qmSetter = (ctx, queueName) -> {
     }; //NOSONAR
     @Builder.Default
-    private final SelectorMode selectorMode = SelectorMode.CONTEXT_SHARED;
+    private final String selectorMode = SelectorMode.CONTEXT_SHARED.name();
 
     public enum SelectorMode {
         CONTEXT_SHARED,
+        MULTI_CONTEXT_SHARED,
         CONTEXT_PER_MESSAGE
     }
 

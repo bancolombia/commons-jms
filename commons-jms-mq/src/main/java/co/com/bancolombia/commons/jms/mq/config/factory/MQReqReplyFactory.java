@@ -11,6 +11,7 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
+import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.MultiContextSharedStrategy;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -61,7 +62,8 @@ public class MQReqReplyFactory {
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
         Destination destination = resolveDestination(annotation, resolver, properties);
         if (listenerConfig.getQueueType() == MQListenerConfig.QueueType.FIXED) {
-            SelectorModeProvider selectorModeProvider = getSelectorModeProvider(annotation.selectorMode());
+            SelectorModeProvider selectorModeProvider = getSelectorModeProvider(resolver, annotation.selectorMode(),
+                    listenerConfig.getConcurrency());
             MQMultiContextMessageSelectorListenerSync selectorListener = new MQMultiContextMessageSelectorListenerSync(
                     listenerConfig,
                     healthListener,
@@ -69,13 +71,9 @@ public class MQReqReplyFactory {
                     selectorModeProvider,
                     queuesContainer);
             if (properties.isReactive()) {
-                ReactiveReplyRouter<Message> router = resolver.resolveReplier();
-                MQExecutorService executorService = resolver.getMqExecutorService();
                 SelectorBuilder selector = resolver.getSelectorBuilder();
                 MQMessageSelectorListener reactiveSelectorListener = new MQMultiContextMessageSelectorListener(
-                        selectorListener,
-                        executorService,
-                        router);
+                        selectorListener);
                 return new MQRequestReplySelector(
                         sender,
                         queuesContainer,
@@ -137,7 +135,7 @@ public class MQReqReplyFactory {
         String replyQueue = resolver.resolveString(annotation.replyQueue());
         String queueCustomizerName = annotation.queueCustomizer();
         MQListenerConfig.QueueType queueType = annotation.queueType();
-        MQListenerConfig.SelectorMode selectorMode = annotation.selectorMode();
+        String selectorMode = annotation.selectorMode();
 
         // Resolve dynamic values
         int finalConcurrency = resolveConcurrency(Integer.parseInt(concurrencyStr), properties.getInputConcurrency());
@@ -168,11 +166,17 @@ public class MQReqReplyFactory {
     }
 
     // Selector
-    private static SelectorModeProvider getSelectorModeProvider(MQListenerConfig.SelectorMode mode) {
-        if (MQListenerConfig.SelectorMode.CONTEXT_PER_MESSAGE == mode) {
+    private static SelectorModeProvider getSelectorModeProvider(MQSpringResolver resolver, String mode, int concurrency) {
+        if (MQListenerConfig.SelectorMode.CONTEXT_PER_MESSAGE.name().equals(mode)) {
             return (factory, context) -> new ContextPerMessageStrategy(factory);
         }
-        return SelectorModeProvider.defaultSelector();
+        if (MQListenerConfig.SelectorMode.MULTI_CONTEXT_SHARED.name().equals(mode)) {
+            return (factory, context) -> new MultiContextSharedStrategy(factory, concurrency);
+        }
+        if (MQListenerConfig.SelectorMode.CONTEXT_SHARED.name().equals(mode)) {
+            return SelectorModeProvider.defaultSelector();
+        }
+        return resolver.resolveBean(mode, SelectorModeProvider.class);
     }
 }
 
