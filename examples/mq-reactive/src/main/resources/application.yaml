@@ -18,8 +18,11 @@ ibm:
   mq:
     channel: "DEV.APP.SVRCONN"
     user: "app"
+    password: passw0rd
     queue-manager: QM1
 management:
   endpoint:
     health:
       show-details: always
+my:
+  selector-mode: MULTI_CONTEXT_SHARED

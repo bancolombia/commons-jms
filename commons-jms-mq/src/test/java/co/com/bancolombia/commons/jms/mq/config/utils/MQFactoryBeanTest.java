@@ -13,7 +13,6 @@ import co.com.bancolombia.commons.jms.mq.ReqReply;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import co.com.bancolombia.commons.jms.mq.config.MQSpringResolver;
 import co.com.bancolombia.commons.jms.mq.config.senders.MQSenderContainer;
-import co.com.bancolombia.commons.jms.mq.config.utils.sample.SampleConfig;
 import co.com.bancolombia.commons.jms.mq.listeners.MQExecutorService;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import jakarta.jms.ConnectionFactory;
@@ -33,7 +32,6 @@ import org.springframework.util.StringValueResolver;
 
 import java.lang.annotation.Annotation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

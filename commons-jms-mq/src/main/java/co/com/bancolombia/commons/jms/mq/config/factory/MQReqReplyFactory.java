@@ -4,10 +4,10 @@ package co.com.bancolombia.commons.jms.mq.config.factory;
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
-import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.api.model.JmsMessage;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
@@ -21,6 +21,7 @@ import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import co.com.bancolombia.commons.jms.mq.config.MQSpringResolver;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.mq.listeners.MQRequestReplyListener;
+import co.com.bancolombia.commons.jms.mq.listeners.MQRequestReplyRemoteListener;
 import co.com.bancolombia.commons.jms.mq.listeners.MQRequestReplySelector;
 import co.com.bancolombia.commons.jms.utils.MQMessageListenerUtils;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
@@ -51,7 +52,7 @@ public class MQReqReplyFactory {
         if (properties.isReactive()) {
             resolver.resolveBean(MQMessageSender.class);
         } else {
-            resolver.resolveBean(MQMessageSenderSync.class);
+            throw new RuntimeException("Not available for non reactive projects"); // TODO: Make it available
         }
         MQListenerConfig listenerConfig = validateAnnotationConfig(annotation, resolver, properties, beanName);
         MQMessageSender sender = (MQMessageSender) MQSenderFactory.fromReqReply(annotation, resolver, beanName);
@@ -60,59 +61,117 @@ public class MQReqReplyFactory {
         MQQueuesContainer queuesContainer = resolver.getQueuesContainer();
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
         Destination destination = resolveDestination(annotation, resolver, properties);
-        if (listenerConfig.getQueueType() == MQListenerConfig.QueueType.FIXED) {
-            String selectorMode = resolver.resolveString(annotation.selectorMode());
-            SelectorModeProvider selectorModeProvider = getSelectorModeProvider(resolver, selectorMode,
-                    listenerConfig.getConcurrency());
-            MQMultiContextMessageSelectorListenerSync selectorListener = new MQMultiContextMessageSelectorListenerSync(
-                    listenerConfig,
-                    healthListener,
-                    retryableConfig,
-                    selectorModeProvider,
-                    queuesContainer);
-            if (properties.isReactive()) {
-                SelectorBuilder selector = resolver.getSelectorBuilder();
-                MQMessageSelectorListener reactiveSelectorListener = new MQMultiContextMessageSelectorListener(
-                        selectorListener);
-                return new MQRequestReplySelector(
-                        sender,
-                        queuesContainer,
-                        destination,
-                        listenerConfig.getListeningQueue(),
-                        selector,
-                        reactiveSelectorListener);
-            } else {
-                throw new RuntimeException("Not available for non reactive projects"); // TODO: Make it available
+        switch (listenerConfig.getQueueType()) {
+            case FIXED: {
+                return fixedQueueWithMessageSelector(annotation, resolver, listenerConfig, sender, healthListener,
+                        queuesContainer, retryableConfig, destination);
             }
-        } else {
-            if (properties.isReactive()) {
-                ReactiveReplyRouter<Message> router = resolver.resolveReplier();
-                MQRequestReplyListener senderWithRouter = new MQRequestReplyListener(
-                        sender,
-                        router,
-                        queuesContainer,
-                        destination,
-                        listenerConfig.getListeningQueue(),
-                        listenerConfig.getMaxRetries());
-                try {
-                    MQListenerConfig finalListenerConfig = listenerConfig.toBuilder()
-                            .messageListener(senderWithRouter)
-                            .build();
-                    MQMessageListenerUtils.createListeners(
-                            finalListenerConfig,
-                            queuesContainer,
-                            mqBrokerUtils,
-                            healthListener,
-                            retryableConfig);
-                } catch (JMSRuntimeException ex) {
-                    throw new BeanInitializationException("Could not create @ReqReply bean named " + beanName
-                            + " with connectionFactory: " + listenerConfig.getConnectionFactory(), ex);
-                }
-                return senderWithRouter;
-            } else {
-                throw new RuntimeException("Not available for non reactive projects"); // TODO: Make it available
+            case FIXED_LOCATION_TRANSPARENCY: {
+                return fixedQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
+                        healthListener, queuesContainer, retryableConfig, destination);
+            }
+            default: {
+                return temporaryQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
+                        healthListener, queuesContainer, retryableConfig, destination);
             }
         }
+    }
+
+    private static MQRequestReplyListener temporaryQueueWithAsyncListener(MQSpringResolver resolver, String beanName,
+                                                                          MQListenerConfig listenerConfig,
+                                                                          MQMessageSender sender,
+                                                                          MQBrokerUtils mqBrokerUtils,
+                                                                          MQHealthListener healthListener,
+                                                                          MQQueuesContainer queuesContainer,
+                                                                          RetryableConfig retryableConfig,
+                                                                          Destination destination) {
+        log.info("Using temporary queue with async listener");
+        ReactiveReplyRouter<Message> router = resolver.resolveReplier();
+        MQRequestReplyListener senderWithRouter = new MQRequestReplyListener(
+                sender,
+                router,
+                queuesContainer,
+                destination,
+                listenerConfig.getListeningQueue(),
+                listenerConfig.getMaxRetries());
+        try {
+            MQListenerConfig finalListenerConfig = listenerConfig.toBuilder()
+                    .messageListener(senderWithRouter)
+                    .build();
+            MQMessageListenerUtils.createListeners(
+                    finalListenerConfig,
+                    queuesContainer,
+                    mqBrokerUtils,
+                    healthListener,
+                    retryableConfig);
+        } catch (JMSRuntimeException ex) {
+            throw new BeanInitializationException("Could not create @ReqReply bean named " + beanName
+                    + " with connectionFactory: " + listenerConfig.getConnectionFactory(), ex);
+        }
+        return senderWithRouter;
+    }
+
+    private static MQRequestReplyRemoteListener fixedQueueWithAsyncListener(MQSpringResolver resolver, String beanName,
+                                                                            MQListenerConfig listenerConfig,
+                                                                            MQMessageSender sender,
+                                                                            MQBrokerUtils mqBrokerUtils,
+                                                                            MQHealthListener healthListener,
+                                                                            MQQueuesContainer queuesContainer,
+                                                                            RetryableConfig retryableConfig,
+                                                                            Destination destination) {
+        log.info("Using fixed queue with location transparency");
+        ReactiveReplyRouter<JmsMessage> router = resolver.resolveReplier(JmsMessage.class);
+        MQRequestReplyRemoteListener senderWithRouter = new MQRequestReplyRemoteListener(
+                sender,
+                router,
+                queuesContainer,
+                destination,
+                listenerConfig.getListeningQueue(),
+                listenerConfig.getMaxRetries());
+        try {
+            MQListenerConfig finalListenerConfig = listenerConfig.toBuilder()
+                    .messageListener(senderWithRouter)
+                    .build();
+            MQMessageListenerUtils.createListeners(
+                    finalListenerConfig,
+                    queuesContainer,
+                    mqBrokerUtils,
+                    healthListener,
+                    retryableConfig);
+        } catch (JMSRuntimeException ex) {
+            throw new BeanInitializationException("Could not create @ReqReply bean named " + beanName
+                    + " with connectionFactory: " + listenerConfig.getConnectionFactory(), ex);
+        }
+        return senderWithRouter;
+    }
+
+    private static MQRequestReplySelector fixedQueueWithMessageSelector(ReqReply annotation, MQSpringResolver resolver,
+                                                                        MQListenerConfig listenerConfig,
+                                                                        MQMessageSender sender,
+                                                                        MQHealthListener healthListener,
+                                                                        MQQueuesContainer queuesContainer,
+                                                                        RetryableConfig retryableConfig,
+                                                                        Destination destination) {
+        log.info("Using fixed queue with message selector");
+        String selectorMode = resolver.resolveString(annotation.selectorMode());
+        SelectorModeProvider selectorModeProvider = getSelectorModeProvider(resolver, selectorMode,
+                listenerConfig.getConcurrency());
+        MQMultiContextMessageSelectorListenerSync selectorListener = new MQMultiContextMessageSelectorListenerSync(
+                listenerConfig,
+                healthListener,
+                retryableConfig,
+                selectorModeProvider,
+                queuesContainer);
+        SelectorBuilder selector = resolver.getSelectorBuilder();
+        MQMessageSelectorListener reactiveSelectorListener = new MQMultiContextMessageSelectorListener(
+                selectorListener);
+        return new MQRequestReplySelector(
+                sender,
+                queuesContainer,
+                destination,
+                listenerConfig.getListeningQueue(),
+                selector,
+                reactiveSelectorListener);
     }
 
     @SneakyThrows

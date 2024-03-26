@@ -39,7 +39,7 @@ public class MQListenerConfig {
         /**
          * This assumes that you have a location transparency router or have a single instance of this consumer
          */
-        FIXED_SINGLE_INSTANCE,
+        FIXED_LOCATION_TRANSPARENCY,
         TEMPORARY
     }
 }
