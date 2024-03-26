@@ -4,4 +4,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation project(':commons-jms-mq')
+    implementation project(':commons-jms-http-replier')
+    implementation project(':adapter-redis')
 }

@@ -4,5 +4,4 @@ import reactor.core.publisher.Mono;
 
 public interface RequestGateway {
     Mono<Result> doRequest(Request request);
-    Mono<Result> doRequestTmp(Request request);
 }

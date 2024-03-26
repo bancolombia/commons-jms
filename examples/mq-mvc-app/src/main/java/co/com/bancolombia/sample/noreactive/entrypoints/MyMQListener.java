@@ -1,9 +1,9 @@
 package co.com.bancolombia.sample.noreactive.entrypoints;
 
 import co.com.bancolombia.commons.jms.mq.MQListener;
-import co.com.bancolombia.sample.noreactive.domain.usecase.ReplyRouterUseCase;
 import co.com.bancolombia.sample.noreactive.domain.model.Request;
 import co.com.bancolombia.sample.noreactive.domain.model.Result;
+import co.com.bancolombia.sample.noreactive.domain.usecase.ReplyRouterUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.JMSException;

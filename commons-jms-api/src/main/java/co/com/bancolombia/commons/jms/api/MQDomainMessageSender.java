@@ -10,6 +10,7 @@ public interface MQDomainMessageSender {
 
     /**
      * You can retrieve the MQMessageSender to avoid queries to Map
+     *
      * @param domain Domain name or connectionFactory bean name
      * @return MQMessageSender
      */

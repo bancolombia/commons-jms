@@ -1,10 +1,10 @@
 package co.com.bancolombia.sample.drivenadapters.reqreply;
 
-import co.com.bancolombia.commons.jms.api.MQRequestReply;
+import co.com.bancolombia.commons.jms.api.MQRequestReplyRemote;
 import co.com.bancolombia.commons.jms.mq.ReqReply;
 
-import static co.com.bancolombia.commons.jms.internal.models.MQListenerConfig.QueueType.FIXED;
+import static co.com.bancolombia.commons.jms.internal.models.MQListenerConfig.QueueType.FIXED_LOCATION_TRANSPARENCY;
 
-@ReqReply(requestQueue = "DEV.QUEUE.1", replyQueue = "DEV.QUEUE.2", queueType = FIXED, selectorMode = "${my.selector-mode}", connectionFactory = "domainB")
-public interface MyRequestReply extends MQRequestReply {
+@ReqReply(requestQueue = "DEV.QUEUE.1", replyQueue = "DEV.QUEUE.2", queueType = FIXED_LOCATION_TRANSPARENCY)
+public interface MyRequestReply extends MQRequestReplyRemote {
 }

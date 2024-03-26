@@ -31,7 +31,6 @@ There are some scenarios covered by the library:
 | 1.4.1   | 3.2.1       | JMS 3 jakarta |
 | 2.0.0   | 3.2.1       | JMS 3 jakarta |
 
-
 ### Limitations
 
 - Initially available for IBM MQ Clients.
@@ -159,6 +158,7 @@ This sample shows how to send a message to a default destination queue, also sho
 temporary queue.
 
 If you need to have another message sender, you can define it with the `@MQSender` annotation.
+
 ```java
 @MQSender(connectionFactory = "domainB")
 public interface XDomainSender extends MQMessageSender {
@@ -166,7 +166,8 @@ public interface XDomainSender extends MQMessageSender {
 ```
 
 In this case we pass a connectionFactory bean called domainB, this configuration allow you to send messages to another
-broker. Remind that a MQMessageSender can send messages to all queues in a QueueManager, so you only need to have one by Queue Manager.
+broker. Remind that a MQMessageSender can send messages to all queues in a QueueManager, so you only need to have one by
+Queue Manager.
 
 #### Send message to another queue
 
@@ -194,6 +195,7 @@ interface, which implements the interface.
 
 The application that attends the request should follow the replyTo header which is automatically injected through the
 operation:
+
 ```java
 textMessage.setJMSReplyTo(temporaryQueue)
 ```
@@ -216,7 +218,8 @@ this [MyRequestReplyTmp](examples/mq-reactive/src/main/java/co/com/bancolombia/s
 
 To achieve the auto implementation, you should:
 
-  1. Annotate the application or a configuration bean with @EnableMQGateway, optionally you can define the base package
+1. Annotate the application or a configuration bean with @EnableMQGateway, optionally you can define the base package
+
   ```java
      @SpringBootApplication(scanBasePackages = "co.com.bancolombia")
      @EnableMQGateway(scanBasePackages = "co.com.bancolombia")
@@ -227,15 +230,17 @@ To achieve the auto implementation, you should:
      }
    ```
 
-  2. Annotate the interface with @ReqReply, for example
+2. Annotate the interface with @ReqReply, for example
+
   ```java
     @ReqReply(requestQueue = "DEV.QUEUE.1") // in queue names you can use ${some.property.name} spring placeholder notation
     public interface MyRequestReplyTmp extends MQRequestReply {
     }
    ```
 
-  3. Now you can inject your interface in any spring component.
-     [MyRequestReplyAdapter](examples/mq-reactive/src/main/java/co/com/bancolombia/sample/drivenadapters/reqreply/MyRequestReplyAdapter.java)
+3. Now you can inject your interface in any spring component.
+   [MyRequestReplyAdapter](examples/mq-reactive/src/main/java/co/com/bancolombia/sample/drivenadapters/reqreply/MyRequestReplyAdapter.java)
+
   ```java
     @Component
     @AllArgsConstructor
@@ -246,6 +251,7 @@ To achieve the auto implementation, you should:
   ```
 
 Is possible that you require to add the line before the `SpringApplication.run(MainApplication.class, args);` like:
+
 ```java
  public static void main(String[] args) {
     System.setProperty("spring.devtools.restart.enabled", "false");
@@ -254,27 +260,28 @@ Is possible that you require to add the line before the `SpringApplication.run(M
 ```
 
 ### Request Reply Fixed Queue
+
 When the use of a temporary queue is not available for persistent reasons, or lost of messages is not allowed
 you can use a Request Reply pattern based on a fixed queue, you should consider the next scenarios:
 
 - Single Queue Manager:
-    In this scenario you should not consider any setup. Following code snippet can show a basic implementation:
+  In this scenario you should not consider any setup. Following code snippet can show a basic implementation:
 
     ```java
     @ReqReply(requestQueue = "DEV.QUEUE.1", replyQueue = "DEV.QUEUE.2", queueType = FIXED)
     public interface MyRequestReply extends MQRequestReply {
     }
    ```
-    Then inject this interface to your adapter like with temporary queue
+  Then inject this interface to your adapter like with temporary queue
 
 - Multiple Queue Manager or Clustering:
-    In this scenario you should guarantee that:
-  - the application that attends the request follow the replyTo header.
-  - set to `true` the property `commons.jms.input-queue-set-queue-manager` to identify and set the queue manager to the
-    response queue (this guarantees that the application that attends the request send the response to the specific
-    queue manager).
-  - Then the same like with a single Queue Manager
-    
+  In this scenario you should guarantee that:
+    - the application that attends the request follow the replyTo header.
+    - set to `true` the property `commons.jms.input-queue-set-queue-manager` to identify and set the queue manager to
+      the
+      response queue (this guarantees that the application that attends the request send the response to the specific
+      queue manager).
+    - Then the same like with a single Queue Manager
 
 ## Setup
 
@@ -311,11 +318,13 @@ There are three configuration properties:
   value of 0 means live indefinitely*.
 
 ### Connection Retry properties
+
 - `commons.jms.max-retries`: Number of retries when the connection is lost.
 - `commons.jms.initial-retry-interval-millis`: Initial interval between retries in milliseconds.
 - `commons.jms.retry-multiplier`: Multiplier for the interval between retries.
 
-For more information about the connection retry properties, please refer to [Resilience4j Retry](https://resilience4j.readme.io/docs/retry)
+For more information about the connection retry properties, please refer
+to [Resilience4j Retry](https://resilience4j.readme.io/docs/retry)
 
 ### Connection Factory
 
@@ -331,6 +340,7 @@ If you need multi-broker support you only should define the ConnectionFactory be
 and then use this name on each annotation that you need.
 
 This setting is available for:
+
 - `@MQSender`
 - `@MQListener`
 - `@ReqReply`
@@ -376,17 +386,19 @@ You should create and register many fixed response queues for request reply, in 
 ### From 1.x.x to 2.x.x
 
 Change notes:
+
 - `@MQListener` has removed support to listen a temporary queue, because `@ReqReply` use this behaviour by default.
 - `@ReqReply` has added support to do a request reply pattern using fixed queues with get message by selector.
 
 Actions:
+
 - `@EnableMQSelectorMessageListener` has been removed, now you can use `@ReqReply` directly using `queueType` attribute
   with value `FIXED`.
 - `@EnableMQMessageSender` has been removed, now you should use `@EnableMQGateway`.
-- `@EnableReqReply` has been removed, now you should use `@EnableMQGateway` passing the same `scanBasePackages` property.
+- `@EnableReqReply` has been removed, now you should use `@EnableMQGateway` passing the same `scanBasePackages`
+  property.
 - property `replyQueueTemp` has been renamed to `replyQueue` in `@ReqReply`.
 - `commons.jms.input-queue-alias` has been removed now you only can set the alias with `replyQueue`.
-
 
 # How can I help?
 

@@ -18,12 +18,12 @@ class MQTemporaryQueuesContainerImpTest {
     private MQQueuesContainer container;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         container = new MQQueuesContainerImp();
     }
 
     @Test
-    void shouldBePrintable(){
+    void shouldBePrintable() {
         assertEquals("MQQueuesContainerImp{tempQueues={}, tempQueueGroups={}}", container.toString());
     }
 
@@ -47,7 +47,7 @@ class MQQueuesContainerImpTest {
     private MQQueuesContainer container;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         container = new MQQueuesContainerImp();
     }
 

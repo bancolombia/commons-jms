@@ -3,7 +3,6 @@ package co.com.bancolombia.sample.replier.entrypoints;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.mq.EnableMQGateway;
 import co.com.bancolombia.commons.jms.mq.MQListener;
-import co.com.bancolombia.sample.replier.drivenadapters.XDomainSender;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.TextMessage;

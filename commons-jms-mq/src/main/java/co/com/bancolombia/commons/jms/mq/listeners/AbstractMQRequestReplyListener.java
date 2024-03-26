@@ -22,11 +22,11 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
     private final String replyQueue;
 
     protected AbstractMQRequestReplyListener(MQMessageSender sender,
-                                          ReactiveReplyRouter<T> router,
-                                          MQQueuesContainer queuesContainer,
-                                          Destination requestQueue,
-                                          String replyQueue,
-                                          int maxRetries) {
+                                             ReactiveReplyRouter<T> router,
+                                             MQQueuesContainer queuesContainer,
+                                             Destination requestQueue,
+                                             String replyQueue,
+                                             int maxRetries) {
         super(maxRetries);
         this.sender = sender;
         this.router = router;

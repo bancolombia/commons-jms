@@ -14,6 +14,10 @@ commons:
     reactive: true
     input-concurrency: 1
     input-queue: "DEV.QUEUE.2"
+    reply:
+      port: 5555
+      timeout: 5000
+      endpoint: http://${POD_IP}:5555/reply
 ibm:
   mq:
     channel: "DEV.APP.SVRCONN"
@@ -24,5 +28,3 @@ management:
   endpoint:
     health:
       show-details: always
-my:
-  selector-mode: MULTI_CONTEXT_SHARED

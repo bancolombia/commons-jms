@@ -10,7 +10,8 @@ import org.springframework.lang.NonNull;
 @AllArgsConstructor
 public class MQListenerAutoconfiguration implements BeanPostProcessor {
     private final MQSpringResolver resolver;
-        @Override
+
+    @Override
     public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) {
         MQListenerFactory.postProcessAfterInitialization(resolver, bean, beanName);
         return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);

@@ -34,7 +34,7 @@ class HttpReactiveReplyRouterTest {
 
     @BeforeEach
     void setup() {
-        router = new HttpReactiveReplyRouter(client, manager, "http://localhost:5555/reply");
+        router = new HttpReactiveReplyRouter(client, manager);
     }
 
     @Test
@@ -42,7 +42,7 @@ class HttpReactiveReplyRouterTest {
         // Arrange
         String mocked = "body";
         when(message.getText()).thenReturn(mocked);
-        when(manager.set(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.empty());
+        when(manager.set(anyString(), any(Duration.class))).thenReturn(Mono.empty());
         // Act
         Mono<JmsMessage> flow = router.wait("message-id");
         Mono<Void> replyFlow = router.remoteReply("message-id", message);
@@ -56,7 +56,7 @@ class HttpReactiveReplyRouterTest {
         // Arrange
         String mocked = "body";
         when(message.getText()).thenReturn(mocked);
-        when(manager.set(anyString(), anyString(), any(Duration.class))).thenReturn(Mono.empty());
+        when(manager.set(anyString(), any(Duration.class))).thenReturn(Mono.empty());
         when(manager.get(anyString())).thenReturn(Mono.just("http://somehost:5555/reply"));
         when(client.remoteReply(anyString(), any(JmsMessage.class))).thenReturn(Mono.empty());
         // Act

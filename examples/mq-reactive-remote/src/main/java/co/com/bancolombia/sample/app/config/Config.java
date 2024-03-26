@@ -65,20 +65,6 @@ public class Config {
         return connectionFactory;
     }
 
-    @Bean
-    @SneakyThrows
-    public ConnectionFactory domainB(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
-        JmsProperties.Cache cacheProperties = jmsProperties.getCache();
-        properties.setQueueManager("QM2");
-        properties.setConnName("localhost(1415)");
-        MQConnectionFactory wrappedConnectionFactory = createConnectionFactory(properties, sslBundles, factoryCustomizers);
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(wrappedConnectionFactory);
-        connectionFactory.setCacheConsumers(cacheProperties.isConsumers());
-        connectionFactory.setCacheProducers(cacheProperties.isProducers());
-        connectionFactory.setSessionCacheSize(cacheProperties.getSessionCacheSize());
-        return connectionFactory;
-    }
-
     private static MQConnectionFactory createConnectionFactory(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers) {
         return (new MQConnectionFactoryFactory(properties, (SslBundles) sslBundles.getIfAvailable(), (List) factoryCustomizers.getIfAvailable())).createConnectionFactory(MQConnectionFactory.class);
     }

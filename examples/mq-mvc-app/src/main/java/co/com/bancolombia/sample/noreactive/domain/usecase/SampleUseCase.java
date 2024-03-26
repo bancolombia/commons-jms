@@ -1,7 +1,7 @@
 package co.com.bancolombia.sample.noreactive.domain.usecase;
 
-import co.com.bancolombia.sample.noreactive.domain.model.RequestGateway;
 import co.com.bancolombia.sample.noreactive.domain.model.Request;
+import co.com.bancolombia.sample.noreactive.domain.model.RequestGateway;
 import co.com.bancolombia.sample.noreactive.domain.model.Result;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;

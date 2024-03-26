@@ -22,12 +22,4 @@ public class SampleReqReplyUseCase {
                         .build())
                 .doOnSuccess(result -> log.info("Response got {}", result.toString()));
     }
-
-    public Mono<Result> sendAndReceiveTmp() {
-        return gateway.doRequestTmp(Request.builder()
-                        .id(UUID.randomUUID().toString())
-                        .createdAt(new Date().getTime())
-                        .build())
-                .doOnSuccess(result -> log.info("Response got {}", result.toString()));
-    }
 }
