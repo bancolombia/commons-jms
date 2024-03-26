@@ -16,7 +16,6 @@ import jakarta.jms.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
@@ -57,7 +56,7 @@ class MQSpringResolverTest {
     private MQSpringResolver resolver;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         resolver = new MQSpringResolver(beanFactory);
         resolver.setEmbeddedValueResolver(stringValueResolver);
     }

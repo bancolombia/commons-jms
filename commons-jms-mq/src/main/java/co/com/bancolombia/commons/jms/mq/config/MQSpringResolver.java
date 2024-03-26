@@ -16,7 +16,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.ResolvableType;
-import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -92,10 +91,14 @@ public class MQSpringResolver implements EmbeddedValueResolverAware {
         return getResolver().resolveStringValue(value);
     }
 
-    @SuppressWarnings("unchecked")
     public ReactiveReplyRouter<Message> resolveReplier() {
-        ResolvableType resolvable = ResolvableType.forClassWithGenerics(ReactiveReplyRouter.class, Message.class);
-        return (ReactiveReplyRouter<Message>) getProvider(resolvable).getIfAvailable(ReactiveReplyRouter::new);
+        return resolveReplier(Message.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> ReactiveReplyRouter<T> resolveReplier(Class<T> clazz) {
+        ResolvableType resolvable = ResolvableType.forClassWithGenerics(ReactiveReplyRouter.class, clazz);
+        return (ReactiveReplyRouter<T>) getProvider(resolvable).getIfAvailable(ReactiveReplyRouter::new);
     }
 
     @Override

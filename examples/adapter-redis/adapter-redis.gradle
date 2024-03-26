@@ -1,0 +1,8 @@
+dependencies {
+    api project(':commons-jms-http-replier')
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+}
+
+bootJar {
+    enabled = false
+}

@@ -55,7 +55,7 @@ public class Config {
         return connectionFactory;
     }
 
-    @Bean
+    //    @Bean
     @SneakyThrows
     public ConnectionFactory domainB(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
         JmsProperties.Cache cacheProperties = jmsProperties.getCache();

@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 logging:
   level:
     root: INFO
@@ -18,4 +18,5 @@ ibm:
   mq:
     channel: "DEV.APP.SVRCONN"
     user: "app"
+    password: passw0rd
     queue-manager: QM1

@@ -1,12 +1,15 @@
 ## Contributing
 
 [fork]: https://github.com/bancolombia/commons-jms/fork
+
 [pr]: https://github.com/bancolombia/commons-jms/compare
+
 [code-of-conduct]: CODE_OF_CONDUCT.md
 
 Hi there! We're thrilled that you'd like to contribute to this project. Your help is essential for keeping it great.
 
-Please note that this project is released with a [Contributor Code of Conduct][code-of-conduct]. By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of Conduct][code-of-conduct]. By participating in
+this project you agree to abide by its terms.
 
 ## Submitting a pull request
 
@@ -32,7 +35,8 @@ Here are a few things you can do that will increase the likelihood of your pull 
 
 - Follow the [style guide][link to styleguide].
 - Write tests.
-- Keep your change as focused as possible. If there are multiple changes you would like to make that are not dependent upon each other, submit them as separate pull requests.
+- Keep your change as focused as possible. If there are multiple changes you would like to make that are not dependent
+  upon each other, submit them as separate pull requests.
 - Write [good commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 ## Resources

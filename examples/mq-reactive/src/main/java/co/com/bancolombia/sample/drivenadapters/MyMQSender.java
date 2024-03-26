@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Component
 @AllArgsConstructor
 public class MyMQSender implements SenderGateway {
-//    private final MQMessageSender sender;
+    //    private final MQMessageSender sender;
     private final XDomainSender sender2;
     private final ObjectMapper mapper;
     private final MQQueuesContainer container;

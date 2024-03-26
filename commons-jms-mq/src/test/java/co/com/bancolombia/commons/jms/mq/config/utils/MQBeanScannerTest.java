@@ -1,8 +1,6 @@
 package co.com.bancolombia.commons.jms.mq.config.utils;
 
 import co.com.bancolombia.commons.jms.mq.ReqReply;
-import co.com.bancolombia.commons.jms.mq.config.utils.MQBeanScanner;
-import co.com.bancolombia.commons.jms.mq.config.utils.MQFactoryBean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;

@@ -65,7 +65,7 @@ class MQRequestReplyListenerTest {
     }
 
     @Test
-    void shouldHandleTimeoutReply() throws JMSException {
+    void shouldHandleTimeoutReply() {
         // Arrange
         when(sender.send(any(Destination.class), any(MQMessageCreator.class))).thenReturn(Mono.just("id"));
         Duration duration = Duration.ofMillis(200);

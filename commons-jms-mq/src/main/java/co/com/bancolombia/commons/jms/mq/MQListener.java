@@ -28,6 +28,7 @@ public @interface MQListener {
 
     /**
      * Listening queue name
+     *
      * @return queue name
      */
     @AliasFor("value")
