@@ -21,7 +21,7 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
     private final Destination requestQueue;
     private final String replyQueue;
 
-    public AbstractMQRequestReplyListener(MQMessageSender sender,
+    protected AbstractMQRequestReplyListener(MQMessageSender sender,
                                           ReactiveReplyRouter<T> router,
                                           MQQueuesContainer queuesContainer,
                                           Destination requestQueue,

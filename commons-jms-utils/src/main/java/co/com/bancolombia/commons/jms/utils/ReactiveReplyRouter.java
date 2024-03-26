@@ -60,6 +60,8 @@ public class ReactiveReplyRouter<T> {
     }
 
     public Mono<Void> remoteReply(String correlationID, Message response) {
-        return Mono.error(() -> new UnsupportedOperationException("Not implemented"));
+        return Mono.error(() ->
+                new UnsupportedOperationException("remoteReply not implemented error with "
+                        + correlationID + " " + response));
     }
 }
