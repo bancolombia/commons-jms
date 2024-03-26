@@ -1,7 +1,7 @@
-package co.com.bancolombia.sample.app.config;
+package co.com.bancolombia.remote.app.config;
 
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
-import co.com.bancolombia.sample.domain.model.Result;
+import co.com.bancolombia.remote.domain.model.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.mq.jakarta.jms.MQConnectionFactory;
 import com.ibm.mq.spring.boot.MQConfigurationProperties;

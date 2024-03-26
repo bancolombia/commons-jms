@@ -1,4 +1,4 @@
-package co.com.bancolombia.sample.drivenadapters.reqreply;
+package co.com.bancolombia.remote.drivenadapters.reqreply;
 
 import co.com.bancolombia.commons.jms.api.MQRequestReplyRemote;
 import co.com.bancolombia.commons.jms.mq.ReqReply;

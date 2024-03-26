@@ -1,9 +1,9 @@
-package co.com.bancolombia.sample.drivenadapters.reqreply;
+package co.com.bancolombia.remote.drivenadapters.reqreply;
 
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
-import co.com.bancolombia.sample.domain.model.Request;
-import co.com.bancolombia.sample.domain.model.RequestGateway;
-import co.com.bancolombia.sample.domain.model.Result;
+import co.com.bancolombia.remote.domain.model.Result;
+import co.com.bancolombia.remote.domain.model.Request;
+import co.com.bancolombia.remote.domain.model.RequestGateway;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;

@@ -1,4 +1,4 @@
-package co.com.bancolombia.sample.app;
+package co.com.bancolombia.remote.app;
 
 import co.com.bancolombia.commons.jms.mq.EnableMQGateway;
 import org.springframework.boot.SpringApplication;

@@ -1,7 +1,7 @@
-package co.com.bancolombia.sample.entrypoints;
+package co.com.bancolombia.remote.entrypoints;
 
-import co.com.bancolombia.sample.domain.model.Result;
-import co.com.bancolombia.sample.domain.usecase.SampleReqReplyUseCase;
+import co.com.bancolombia.remote.domain.model.Result;
+import co.com.bancolombia.remote.domain.usecase.SampleReqReplyUseCase;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

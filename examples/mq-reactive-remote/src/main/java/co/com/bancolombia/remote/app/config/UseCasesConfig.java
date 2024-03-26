@@ -1,4 +1,4 @@
-package co.com.bancolombia.sample.app.config;
+package co.com.bancolombia.remote.app.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
