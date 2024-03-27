@@ -8,6 +8,8 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 
+import java.nio.charset.StandardCharsets;
+
 @Log4j2
 @UtilityClass
 public class Utils {
@@ -18,7 +20,10 @@ public class Utils {
         if (message instanceof TextMessage) {
             body = ((TextMessage) message).getText();
         } else if (message instanceof BytesMessage) {
-            body = ((BytesMessage) message).readUTF();
+            BytesMessage bytesMessage = (BytesMessage) message;
+            byte[] byteArray = new byte[(int) bytesMessage.getBodyLength()];
+            bytesMessage.readBytes(byteArray);
+            body = new String(byteArray, StandardCharsets.UTF_8);
         } else {
             log.warn("Message type not identified getting response as String");
             body = message.getBody(String.class);
