@@ -20,6 +20,7 @@ import com.ibm.mq.jakarta.jms.MQQueue;
 import jakarta.jms.Message;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -73,8 +74,8 @@ public class MQAutoconfiguration {
 
     @Bean
     @ConditionalOnMissingBean(MQHealthListener.class)
-    public MQHealthListener defaultMqHealthListener() {
-        return new MQListenerHealthIndicator();
+    public MQHealthListener defaultMqHealthListener(ApplicationEventPublisher publisher) {
+        return new MQListenerHealthIndicator(publisher);
     }
 
     @Bean

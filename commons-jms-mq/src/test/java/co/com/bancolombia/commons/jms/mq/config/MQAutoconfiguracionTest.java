@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_TARGET_CLIENT;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -37,6 +38,8 @@ class MQAutoconfiguracionTest {
     private JMSContext context;
     @Mock
     private JMSProducer producer;
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @Test
     void shouldCreateCustomizer() throws JMSException {
@@ -89,7 +92,7 @@ class MQAutoconfiguracionTest {
 
     @Test
     void shouldCreateMQListenerHealthIndicator() {
-        MQHealthListener bean = configuration.defaultMqHealthListener();
+        MQHealthListener bean = configuration.defaultMqHealthListener(publisher);
         Assertions.assertNotNull(bean);
     }
 
