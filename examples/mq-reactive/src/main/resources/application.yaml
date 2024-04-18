@@ -21,6 +21,9 @@ ibm:
     password: passw0rd
     queue-manager: QM1
 management:
+  health:
+    probes:
+      enabled: true # To test liveness and readiness probes
   endpoint:
     health:
       show-details: always

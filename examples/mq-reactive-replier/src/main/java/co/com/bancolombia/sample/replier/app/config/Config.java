@@ -6,6 +6,8 @@ import com.ibm.mq.jakarta.jms.MQConnectionFactory;
 import com.ibm.mq.spring.boot.MQConfigurationProperties;
 import com.ibm.mq.spring.boot.MQConnectionFactoryCustomizer;
 import com.ibm.mq.spring.boot.MQConnectionFactoryFactory;
+import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
+import com.ibm.msg.client.jakarta.wmq.WMQConstants;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.DeliveryMode;
 import lombok.SneakyThrows;
@@ -19,6 +21,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.CachingConnectionFactory;
 
 import java.util.List;
+
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CLIENT_RECONNECT_DISABLED;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CM_CLIENT;
+import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_TEMPORARY_MODEL;
 
 @Configuration
 @EnableConfigurationProperties({MQConfigurationProperties.class, JmsProperties.class})
@@ -43,33 +49,49 @@ public class Config {
     @Bean
     @Primary
     @SneakyThrows
-    public ConnectionFactory cachingJmsConnectionFactory(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
-        JmsProperties.Cache cacheProperties = jmsProperties.getCache();
-        properties.setQueueManager("QM1");
-        properties.setConnName("localhost(1414)");
-        MQConnectionFactory wrappedConnectionFactory = createConnectionFactory(properties, sslBundles, factoryCustomizers);
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(wrappedConnectionFactory);
-        connectionFactory.setCacheConsumers(cacheProperties.isConsumers());
-        connectionFactory.setCacheProducers(cacheProperties.isProducers());
-        connectionFactory.setSessionCacheSize(cacheProperties.getSessionCacheSize());
-        return connectionFactory;
+    public ConnectionFactory domainA(MQConfigurationProperties properties) {
+        System.setProperty("com.ibm.mq.cfg.useIBMCipherMappings", "false");
+        JmsFactoryFactory ff = JmsFactoryFactory.getInstance(WMQConstants.JAKARTA_WMQ_PROVIDER);
+        MQConnectionFactory mqConnection = (MQConnectionFactory) ff.createConnectionFactory();
+        mqConnection.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQ_CM_CLIENT);
+        mqConnection.setClientReconnectOptions(WMQ_CLIENT_RECONNECT_DISABLED); // with this all exceptions are thrown
+
+        mqConnection.setConnectionNameList(properties.getConnName());
+        mqConnection.setQueueManager(properties.getQueueManager());
+        mqConnection.setChannel(properties.getChannel());
+        mqConnection.setStringProperty(WMQConstants.USERID, properties.getUser());
+        mqConnection.setStringProperty(WMQConstants.PASSWORD, properties.getPassword());
+        if (properties.getTempModel() != null) {
+            mqConnection.setStringProperty(WMQ_TEMPORARY_MODEL, properties.getTempModel());
+        }
+        return mqConnection;
     }
 
-    //    @Bean
+    @Bean
     @SneakyThrows
-    public ConnectionFactory domainB(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers, JmsProperties jmsProperties) {
-        JmsProperties.Cache cacheProperties = jmsProperties.getCache();
+    public ConnectionFactory domainB(MQConfigurationProperties original) {
+        System.setProperty("com.ibm.mq.cfg.useIBMCipherMappings", "false");
+        MQConfigurationProperties properties = new MQConfigurationProperties();
+        properties.setUser(original.getUser());
+        properties.setPassword(original.getPassword());
+        properties.setChannel(original.getChannel());
         properties.setQueueManager("QM2");
         properties.setConnName("localhost(1415)");
-        MQConnectionFactory wrappedConnectionFactory = createConnectionFactory(properties, sslBundles, factoryCustomizers);
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(wrappedConnectionFactory);
-        connectionFactory.setCacheConsumers(cacheProperties.isConsumers());
-        connectionFactory.setCacheProducers(cacheProperties.isProducers());
-        connectionFactory.setSessionCacheSize(cacheProperties.getSessionCacheSize());
-        return connectionFactory;
-    }
 
-    private static MQConnectionFactory createConnectionFactory(MQConfigurationProperties properties, ObjectProvider<SslBundles> sslBundles, ObjectProvider<List<MQConnectionFactoryCustomizer>> factoryCustomizers) {
-        return (new MQConnectionFactoryFactory(properties, (SslBundles) sslBundles.getIfAvailable(), (List) factoryCustomizers.getIfAvailable())).createConnectionFactory(MQConnectionFactory.class);
+
+        JmsFactoryFactory ff = JmsFactoryFactory.getInstance(WMQConstants.JAKARTA_WMQ_PROVIDER);
+        MQConnectionFactory mqConnection = (MQConnectionFactory) ff.createConnectionFactory();
+        mqConnection.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQ_CM_CLIENT);
+        mqConnection.setClientReconnectOptions(WMQ_CLIENT_RECONNECT_DISABLED); // with this all exceptions are thrown
+
+        mqConnection.setConnectionNameList(properties.getConnName());
+        mqConnection.setQueueManager(properties.getQueueManager());
+        mqConnection.setChannel(properties.getChannel());
+        mqConnection.setStringProperty(WMQConstants.USERID, properties.getUser());
+        mqConnection.setStringProperty(WMQConstants.PASSWORD, properties.getPassword());
+        if (properties.getTempModel() != null) {
+            mqConnection.setStringProperty(WMQ_TEMPORARY_MODEL, properties.getTempModel());
+        }
+        return mqConnection;
     }
 }
