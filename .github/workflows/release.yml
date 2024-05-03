@@ -36,7 +36,7 @@ jobs:
           commit-message: 'docs(version): Update version to ${{ env.RELEASE_VERSION }}' # Change RELEASE_VERSION by your own or none
           force-add: "true"
           force-push: "true"
-          files: CHANGELOG.md README.md gradle.properties src/main/java/co/com/bancolombia/Constants.java # List of changed files
+          files: CHANGELOG.md gradle.properties
           name: Release Bot
           email: release-bot@bancolombia.com.co
       - name: Set up JDK 17
