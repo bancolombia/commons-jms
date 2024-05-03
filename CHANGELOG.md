@@ -1,0 +1,294 @@
+# Changelog
+
+## [Unreleased](https://github.com/bancolombia/commons-jms/tree/HEAD)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...HEAD)
+
+**Merged pull requests:**
+
+- fix\(release\): implementing semantic release [\#50](https://github.com/bancolombia/commons-jms/pull/50) ([santicalleg](https://github.com/santicalleg))
+- fix\(release\): implementing semantic release [\#49](https://github.com/bancolombia/commons-jms/pull/49) ([santicalleg](https://github.com/santicalleg))
+- fix\(release\): implementing semantic release [\#47](https://github.com/bancolombia/commons-jms/pull/47) ([santicalleg](https://github.com/santicalleg))
+
+## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.2)
+
+## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.0)
+
+**Merged pull requests:**
+
+- fix\(health\): Fix liveness and readiness indicators when connection br… [\#44](https://github.com/bancolombia/commons-jms/pull/44) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.2.1](https://github.com/bancolombia/commons-jms/tree/v2.2.1) (2024-03-27)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v.2.2.0...v2.2.1)
+
+**Merged pull requests:**
+
+- Fix bytes message read bytes message [\#43](https://github.com/bancolombia/commons-jms/pull/43) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v.2.2.0](https://github.com/bancolombia/commons-jms/tree/v.2.2.0) (2024-03-26)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.1.1...v.2.2.0)
+
+**Merged pull requests:**
+
+- Add support for location transparency with remote reply abstraction [\#42](https://github.com/bancolombia/commons-jms/pull/42) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.1.1](https://github.com/bancolombia/commons-jms/tree/v2.1.1) (2024-03-12)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.1.0...v2.1.1)
+
+**Merged pull requests:**
+
+- Selector mode from properties [\#41](https://github.com/bancolombia/commons-jms/pull/41) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.1.0](https://github.com/bancolombia/commons-jms/tree/v2.1.0) (2024-03-12)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.0.2...v2.1.0)
+
+**Merged pull requests:**
+
+- feat\(multi-context-selector\): Enable multi context selector listener … [\#39](https://github.com/bancolombia/commons-jms/pull/39) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.0.2](https://github.com/bancolombia/commons-jms/tree/v2.0.2) (2024-02-26)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.0.1...v2.0.2)
+
+**Merged pull requests:**
+
+- Add new listener type [\#38](https://github.com/bancolombia/commons-jms/pull/38) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.0.1](https://github.com/bancolombia/commons-jms/tree/v2.0.1) (2024-02-07)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.0.0...v2.0.1)
+
+**Implemented enhancements:**
+
+- Allow @ReqReply to listen replies with fixed queues  [\#31](https://github.com/bancolombia/commons-jms/issues/31)
+
+**Merged pull requests:**
+
+- fix vuln with force dependency resolution [\#37](https://github.com/bancolombia/commons-jms/pull/37) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.0.0](https://github.com/bancolombia/commons-jms/tree/v2.0.0) (2024-02-07)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v1.4.1...v2.0.0)
+
+**Merged pull requests:**
+
+- upgrade version [\#36](https://github.com/bancolombia/commons-jms/pull/36) ([juancgalvis](https://github.com/juancgalvis))
+- feat\(multi-qmgr\): Enable multi queue manager and reques reply for fixed queues [\#35](https://github.com/bancolombia/commons-jms/pull/35) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v1.4.1](https://github.com/bancolombia/commons-jms/tree/v1.4.1) (2024-01-17)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v1.4.0-alpha...v1.4.1)
+
+**Merged pull requests:**
+
+- Update some dependencies [\#34](https://github.com/bancolombia/commons-jms/pull/34) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v1.4.0-alpha](https://github.com/bancolombia/commons-jms/tree/v1.4.0-alpha) (2023-10-30)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v1.3.0.RELEASE...v1.4.0-alpha)
+
+**Merged pull requests:**
+
+- create temp queue by thread, automatic one reconnecting retry when se… [\#33](https://github.com/bancolombia/commons-jms/pull/33) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v1.3.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v1.3.0.RELEASE) (2023-10-27)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v1.2.0.RELEASE...v1.3.0.RELEASE)
+
+**Merged pull requests:**
+
+- Improve selector listener [\#32](https://github.com/bancolombia/commons-jms/pull/32) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v1.2.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v1.2.0.RELEASE) (2023-09-27)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v1.1.0.RELEASE...v1.2.0.RELEASE)
+
+**Merged pull requests:**
+
+- Allow custom selector [\#30](https://github.com/bancolombia/commons-jms/pull/30) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v1.1.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v1.1.0.RELEASE) (2023-06-29)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v1.0.1.RELEASE...v1.1.0.RELEASE)
+
+**Merged pull requests:**
+
+- update to spring boot 3.1.1 [\#29](https://github.com/bancolombia/commons-jms/pull/29) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v1.0.1.RELEASE](https://github.com/bancolombia/commons-jms/tree/v1.0.1.RELEASE) (2023-04-27)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v1.0.0.RELEASE...v1.0.1.RELEASE)
+
+**Implemented enhancements:**
+
+- Add dependency check gradle plugin [\#26](https://github.com/bancolombia/commons-jms/issues/26)
+- Update to jakarta to Spring Boot 3 compatibility [\#24](https://github.com/bancolombia/commons-jms/issues/24)
+
+**Merged pull requests:**
+
+- feat: External retry connection configuration [\#28](https://github.com/bancolombia/commons-jms/pull/28) ([godieg](https://github.com/godieg))
+- feat: added dependency check plugin. [\#27](https://github.com/bancolombia/commons-jms/pull/27) ([gabheadz](https://github.com/gabheadz))
+
+## [v1.0.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v1.0.0.RELEASE) (2023-02-08)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.6.0.RELEASE...v1.0.0.RELEASE)
+
+**Merged pull requests:**
+
+- Update to jakarta specification and spring boot 3 [\#25](https://github.com/bancolombia/commons-jms/pull/25) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.6.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.6.0.RELEASE) (2022-12-16)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.5.3.RELEASE...v0.6.0.RELEASE)
+
+**Merged pull requests:**
+
+- update docs, remove some issues, remove deprecated classes [\#23](https://github.com/bancolombia/commons-jms/pull/23) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.5.3.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.5.3.RELEASE) (2022-12-13)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.5.2.RELEASE...v0.5.3.RELEASE)
+
+**Merged pull requests:**
+
+- Resolve connected queue manager from connection [\#22](https://github.com/bancolombia/commons-jms/pull/22) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.5.2.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.5.2.RELEASE) (2022-12-01)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.5.1.RELEASE...v0.5.2.RELEASE)
+
+**Merged pull requests:**
+
+- auto save queue with queue manager assigned in the MQ queues container [\#21](https://github.com/bancolombia/commons-jms/pull/21) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.5.1.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.5.1.RELEASE) (2022-11-30)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.5.0.RELEASE...v0.5.1.RELEASE)
+
+**Merged pull requests:**
+
+- Feature/set queue manager with option [\#20](https://github.com/bancolombia/commons-jms/pull/20) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.5.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.5.0.RELEASE) (2022-11-23)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.4.0.RELEASE...v0.5.0.RELEASE)
+
+**Merged pull requests:**
+
+- Extract queue manager from temporary queue, update dependencies [\#19](https://github.com/bancolombia/commons-jms/pull/19) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.4.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.4.0.RELEASE) (2022-09-21)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.3.0.RELEASE...v0.4.0.RELEASE)
+
+**Fixed bugs:**
+
+- Listeners stop after broker connection lost [\#16](https://github.com/bancolombia/commons-jms/issues/16)
+
+**Merged pull requests:**
+
+- update dependencies [\#18](https://github.com/bancolombia/commons-jms/pull/18) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.3.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.3.0.RELEASE) (2022-06-09)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.2.0.RELEASE...v0.3.0.RELEASE)
+
+**Merged pull requests:**
+
+- add reconnection strategy when mq connection is lost [\#17](https://github.com/bancolombia/commons-jms/pull/17) ([juancgalvis](https://github.com/juancgalvis))
+- Fix vulnerability alerts and activate secret scanner [\#15](https://github.com/bancolombia/commons-jms/pull/15) ([dhfherna](https://github.com/dhfherna))
+- Feature/automatic release [\#14](https://github.com/bancolombia/commons-jms/pull/14) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.2.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.2.0.RELEASE) (2022-04-27)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.1.3.RELEASE...v0.2.0.RELEASE)
+
+**Merged pull requests:**
+
+- upgrade spring, upgrade gradle, implement request reply abstraction [\#13](https://github.com/bancolombia/commons-jms/pull/13) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.1.3.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.1.3.RELEASE) (2022-04-08)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.1.2.RELEASE...v0.1.3.RELEASE)
+
+**Merged pull requests:**
+
+- upgrade spring dependencies [\#12](https://github.com/bancolombia/commons-jms/pull/12) ([juancgalvis](https://github.com/juancgalvis))
+- fix release action [\#11](https://github.com/bancolombia/commons-jms/pull/11) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.1.2.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.1.2.RELEASE) (2022-01-17)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.1.1.RELEASE...v0.1.2.RELEASE)
+
+**Merged pull requests:**
+
+- downgrade spring version, update mq version, log4j2 version [\#10](https://github.com/bancolombia/commons-jms/pull/10) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.1.1.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.1.1.RELEASE) (2022-01-14)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.1.0.RELEASE...v0.1.1.RELEASE)
+
+**Merged pull requests:**
+
+- include reactive reply router as utils class, remove issue [\#9](https://github.com/bancolombia/commons-jms/pull/9) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.1.0.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.1.0.RELEASE) (2022-01-13)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.0.5.RELEASE...v0.1.0.RELEASE)
+
+**Merged pull requests:**
+
+- Feature/fixed queues container [\#8](https://github.com/bancolombia/commons-jms/pull/8) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.0.5.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.0.5.RELEASE) (2021-10-11)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.0.4.RELEASE...v0.0.5.RELEASE)
+
+**Merged pull requests:**
+
+- add default retries [\#7](https://github.com/bancolombia/commons-jms/pull/7) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.0.4.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.0.4.RELEASE) (2021-09-24)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.0.3.RELEASE...v0.0.4.RELEASE)
+
+**Merged pull requests:**
+
+- add ssl context utils to use with jks [\#6](https://github.com/bancolombia/commons-jms/pull/6) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.0.3.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.0.3.RELEASE) (2021-09-20)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v0.0.2.RELEASE...v0.0.3.RELEASE)
+
+**Merged pull requests:**
+
+- Add simple interface to get message with correlationId from a fixed queue [\#5](https://github.com/bancolombia/commons-jms/pull/5) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v0.0.2.RELEASE](https://github.com/bancolombia/commons-jms/tree/v0.0.2.RELEASE) (2021-09-15)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/0.0.1...v0.0.2.RELEASE)
+
+**Merged pull requests:**
+
+- Enable non reactive usage, add non reactive sample [\#4](https://github.com/bancolombia/commons-jms/pull/4) ([juancgalvis](https://github.com/juancgalvis))
+
+## [0.0.1](https://github.com/bancolombia/commons-jms/tree/0.0.1) (2021-07-20)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/b3407e86aa56513ab35b399a0e1166c45920da15...0.0.1)
+
+**Merged pull requests:**
+
+- remove the test assertion, because the thread is asynchronous [\#3](https://github.com/bancolombia/commons-jms/pull/3) ([juancgalvis](https://github.com/juancgalvis))
+- Feature/examples [\#2](https://github.com/bancolombia/commons-jms/pull/2) ([juancgalvis](https://github.com/juancgalvis))
+- Initial version [\#1](https://github.com/bancolombia/commons-jms/pull/1) ([juancgalvis](https://github.com/juancgalvis))
+
+
+
