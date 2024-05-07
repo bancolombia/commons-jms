@@ -1,8 +1,8 @@
 dependencies {
     api project(':commons-jms-api')
-    implementation "org.apache.commons:commons-lang3:${commonsLang}"
-    implementation "io.github.resilience4j:resilience4j-retry:${resilience4j}"
-    implementation "org.apache.logging.log4j:log4j-api:${loggingVersion}"
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation "io.github.resilience4j:resilience4j-retry:2.2.0"
+    implementation "org.apache.logging.log4j:log4j-api:2.23.1"
 }
 
 ext {
