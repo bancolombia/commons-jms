@@ -1,5 +1,20 @@
 # Changelog
 
+## [v2.2.5](https://github.com/bancolombia/commons-jms/tree/v2.2.5) (2024-05-07)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.4...v2.2.5)
+
+**Implemented enhancements:**
+
+- implement a semantic versioning and automatic semantic release  [\#46](https://github.com/bancolombia/commons-jms/issues/46)
+- Add CHANGELOG.md generation [\#45](https://github.com/bancolombia/commons-jms/issues/45)
+
+**Merged pull requests:**
+
+- ci\(updater\): Add github actions to autoupdate dependencies [\#54](https://github.com/bancolombia/commons-jms/pull/54) ([juancgalvis](https://github.com/juancgalvis))
+- fix\(deps\): update dependencies [\#53](https://github.com/bancolombia/commons-jms/pull/53) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+- ci\(updater\): Add scaffold clean architecture gradle plugin [\#52](https://github.com/bancolombia/commons-jms/pull/52) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.2.4](https://github.com/bancolombia/commons-jms/tree/v2.2.4) (2024-05-06)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.3...v2.2.4)
