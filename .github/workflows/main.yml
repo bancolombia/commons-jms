@@ -49,9 +49,8 @@ jobs:
         run: npx semantic-release@23.0.0
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }} # debe crear un Personal Access Token
-      - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
