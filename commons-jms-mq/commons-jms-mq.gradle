@@ -1,6 +1,6 @@
 dependencies {
     api project(':commons-jms-utils')
-    api 'com.ibm.mq:mq-jms-spring-boot-starter:' + mqJMSVersion
+    api 'com.ibm.mq:mq-jms-spring-boot-starter:3.2.4'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-actuator'
 }
@@ -15,4 +15,3 @@ ext {
     artifactId = 'commons-jms-mq'
     artifactDescription = 'Commons JMS MQ'
 }
-

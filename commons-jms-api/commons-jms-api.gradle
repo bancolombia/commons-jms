@@ -1,5 +1,5 @@
 dependencies {
-    api 'jakarta.jms:jakarta.jms-api:' + jsmAPI
+    api 'jakarta.jms:jakarta.jms-api:3.1.0'
 }
 
 ext {
