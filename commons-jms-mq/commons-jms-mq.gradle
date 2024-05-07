@@ -7,7 +7,7 @@ dependencies {
 
 configurations.configureEach {
     resolutionStrategy {
-        force 'org.json:json:20240205' // to avoid CVE-2023-5072
+        force 'org.json:json:20240303' // to avoid CVE-2023-5072
     }
 }
 

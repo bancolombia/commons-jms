@@ -59,9 +59,9 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok'
         testCompileOnly 'org.projectlombok:lombok'
         testImplementation 'io.projectreactor:reactor-test'
-        testImplementation platform('org.junit:junit-bom:5.10.0')
+        testImplementation platform('org.junit:junit-bom:5.11.0-M1')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-        testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'
+        testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0'
     }
 
     test {
