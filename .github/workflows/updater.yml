@@ -1,7 +1,7 @@
 name: updater
 on:
   schedule:
-    - cron: '0 12 * * 5' # every Monday at 07:00 Colombia Time
+    - cron: '0 12 * * 5' # every Friday at 07:00 Colombia Time
 jobs:
   build:
     runs-on: ubuntu-latest
