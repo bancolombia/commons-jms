@@ -1,8 +1,15 @@
 buildscript {
     repositories {
+        mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         mavenCentral()
         maven { url "https://repo.spring.io/milestone" }
         maven { url "https://repo.spring.io/snapshot" }
+    }
+    dependencies {
+        classpath "co.com.bancolombia.cleanArchitecture:scaffold-clean-architecture:3.16.4-LOCAL"
     }
 }
 
@@ -13,5 +20,7 @@ plugins {
     id 'org.springframework.boot' version '3.2.4' apply false
     id 'org.owasp.dependencycheck' version '9.0.9' apply false
 }
+
+apply plugin: 'co.com.bancolombia.cleanArchitecture'
 
 apply from: './main.gradle'
