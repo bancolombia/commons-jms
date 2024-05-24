@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.2.7](https://github.com/bancolombia/commons-jms/tree/v2.2.7) (2024-05-24)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.6...v2.2.7)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies [\#56](https://github.com/bancolombia/commons-jms/pull/56) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
 ## [v2.2.6](https://github.com/bancolombia/commons-jms/tree/v2.2.6) (2024-05-18)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.5...v2.2.6)
