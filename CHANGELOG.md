@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.2.8](https://github.com/bancolombia/commons-jms/tree/v2.2.8) (2024-06-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.7...v2.2.8)
+
+**Merged pull requests:**
+
+- fix\(deps\): Update deps with vulns [\#58](https://github.com/bancolombia/commons-jms/pull/58) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.2.7](https://github.com/bancolombia/commons-jms/tree/v2.2.7) (2024-05-24)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.6...v2.2.7)
