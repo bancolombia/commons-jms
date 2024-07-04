@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.2.11](https://github.com/bancolombia/commons-jms/tree/v2.2.11) (2024-07-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.10...v2.2.11)
+
+**Merged pull requests:**
+
+- fix\(performance\): Return to specific scheduler used in v1.3.0 for message selector [\#61](https://github.com/bancolombia/commons-jms/pull/61) ([juancgalvis](https://github.com/juancgalvis))
+- fix\(deps\): update dependencies [\#60](https://github.com/bancolombia/commons-jms/pull/60) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
 ## [v2.2.10](https://github.com/bancolombia/commons-jms/tree/v2.2.10) (2024-06-24)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.9...v2.2.10)
