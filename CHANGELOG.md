@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.2.12](https://github.com/bancolombia/commons-jms/tree/v2.2.12) (2024-07-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.11...v2.2.12)
+
+**Merged pull requests:**
+
+- fix\(scheduler\): Save single scheduler on selector instantiation [\#62](https://github.com/bancolombia/commons-jms/pull/62) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.2.11](https://github.com/bancolombia/commons-jms/tree/v2.2.11) (2024-07-04)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.10...v2.2.11)
