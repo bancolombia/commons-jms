@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 @AllArgsConstructor
 public class MQMultiContextMessageSelectorListener implements MQMessageSelectorListener {
     private final MQMessageSelectorListenerSync listenerSync; // MQMultiContextMessageSelectorListenerSync
+    private final MQExecutorService executorService;
 
     @Override
     public Mono<Message> getMessage(String correlationId) {
@@ -48,6 +49,6 @@ public class MQMultiContextMessageSelectorListener implements MQMessageSelectorL
 
     private Mono<Message> doAsync(Supplier<Message> supplier) {
         return Mono.fromSupplier(supplier)
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.fromExecutor(executorService));
     }
 }

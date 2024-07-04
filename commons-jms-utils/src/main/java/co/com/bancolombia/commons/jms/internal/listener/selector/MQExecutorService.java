@@ -1,4 +1,4 @@
-package co.com.bancolombia.commons.jms.mq.listeners;
+package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

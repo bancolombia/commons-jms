@@ -11,7 +11,7 @@ import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.Select
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.health.MQListenerHealthIndicator;
-import co.com.bancolombia.commons.jms.mq.listeners.MQExecutorService;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
