@@ -13,7 +13,7 @@ import co.com.bancolombia.commons.jms.mq.ReqReply;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import co.com.bancolombia.commons.jms.mq.config.MQSpringResolver;
 import co.com.bancolombia.commons.jms.mq.config.senders.MQSenderContainer;
-import co.com.bancolombia.commons.jms.mq.listeners.MQExecutorService;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;

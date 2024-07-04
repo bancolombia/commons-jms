@@ -8,6 +8,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
@@ -163,8 +164,9 @@ public class MQReqReplyFactory {
                 selectorModeProvider,
                 queuesContainer);
         SelectorBuilder selector = resolver.getSelectorBuilder();
+        MQExecutorService executorService = resolver.getMqExecutorService();
         MQMessageSelectorListener reactiveSelectorListener = new MQMultiContextMessageSelectorListener(
-                selectorListener);
+                selectorListener, executorService);
         return new MQRequestReplySelector(
                 sender,
                 queuesContainer,

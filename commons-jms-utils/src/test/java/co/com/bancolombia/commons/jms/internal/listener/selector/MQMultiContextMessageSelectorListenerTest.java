@@ -25,6 +25,8 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.UUID;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 import static co.com.bancolombia.commons.jms.internal.listener.selector.MQContextMessageSelectorListenerSync.DEFAULT_TIMEOUT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +39,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MQMultiContextMessageSelectorListenerTest {
+    public static final int MAX_THREADS = 200;
+    public static final long KEEP_ALIVE_SECONDS = 5L;
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock
@@ -73,7 +77,10 @@ class MQMultiContextMessageSelectorListenerTest {
         MQMessageSelectorListenerSync listenerSync =
                 new MQMultiContextMessageSelectorListenerSync(config, healthListener,
                         retryableConfig, provider, container);
-        listener = new MQMultiContextMessageSelectorListener(listenerSync);
+        MQExecutorService executorService =
+                new MQExecutorService(0, MAX_THREADS, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
+                        new SynchronousQueue<>());
+        listener = new MQMultiContextMessageSelectorListener(listenerSync, executorService);
     }
 
     @Test

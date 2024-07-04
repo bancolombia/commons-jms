@@ -9,7 +9,7 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
-import co.com.bancolombia.commons.jms.mq.listeners.MQExecutorService;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import com.ibm.mq.jakarta.jms.MQQueue;
 import jakarta.jms.JMSContext;
