@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.2.13](https://github.com/bancolombia/commons-jms/tree/v2.2.13) (2024-07-08)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.12...v2.2.13)
+
+**Merged pull requests:**
+
+- fix\(selector\): Add getter to use listener externally [\#64](https://github.com/bancolombia/commons-jms/pull/64) ([maocq](https://github.com/maocq))
+- fix\(deps\): update dependencies [\#63](https://github.com/bancolombia/commons-jms/pull/63) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
 ## [v2.2.12](https://github.com/bancolombia/commons-jms/tree/v2.2.12) (2024-07-04)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.11...v2.2.12)
