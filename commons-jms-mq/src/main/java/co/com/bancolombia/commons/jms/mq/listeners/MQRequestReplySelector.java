@@ -9,11 +9,13 @@ import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.Select
 import jakarta.jms.Destination;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+@Getter
 @Log4j2
 public final class MQRequestReplySelector implements MQRequestReply {
     public static final int SECONDS_TIMEOUT = 30;
