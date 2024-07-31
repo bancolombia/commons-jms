@@ -63,9 +63,8 @@ public final class MQRequestReplySelector implements MQRequestReply {
                         container.get(replyQueue)));
     }
 
-    public Mono<Message> requestReply(
-            Destination request, Destination reply, MQMessageCreator messageCreator, Duration timeout) {
-        return sender.send(request, messageCreator)
+    public Mono<Message> requestReply(String message, Destination request, Destination reply, Duration timeout) {
+        return sender.send(request, defaultCreator(message))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(), reply));
     }
 
