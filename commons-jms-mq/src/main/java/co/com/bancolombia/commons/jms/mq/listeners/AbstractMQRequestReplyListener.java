@@ -53,6 +53,10 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
         return sender.send(requestQueue, messageCreator).flatMap(id -> router.wait(id, timeout));
     }
 
+    public Mono<T> requestReply(Destination destination, MQMessageCreator messageCreator, Duration timeout) {
+        return sender.send(destination, messageCreator).flatMap(id -> router.wait(id, timeout));
+    }
+
     private MQMessageCreator defaultCreator(String message) {
         return ctx -> {
             Message jmsMessage = ctx.createTextMessage(message);
