@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.2.15](https://github.com/bancolombia/commons-jms/tree/v2.2.15) (2024-08-01)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.14...v2.2.15)
+
+**Merged pull requests:**
+
+- fix\(selector\): Add getter to use listener externally [\#68](https://github.com/bancolombia/commons-jms/pull/68) ([maocq](https://github.com/maocq))
+
 ## [v2.2.14](https://github.com/bancolombia/commons-jms/tree/v2.2.14) (2024-07-20)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.13...v2.2.14)
