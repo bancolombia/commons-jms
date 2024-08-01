@@ -7,11 +7,13 @@ import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import jakarta.jms.Destination;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
+@Getter
 @Log4j2
 public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListenerRetries {
     public static final int SECONDS_TIMEOUT = 30;
@@ -49,6 +51,10 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
 
     public Mono<T> requestReply(MQMessageCreator messageCreator, Duration timeout) {
         return sender.send(requestQueue, messageCreator).flatMap(id -> router.wait(id, timeout));
+    }
+
+    public Mono<T> requestReply(String message, Destination request, Duration timeout) {
+        return sender.send(request, defaultCreator(message)).flatMap(id -> router.wait(id, timeout));
     }
 
     private MQMessageCreator defaultCreator(String message) {
