@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.2.17](https://github.com/bancolombia/commons-jms/tree/v2.2.17) (2024-08-23)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.16...v2.2.17)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies [\#69](https://github.com/bancolombia/commons-jms/pull/69) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
 ## [v2.2.16](https://github.com/bancolombia/commons-jms/tree/v2.2.16) (2024-08-09)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.15...v2.2.16)
@@ -116,7 +124,7 @@
 
 ## [v2.2.3](https://github.com/bancolombia/commons-jms/tree/v2.2.3) (2024-05-03)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.3)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.3)
 
 **Merged pull requests:**
 
@@ -124,13 +132,13 @@
 - fix\(release\): implementing semantic release [\#49](https://github.com/bancolombia/commons-jms/pull/49) ([santicalleg](https://github.com/santicalleg))
 - fix\(release\): implementing semantic release [\#47](https://github.com/bancolombia/commons-jms/pull/47) ([santicalleg](https://github.com/santicalleg))
 
-## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
-
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.2)
-
 ## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.0)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.0)
+
+## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.2)
 
 **Merged pull requests:**
 
