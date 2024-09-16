@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.3.0](https://github.com/bancolombia/commons-jms/tree/v2.3.0) (2024-09-16)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.18...v2.3.0)
+
+**Merged pull requests:**
+
+- feat\(sslcontext\): Create context from pems and add trustore from OS dirs [\#73](https://github.com/bancolombia/commons-jms/pull/73) ([juancgalvis](https://github.com/juancgalvis))
+- fix\(deps\): update dependencies [\#71](https://github.com/bancolombia/commons-jms/pull/71) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
 ## [v2.2.18](https://github.com/bancolombia/commons-jms/tree/v2.2.18) (2024-08-30)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.17...v2.2.18)
