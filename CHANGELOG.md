@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.3.1](https://github.com/bancolombia/commons-jms/tree/v2.3.1) (2024-09-17)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.3.0...v2.3.1)
+
+**Merged pull requests:**
+
+- fix\(sslcontext\): ignore empty certs [\#74](https://github.com/bancolombia/commons-jms/pull/74) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.3.0](https://github.com/bancolombia/commons-jms/tree/v2.3.0) (2024-09-16)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.18...v2.3.0)
