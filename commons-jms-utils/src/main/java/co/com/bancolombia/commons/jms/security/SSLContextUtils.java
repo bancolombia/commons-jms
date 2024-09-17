@@ -145,11 +145,13 @@ public class SSLContextUtils {
                                       String certs) throws KeyStoreException, CertificateException {
         String[] pemCerts = certs.split("-----END CERTIFICATE-----");
         for (String pem : pemCerts) {
-            String fullPem = pem + "-----END CERTIFICATE-----\n";
-            X509Certificate cert = (X509Certificate) certFactory
-                    .generateCertificate(new ByteArrayInputStream(fullPem.getBytes()));
-            log.log(Level.FINE, "Loading cert: " + cert.getSubjectX500Principal().getName());
-            trustStore.setCertificateEntry(Integer.toString(sequence.incrementAndGet()), cert);
+            if (pem.contains("BEGIN CERTIFICATE")) {
+                String fullPem = pem + "-----END CERTIFICATE-----\n";
+                X509Certificate cert = (X509Certificate) certFactory
+                        .generateCertificate(new ByteArrayInputStream(fullPem.getBytes()));
+                log.log(Level.FINE, "Loading cert: " + cert.getSubjectX500Principal().getName());
+                trustStore.setCertificateEntry(Integer.toString(sequence.incrementAndGet()), cert);
+            }
         }
     }
 
