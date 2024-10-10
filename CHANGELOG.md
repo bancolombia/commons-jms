@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.3.3](https://github.com/bancolombia/commons-jms/tree/v2.3.3) (2024-10-10)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.3.2...v2.3.3)
+
+**Merged pull requests:**
+
+- fix\(health\): Add option to disable health indicator for MQ listeners [\#76](https://github.com/bancolombia/commons-jms/pull/76) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.3.2](https://github.com/bancolombia/commons-jms/tree/v2.3.2) (2024-09-24)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.3.1...v2.3.2)
