@@ -24,6 +24,8 @@ management:
   health:
     probes:
       enabled: true # To test liveness and readiness probes
+    jms:
+      enabled: false
   endpoint:
     health:
       show-details: always
