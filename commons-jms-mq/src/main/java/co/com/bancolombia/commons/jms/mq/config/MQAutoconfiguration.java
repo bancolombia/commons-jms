@@ -7,17 +7,19 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
+import co.com.bancolombia.commons.jms.mq.config.health.MQListenerDisabledHealthIndicator;
 import co.com.bancolombia.commons.jms.mq.config.health.MQListenerHealthIndicator;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import com.ibm.mq.jakarta.jms.MQQueue;
 import jakarta.jms.Message;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
@@ -74,7 +76,11 @@ public class MQAutoconfiguration {
 
     @Bean
     @ConditionalOnMissingBean(MQHealthListener.class)
-    public MQHealthListener defaultMqHealthListener(ApplicationEventPublisher publisher) {
+    public MQHealthListener defaultMqHealthListener(ApplicationEventPublisher publisher,
+                                                    @Value("${management.health.jms.enabled:true}") boolean enabled) {
+        if (!enabled) {
+            return new MQListenerDisabledHealthIndicator();
+        }
         return new MQListenerHealthIndicator(publisher);
     }
 
