@@ -37,6 +37,8 @@ class MQRequestReplySelectorTest {
     @Mock
     private Queue destination;
     @Mock
+    private Queue replyDestination;
+    @Mock
     private JMSContext context;
     @Mock
     private MQMessageSender sender;
@@ -68,6 +70,32 @@ class MQRequestReplySelectorTest {
         when(listener.getMessageBySelector(anyString(), anyLong(), any(Destination.class))).thenReturn(Mono.just(message));
         // Act
         Mono<Message> reply = reqReply.requestReply("MyMessage");
+        // Assert
+        StepVerifier.create(reply)
+                .assertNext(message1 -> assertEquals(message, message1))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSendAndGetReplyFromFixedWithSpecificQueuesFromStringMessage() {
+        // Arrange
+        when(sender.send(any(Destination.class), any(MQMessageCreator.class))).thenReturn(Mono.just("id"));
+        when(listener.getMessageBySelector(anyString(), anyLong(), any(Destination.class))).thenReturn(Mono.just(message));
+        // Act
+        Mono<Message> reply = reqReply.requestReply("MyMessage", destination, replyDestination, Duration.ofSeconds(1));
+        // Assert
+        StepVerifier.create(reply)
+                .assertNext(message1 -> assertEquals(message, message1))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSendAndGetReplyFromFixedWithSpecificQueues() {
+        // Arrange
+        when(sender.send(any(Destination.class), any(MQMessageCreator.class))).thenReturn(Mono.just("id"));
+        when(listener.getMessageBySelector(anyString(), anyLong(), any(Destination.class))).thenReturn(Mono.just(message));
+        // Act
+        Mono<Message> reply = reqReply.requestReply(context -> message, destination, replyDestination, Duration.ofSeconds(1));
         // Assert
         StepVerifier.create(reply)
                 .assertNext(message1 -> assertEquals(message, message1))
