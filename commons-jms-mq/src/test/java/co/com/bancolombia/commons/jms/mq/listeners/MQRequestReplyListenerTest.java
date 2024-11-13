@@ -3,6 +3,7 @@ package co.com.bancolombia.commons.jms.mq.listeners;
 import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.InvalidUsageException;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import jakarta.jms.Destination;
@@ -98,6 +99,26 @@ class MQRequestReplyListenerTest {
         // Act
         listener.onMessage(message);
         // Assert
+    }
+
+    @Test
+    void shouldFailWhenUsingFixedMethod() throws JMSException {
+        // Arrange
+        // Act
+        Mono<Message> flow = listener.requestReply(context1 -> message, destination, destination, Duration.ofSeconds(1));
+        // Assert
+        StepVerifier.create(flow)
+                .verifyError(InvalidUsageException.class);
+    }
+
+    @Test
+    void shouldFailWhenUsingFixedMethodStringMessage() throws JMSException {
+        // Arrange
+        // Act
+        Mono<Message> flow = listener.requestReply("message", destination, destination, Duration.ofSeconds(1));
+        // Assert
+        StepVerifier.create(flow)
+                .verifyError(InvalidUsageException.class);
     }
 
 }
