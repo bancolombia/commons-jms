@@ -47,7 +47,8 @@ class MQRequestReplyListenerTest {
         String queue = "sample";
         MQQueuesContainer container = new MQQueuesContainerImp();
         container.registerQueue(queue, destination);
-        listener = new MQRequestReplyListener(sender, new ReactiveReplyRouter<>(), container, destination, queue, 1);
+        listener = new MQRequestReplyListener(sender, new ReactiveReplyRouter<>(), container, destination, queue,
+                Message::getJMSCorrelationID, 1);
     }
 
     @Test
@@ -105,7 +106,8 @@ class MQRequestReplyListenerTest {
     void shouldFailWhenUsingFixedMethod() throws JMSException {
         // Arrange
         // Act
-        Mono<Message> flow = listener.requestReply(context1 -> message, destination, destination, Duration.ofSeconds(1));
+        Mono<Message> flow = listener.requestReply(context1 -> message, destination, destination,
+                Duration.ofSeconds(1));
         // Assert
         StepVerifier.create(flow)
                 .verifyError(InvalidUsageException.class);

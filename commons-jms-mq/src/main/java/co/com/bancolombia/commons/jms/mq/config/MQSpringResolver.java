@@ -4,13 +4,14 @@ import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.senders.MQSenderContainer;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Message;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -25,6 +26,7 @@ import org.springframework.util.StringValueResolver;
 @RequiredArgsConstructor
 public class MQSpringResolver implements EmbeddedValueResolverAware {
     private final BeanFactory beanFactory;
+    @Getter
     private StringValueResolver resolver;
 
     public <T> T resolveBean(String name, Class<T> clazz) {
@@ -41,10 +43,6 @@ public class MQSpringResolver implements EmbeddedValueResolverAware {
 
     public <T> ObjectProvider<T> getProvider(ResolvableType type) {
         return beanFactory.getBeanProvider(type);
-    }
-
-    public StringValueResolver getResolver() {
-        return resolver;
     }
 
     public ConnectionFactory getConnectionFactory(String name) {

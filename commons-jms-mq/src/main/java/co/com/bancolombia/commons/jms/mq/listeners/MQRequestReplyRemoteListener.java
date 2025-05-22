@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQRequestReplyRemote;
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
+import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import jakarta.jms.Destination;
 import jakarta.jms.Message;
@@ -18,14 +19,14 @@ public final class MQRequestReplyRemoteListener extends AbstractMQRequestReplyLi
 
     public MQRequestReplyRemoteListener(MQMessageSender sender, ReactiveReplyRouter<JmsMessage> router,
                                         MQQueuesContainer queuesContainer, Destination requestQueue,
-                                        String replyQueue, int maxRetries) {
-        super(sender, router, queuesContainer, requestQueue, replyQueue, maxRetries);
+                                        String replyQueue, CorrelationExtractor correlationExtractor, int maxRetries) {
+        super(sender, router, queuesContainer, requestQueue, replyQueue, correlationExtractor, maxRetries);
     }
 
     @SneakyThrows
     @Override
     protected Mono<Object> process(Message message) {
-        return router.remoteReply(message.getJMSCorrelationID(), message)
+        return router.remoteReply(getCorrelationId(message), message)
                 .then(Mono.empty());
     }
 }

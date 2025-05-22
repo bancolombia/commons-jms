@@ -8,6 +8,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
+import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
@@ -62,6 +63,7 @@ public class MQReqReplyFactory {
         MQQueuesContainer queuesContainer = resolver.getQueuesContainer();
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
         Destination destination = resolveDestination(annotation, resolver, properties);
+        CorrelationExtractor correlationExtractor = resolveCorrelationExtractor(annotation, resolver);
         switch (listenerConfig.getQueueType()) {
             case FIXED: {
                 return fixedQueueWithMessageSelector(annotation, resolver, listenerConfig, sender, healthListener,
@@ -69,11 +71,11 @@ public class MQReqReplyFactory {
             }
             case FIXED_LOCATION_TRANSPARENCY: {
                 return fixedQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination);
+                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor);
             }
             default: {
                 return temporaryQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination);
+                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor);
             }
         }
     }
@@ -85,7 +87,8 @@ public class MQReqReplyFactory {
                                                                           MQHealthListener healthListener,
                                                                           MQQueuesContainer queuesContainer,
                                                                           RetryableConfig retryableConfig,
-                                                                          Destination destination) {
+                                                                          Destination destination,
+                                                                          CorrelationExtractor correlationExtractor) {
         log.info("Using temporary queue with async listener");
         ReactiveReplyRouter<Message> router = resolver.resolveReplier();
         MQRequestReplyListener senderWithRouter = new MQRequestReplyListener(
@@ -94,6 +97,7 @@ public class MQReqReplyFactory {
                 queuesContainer,
                 destination,
                 listenerConfig.getListeningQueue(),
+                correlationExtractor,
                 listenerConfig.getMaxRetries());
         try {
             MQListenerConfig finalListenerConfig = listenerConfig.toBuilder()
@@ -119,7 +123,8 @@ public class MQReqReplyFactory {
                                                                             MQHealthListener healthListener,
                                                                             MQQueuesContainer queuesContainer,
                                                                             RetryableConfig retryableConfig,
-                                                                            Destination destination) {
+                                                                            Destination destination,
+                                                                            CorrelationExtractor correlationExtractor) {
         log.info("Using fixed queue with location transparency");
         ReactiveReplyRouter<JmsMessage> router = resolver.resolveReplier(JmsMessage.class);
         MQRequestReplyRemoteListener senderWithRouter = new MQRequestReplyRemoteListener(
@@ -128,6 +133,7 @@ public class MQReqReplyFactory {
                 queuesContainer,
                 destination,
                 listenerConfig.getListeningQueue(),
+                correlationExtractor,
                 listenerConfig.getMaxRetries());
         try {
             MQListenerConfig finalListenerConfig = listenerConfig.toBuilder()
@@ -227,7 +233,8 @@ public class MQReqReplyFactory {
     }
 
     // Selector
-    private static SelectorModeProvider getSelectorModeProvider(MQSpringResolver resolver, String mode, int concurrency) {
+    private static SelectorModeProvider getSelectorModeProvider(MQSpringResolver resolver, String mode,
+                                                                int concurrency) {
         if (MQListenerConfig.SelectorMode.CONTEXT_PER_MESSAGE.name().equals(mode)) {
             return (factory, context) -> new ContextPerMessageStrategy(factory);
         }
@@ -238,6 +245,12 @@ public class MQReqReplyFactory {
             return SelectorModeProvider.defaultSelector();
         }
         return resolver.resolveBean(mode, SelectorModeProvider.class);
+    }
+
+
+    @SneakyThrows
+    private static CorrelationExtractor resolveCorrelationExtractor(ReqReply annotation, MQSpringResolver resolver) {
+        return resolver.resolveBean(annotation.correlationExtractor(), CorrelationExtractor.class);
     }
 }
 
