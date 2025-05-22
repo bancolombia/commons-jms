@@ -111,5 +111,12 @@ public @interface ReqReply {
      */
     String selectorMode() default "CONTEXT_SHARED";
 
+    /**
+     * Correlation Extractor for Replies
+     *
+     * @return bean name
+     * default empty and uses getJMSCorrelationId()
+     */
+    String correlationExtractor() default "";
 
 }

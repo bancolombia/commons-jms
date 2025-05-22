@@ -7,6 +7,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -129,6 +130,13 @@ public class MQAutoconfiguration {
     public SelectorBuilder defaultSelectorBuilder() {
         return SelectorBuilder.ofDefaults();
     }
+
+    @Bean
+    @ConditionalOnMissingBean(CorrelationExtractor.class)
+    public CorrelationExtractor defaultCorrelationExtractor() {
+        return Message::getJMSCorrelationID;
+    }
+
 
     @Bean
     @ConditionalOnMissingBean(MQExecutorService.class)

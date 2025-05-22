@@ -3,8 +3,10 @@ package co.com.bancolombia.commons.jms.mq.listeners;
 import co.com.bancolombia.commons.jms.api.MQMessageCreator;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
 import lombok.Getter;
@@ -22,12 +24,14 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
     private final MQQueuesContainer queuesContainer;
     private final Destination requestQueue;
     private final String replyQueue;
+    private final CorrelationExtractor correlationExtractor;
 
     protected AbstractMQRequestReplyListener(MQMessageSender sender,
                                              ReactiveReplyRouter<T> router,
                                              MQQueuesContainer queuesContainer,
                                              Destination requestQueue,
                                              String replyQueue,
+                                             CorrelationExtractor correlationExtractor,
                                              int maxRetries) {
         super(maxRetries);
         this.sender = sender;
@@ -35,6 +39,7 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
         this.queuesContainer = queuesContainer;
         this.requestQueue = requestQueue;
         this.replyQueue = replyQueue;
+        this.correlationExtractor = correlationExtractor;
     }
 
     public Mono<T> requestReply(String message) {
@@ -55,6 +60,10 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
 
     public Mono<T> requestReply(String message, Destination request, Duration timeout) {
         return sender.send(request, defaultCreator(message)).flatMap(id -> router.wait(id, timeout));
+    }
+
+    protected String getCorrelationId(Message message) throws JMSException {
+        return correlationExtractor.getCorrelationValue(message);
     }
 
     private MQMessageCreator defaultCreator(String message) {

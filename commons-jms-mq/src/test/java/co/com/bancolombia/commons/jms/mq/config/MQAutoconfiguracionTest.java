@@ -7,6 +7,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
@@ -131,6 +132,12 @@ class MQAutoconfiguracionTest {
     @Test
     void shouldCreateReactiveReplyRouter() {
         ReactiveReplyRouter<Message> bean = configuration.selectorReactiveReplyRouter();
+        Assertions.assertNotNull(bean);
+    }
+
+    @Test
+    void shouldCreateCorrelationExtractor() {
+        CorrelationExtractor bean = configuration.defaultCorrelationExtractor();
         Assertions.assertNotNull(bean);
     }
 }

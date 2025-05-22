@@ -50,7 +50,8 @@ class MQRequestReplyRemoteListenerTest {
         String queue = "sample";
         MQQueuesContainer container = new MQQueuesContainerImp();
         container.registerQueue(queue, destination);
-        listener = new MQRequestReplyRemoteListener(sender, new RemoteReactiveReplyRouter(), container, destination, queue, 1);
+        listener = new MQRequestReplyRemoteListener(sender, new RemoteReactiveReplyRouter(), container, destination,
+                queue, Message::getJMSCorrelationID, 1);
     }
 
     @Test
