@@ -55,7 +55,7 @@ subprojects {
         testImplementation 'io.projectreactor:reactor-test'
         testImplementation platform('org.junit:junit-bom:5.13.0-M2')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-        testImplementation 'org.mockito:mockito-junit-jupiter:5.17.0'
+        testImplementation 'org.mockito:mockito-junit-jupiter:5.18.0'
     }
 
     test {
