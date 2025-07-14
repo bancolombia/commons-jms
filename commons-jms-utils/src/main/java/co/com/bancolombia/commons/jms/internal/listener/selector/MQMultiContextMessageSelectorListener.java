@@ -9,50 +9,55 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
 import java.util.function.Supplier;
+
+import static co.com.bancolombia.commons.jms.internal.listener.selector.MQContextMessageSelectorListenerSync.DEFAULT_TIMEOUT;
 
 @Log4j2
 public class MQMultiContextMessageSelectorListener implements MQMessageSelectorListener {
     private final MQMessageSelectorListenerSync listenerSync; // MQMultiContextMessageSelectorListenerSync
     private final Scheduler scheduler;
 
-    public MQMultiContextMessageSelectorListener(MQMessageSelectorListenerSync listenerSync, MQExecutorService executorService) {
+    public MQMultiContextMessageSelectorListener(MQMessageSelectorListenerSync listenerSync,
+                                                 MQExecutorService executorService) {
         this.listenerSync = listenerSync;
         this.scheduler = Schedulers.fromExecutor(executorService);
     }
 
     @Override
     public Mono<Message> getMessage(String correlationId) {
-        return doAsync(() -> listenerSync.getMessage(correlationId));
+        return doAsync(() -> listenerSync.getMessage(correlationId), DEFAULT_TIMEOUT);
     }
 
     @Override
     public Mono<Message> getMessage(String correlationId, long timeout) {
-        return doAsync(() -> listenerSync.getMessage(correlationId, timeout));
+        return doAsync(() -> listenerSync.getMessage(correlationId, timeout), timeout);
     }
 
     @Override
     public Mono<Message> getMessage(String correlationId, long timeout, Destination destination) {
-        return doAsync(() -> listenerSync.getMessage(correlationId, timeout, destination));
+        return doAsync(() -> listenerSync.getMessage(correlationId, timeout, destination), timeout);
     }
 
     @Override
     public Mono<Message> getMessageBySelector(String selector) {
-        return doAsync(() -> listenerSync.getMessageBySelector(selector));
+        return doAsync(() -> listenerSync.getMessageBySelector(selector), DEFAULT_TIMEOUT);
     }
 
     @Override
     public Mono<Message> getMessageBySelector(String selector, long timeout) {
-        return doAsync(() -> listenerSync.getMessageBySelector(selector, timeout));
+        return doAsync(() -> listenerSync.getMessageBySelector(selector, timeout), timeout);
     }
 
     @Override
     public Mono<Message> getMessageBySelector(String selector, long timeout, Destination destination) {
-        return doAsync(() -> listenerSync.getMessageBySelector(selector, timeout, destination));
+        return doAsync(() -> listenerSync.getMessageBySelector(selector, timeout, destination), timeout);
     }
 
-    private Mono<Message> doAsync(Supplier<Message> supplier) {
+    private Mono<Message> doAsync(Supplier<Message> supplier, long timeout) {
         return Mono.fromSupplier(supplier)
-                .subscribeOn(scheduler);
+                .subscribeOn(scheduler)
+                .timeout(Duration.ofMillis(timeout)); // Enforces timeout to ensure scheduler thread is released
     }
 }
