@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.4.4](https://github.com/bancolombia/commons-jms/tree/v2.4.4) (2025-07-14)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.3...v2.4.4)
+
+**Merged pull requests:**
+
+- fix\(release\): try to release new central repository [\#89](https://github.com/bancolombia/commons-jms/pull/89) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.4.3](https://github.com/bancolombia/commons-jms/tree/v2.4.3) (2025-07-14)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.2...v2.4.3)
