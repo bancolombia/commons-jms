@@ -8,7 +8,7 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.senders.MQSenderContainer;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import jakarta.jms.ConnectionFactory;
@@ -39,7 +39,7 @@ class MQSpringResolverTest {
     @Mock
     private RetryableConfig retryableConfig;
     @Mock
-    private MQExecutorService executor;
+    private MQSchedulerProvider executor;
     @Mock
     private MQBrokerUtils brokerUtils;
     @Mock
@@ -87,7 +87,7 @@ class MQSpringResolverTest {
                     if (arguments.equals(RetryableConfig.class)) {
                         return retryableConfig;
                     }
-                    if (arguments.equals(MQExecutorService.class)) {
+                    if (arguments.equals(MQSchedulerProvider.class)) {
                         return executor;
                     }
                     if (arguments.equals(MQQueueManagerSetter.class)) {

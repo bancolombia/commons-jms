@@ -8,7 +8,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
@@ -125,7 +125,7 @@ class MQAutoconfiguracionTest {
 
     @Test
     void shouldCreateMQExecutorService() {
-        MQExecutorService bean = configuration.defaultMqExecutorService();
+        MQSchedulerProvider bean = configuration.defaultMqExecutorService();
         Assertions.assertNotNull(bean);
     }
 

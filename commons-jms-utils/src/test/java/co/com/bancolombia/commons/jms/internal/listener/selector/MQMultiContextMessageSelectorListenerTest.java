@@ -22,11 +22,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 import java.util.UUID;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.TimeUnit;
 
 import static co.com.bancolombia.commons.jms.internal.listener.selector.MQContextMessageSelectorListenerSync.DEFAULT_TIMEOUT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MQMultiContextMessageSelectorListenerTest {
     public static final int MAX_THREADS = 200;
-    public static final long KEEP_ALIVE_SECONDS = 5L;
+    public static final int KEEP_ALIVE_SECONDS = 5;
     @Mock
     private ConnectionFactory connectionFactory;
     @Mock
@@ -77,9 +77,9 @@ class MQMultiContextMessageSelectorListenerTest {
         MQMessageSelectorListenerSync listenerSync =
                 new MQMultiContextMessageSelectorListenerSync(config, healthListener,
                         retryableConfig, provider, container);
-        MQExecutorService executorService =
-                new MQExecutorService(0, MAX_THREADS, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
-                        new SynchronousQueue<>());
+        Scheduler scheduler = Schedulers.newBoundedElastic(MAX_THREADS, MAX_THREADS, "selector-pool",
+                KEEP_ALIVE_SECONDS);
+        MQSchedulerProvider executorService = () -> scheduler;
         listener = new MQMultiContextMessageSelectorListener(listenerSync, executorService);
     }
 
@@ -149,7 +149,8 @@ class MQMultiContextMessageSelectorListenerTest {
         when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
         when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(message);
         // Act
-        Mono<Message> receiveMessage = listener.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT);
+        Mono<Message> receiveMessage = listener.getMessageBySelector("JMSMessageID='" + messageID + "'",
+                DEFAULT_TIMEOUT);
         // Assert
         StepVerifier.create(receiveMessage)
                 .assertNext(receivedMessage -> assertEquals(message, receivedMessage))
@@ -164,7 +165,8 @@ class MQMultiContextMessageSelectorListenerTest {
         when(context.createConsumer(any(Destination.class), anyString())).thenReturn(consumer);
         when(consumer.receive(DEFAULT_TIMEOUT)).thenReturn(null);
         // Act
-        Mono<Message> receiveMessage = listener.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT, queue);
+        Mono<Message> receiveMessage = listener.getMessageBySelector("JMSMessageID='" + messageID + "'",
+                DEFAULT_TIMEOUT, queue);
         // Assert
         StepVerifier.create(receiveMessage)
                 .expectError(ReceiveTimeoutException.class)

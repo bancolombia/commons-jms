@@ -7,7 +7,6 @@ import jakarta.jms.Message;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
 import java.util.function.Supplier;
@@ -20,9 +19,9 @@ public class MQMultiContextMessageSelectorListener implements MQMessageSelectorL
     private final Scheduler scheduler;
 
     public MQMultiContextMessageSelectorListener(MQMessageSelectorListenerSync listenerSync,
-                                                 MQExecutorService executorService) {
+                                                 MQSchedulerProvider schedulerProvider) {
         this.listenerSync = listenerSync;
-        this.scheduler = Schedulers.fromExecutor(executorService);
+        this.scheduler = schedulerProvider.get();
     }
 
     @Override
