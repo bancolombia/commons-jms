@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.4.5](https://github.com/bancolombia/commons-jms/tree/v2.4.5) (2025-07-17)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.4...v2.4.5)
+
+**Merged pull requests:**
+
+- fix\(scheduler\): Use reactor scheduler [\#90](https://github.com/bancolombia/commons-jms/pull/90) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.4.4](https://github.com/bancolombia/commons-jms/tree/v2.4.4) (2025-07-14)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.3...v2.4.4)
