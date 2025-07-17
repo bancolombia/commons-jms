@@ -4,7 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.senders.MQSenderContainer;
@@ -69,8 +69,8 @@ public class MQSpringResolver implements EmbeddedValueResolverAware {
         return beanFactory.getBean(RetryableConfig.class);
     }
 
-    public MQExecutorService getMqExecutorService() {
-        return beanFactory.getBean(MQExecutorService.class);
+    public MQSchedulerProvider getMqExecutorService() {
+        return beanFactory.getBean(MQSchedulerProvider.class);
     }
 
     public MQQueueManagerSetter getMqQueueManagerSetter() {

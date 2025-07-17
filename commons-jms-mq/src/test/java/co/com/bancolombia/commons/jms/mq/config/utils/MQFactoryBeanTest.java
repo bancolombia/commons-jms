@@ -7,13 +7,13 @@ import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQRequestReply;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.ReqReply;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
 import co.com.bancolombia.commons.jms.mq.config.MQSpringResolver;
 import co.com.bancolombia.commons.jms.mq.config.senders.MQSenderContainer;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
 import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
@@ -29,16 +29,20 @@ import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.StringValueResolver;
+import reactor.core.scheduler.Schedulers;
 
 import java.lang.annotation.Annotation;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MQFactoryBeanTest {
+    public static final int THREAD_CAP = 10;
+    public static final int TTL_SECONDS = 60;
     private final RetryableConfig retryableConfig = RetryableConfig.builder().build();
     private final MQSenderContainer senderContainer = new MQSenderContainer();
     @Mock
@@ -46,7 +50,7 @@ class MQFactoryBeanTest {
     @Mock
     private MQHealthListener healthListener;
     @Mock
-    private MQExecutorService executor;
+    private MQSchedulerProvider schedulerProvider;
     @Mock
     private MQBrokerUtils brokerUtils;
     @Mock
@@ -119,6 +123,8 @@ class MQFactoryBeanTest {
         // Arrange
         setup(Utils.getMetadataReqReplyFixed(), ReqReply.class);
         when(resolver.getProperties()).thenReturn(MQProperties.builder().reactive(true).build());
+        when(resolver.getMqExecutorService()).thenReturn(schedulerProvider);
+        when(schedulerProvider.get()).thenReturn(Schedulers.boundedElastic());
         when(resolver.resolveBean(MQMessageSender.class)).thenReturn(sender);
         when(connectionFactory.createContext()).thenReturn(context);
         when(context.createProducer()).thenReturn(producer);

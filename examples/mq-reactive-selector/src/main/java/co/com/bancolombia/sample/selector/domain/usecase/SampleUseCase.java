@@ -20,7 +20,6 @@ public class SampleUseCase {
                         .id(UUID.randomUUID().toString())
                         .createdAt(new Date().getTime())
                         .build())
-                .doOnSuccess(id -> log.info("Message sent: {}", id))
-                .flatMap(gateway::getResult);
+                .doOnSuccess(id -> log.info("Message sent: {}", id));
     }
 }

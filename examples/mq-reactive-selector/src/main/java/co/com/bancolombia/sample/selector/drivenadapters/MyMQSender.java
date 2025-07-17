@@ -1,14 +1,10 @@
 package co.com.bancolombia.sample.selector.drivenadapters;
 
-import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
-import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.mq.EnableMQGateway;
-import co.com.bancolombia.sample.selector.domain.exceptions.ParseMessageException;
 import co.com.bancolombia.sample.selector.domain.model.Request;
 import co.com.bancolombia.sample.selector.domain.model.RequestGateway;
 import co.com.bancolombia.sample.selector.domain.model.Result;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.Message;
 import jakarta.jms.TextMessage;
@@ -18,6 +14,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Date;
 
 @Component
@@ -25,30 +22,24 @@ import java.util.Date;
 @AllArgsConstructor
 @EnableMQGateway
 public class MyMQSender implements RequestGateway {
-    private final MQMessageSender sender;
-    private final MQMessageSelectorListener listener;
+    private final MyRequestReply requestReply; // domainB
     private final ObjectMapper mapper;
     private final MQQueuesContainer container;
 
     @Override
-    public Mono<String> send(Request request) {
-        return sender.send(ctx -> {
-            String json;
-            try {
-                json = mapper.writeValueAsString(request);
-            } catch (JsonProcessingException e) {
-                throw new ParseMessageException(e);
-            }
-            Message message = ctx.createTextMessage(json);
-//            log.info(container.get("DEV.QUEUE.2").toString());
-            message.setJMSReplyTo(container.get("DEV.QUEUE.2"));
-            return message;
-        });
+    public Mono<Result> send(Request request) {
+        return requestReply.requestReply(ctx -> {
+                    String json = mapToJson(request);
+                    Message message = ctx.createTextMessage(json);
+                    message.setJMSReplyTo(container.get("DEV.QUEUE.2"));
+                    return message;
+                }, Duration.ofSeconds(5))
+                .map(this::extractResponse);
     }
 
-    public Mono<Result> getResult(String correlationId) {
-        return listener.getMessage(correlationId)
-                .map(this::extractResponse);
+    @SneakyThrows
+    private String mapToJson(Request request) {
+        return mapper.writeValueAsString(request);
     }
 
     @SneakyThrows

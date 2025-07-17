@@ -8,7 +8,7 @@ import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQExecutorService;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
@@ -27,9 +27,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.TimeUnit;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_MQMD_READ_ENABLED;
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_MQMD_WRITE_ENABLED;
@@ -43,7 +42,7 @@ public class MQAutoconfiguration {
     public static final String CLASS_LOADER_WARN = "Your class loader has been changed, please add " +
             "System.setProperty(\"spring.devtools.restart.enabled\", \"false\"); before SpringApplication.run(...)";
     public static final int MAX_THREADS = 200;
-    public static final long KEEP_ALIVE_SECONDS = 5L;
+    public static final int KEEP_ALIVE_SECONDS = 5;
 
     @Bean
     @ConditionalOnMissingBean(MQQueueCustomizer.class)
@@ -139,11 +138,12 @@ public class MQAutoconfiguration {
 
 
     @Bean
-    @ConditionalOnMissingBean(MQExecutorService.class)
+    @ConditionalOnMissingBean(MQSchedulerProvider.class)
     @ConditionalOnProperty(prefix = "commons.jms", name = "reactive", havingValue = "true")
-    public MQExecutorService defaultMqExecutorService() {
-        return new MQExecutorService(0, MAX_THREADS, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
-                new SynchronousQueue<>());
+    public MQSchedulerProvider defaultMqExecutorService() {
+        Scheduler scheduler = Schedulers.newBoundedElastic(MAX_THREADS, 2, "selector-pool",
+                KEEP_ALIVE_SECONDS);
+        return () -> scheduler;
     }
 
     @Bean

@@ -31,8 +31,8 @@ public class MyMQListener {
                     TextMessage response = context.createTextMessage(textMessage.getText() + " replied default domain");
                     response.setJMSCorrelationID(textMessage.getJMSMessageID());
                     return response;
-                }).then()
-                .delaySubscription(Duration.ofMillis(100)); // Simulates some latency
+                }).then();
+//                .delaySubscription(Duration.ofMillis(200)); // Simulates some latency
     }
 
 //    @MQListener(connectionFactory = "domainB")

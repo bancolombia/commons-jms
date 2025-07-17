@@ -5,21 +5,22 @@ spring:
     name: "mq-reactive"
 logging:
   level:
-    root: WARN
+    root: INFO
 commons:
   jms:
-    output-concurrency: 20
+    output-concurrency: 5
     output-queue: "DEV.QUEUE.1"
     producer-ttl: 60
     reactive: true
-    input-concurrency: 20
+    input-concurrency: 5
     input-queue: "DEV.QUEUE.2"
     input-queue-set-queue-manager: true # enable it to set queue manager using a temporary queue
-    selector-mode: CONTEXT_PER_MESSAGE # CONTEXT_SHARED | CONTEXT_PER_MESSAGE
+    selector-mode: CONTEXT_SHARED # CONTEXT_SHARED | CONTEXT_PER_MESSAGE
 ibm:
   mq:
     channel: "DEV.APP.SVRCONN"
     user: "app"
+    password: passw0rd
     queue-manager: QM1
 management:
   endpoint:
