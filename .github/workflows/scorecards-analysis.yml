@@ -6,6 +6,7 @@ on:
     - cron: '36 2 * * 6'
   push:
     branches: [ main feature/score-card ]
+  workflow_dispatch:
 
 # Declare default permissions as read only.
 permissions: read-all
