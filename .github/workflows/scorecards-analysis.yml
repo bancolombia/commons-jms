@@ -5,8 +5,10 @@ on:
   schedule:
     - cron: '36 2 * * 6'
   push:
-    branches: [ main feature/score-card ]
-  workflow_dispatch:
+    branches: [ main ]
+  pull_request:
+    branches:
+      - main
 
 # Declare default permissions as read only.
 permissions: read-all
