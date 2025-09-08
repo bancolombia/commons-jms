@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.4.7](https://github.com/bancolombia/commons-jms/tree/v2.4.7) (2025-09-08)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.6...v2.4.7)
+
+**Merged pull requests:**
+
+- fix\(opts\): Add new Sender methods and create docs [\#95](https://github.com/bancolombia/commons-jms/pull/95) ([juancgalvis](https://github.com/juancgalvis))
+- build\(score\): update action [\#94](https://github.com/bancolombia/commons-jms/pull/94) ([juancgalvis](https://github.com/juancgalvis))
+- build\(score\): update score card action [\#93](https://github.com/bancolombia/commons-jms/pull/93) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.4.6](https://github.com/bancolombia/commons-jms/tree/v2.4.6) (2025-09-03)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.5...v2.4.6)
@@ -286,7 +296,7 @@
 
 ## [v2.2.3](https://github.com/bancolombia/commons-jms/tree/v2.2.3) (2024-05-03)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.3)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.3)
 
 **Merged pull requests:**
 
@@ -294,13 +304,13 @@
 - fix\(release\): implementing semantic release [\#49](https://github.com/bancolombia/commons-jms/pull/49) ([santicalleg](https://github.com/santicalleg))
 - fix\(release\): implementing semantic release [\#47](https://github.com/bancolombia/commons-jms/pull/47) ([santicalleg](https://github.com/santicalleg))
 
-## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
-
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.2)
-
 ## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.0)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.0)
+
+## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.2)
 
 **Merged pull requests:**
 
