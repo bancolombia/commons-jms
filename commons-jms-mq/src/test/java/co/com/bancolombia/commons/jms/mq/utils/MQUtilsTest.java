@@ -7,14 +7,19 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.TemporaryQueue;
+import jakarta.jms.TextMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.charset.StandardCharsets;
+
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_RESOLVED_QUEUE_MANAGER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -77,5 +82,15 @@ class MQUtilsTest {
         doThrow(new JMSRuntimeException("Error creating temporary queue")).when(jmsContext).createTemporaryQueue();
         String name = MQUtils.extractQMNameWithTempQueue(jmsContext);
         assertEquals("", name);
+    }
+
+    @Test
+    void shouldSetIds() throws JMSException {
+        int expectedInvocations = 2;
+        TextMessage message = mock(TextMessage.class);
+        String id = MQUtils.generateUniqueId();
+        MQUtils.setMessageId(message, id);
+        MQUtils.setCorrelationId(message, id);
+        verify(message, times(expectedInvocations)).setObjectProperty(anyString(), any());
     }
 }
