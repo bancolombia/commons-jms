@@ -54,8 +54,28 @@ public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSende
     }
 
     @Override
+    public String send(String message) {
+        return send(createMessageCreator(message));
+    }
+
+    @Override
     public String send(MQMessageCreator messageCreator) {
         return send(defaultDestination, messageCreator);
+    }
+
+    @Override
+    public String send(String destination, String message) {
+        return send(createDestination(destination), createMessageCreator(message));
+    }
+
+    @Override
+    public String send(String destination, MQMessageCreator messageCreator) {
+        return send(createDestination(destination), messageCreator);
+    }
+
+    @Override
+    public String send(Destination destination, String message) {
+        return send(destination, createMessageCreator(message));
     }
 
     @Override
@@ -89,5 +109,13 @@ public class MQContextSenderSync extends AbstractJMSReconnectable<MQContextSende
             }
             throw ex;
         }
+    }
+
+    private Destination createDestination(String destination) {
+        return this.context.createQueue(destination);
+    }
+
+    private MQMessageCreator createMessageCreator(String message) {
+        return ctx -> ctx.createTextMessage(message);
     }
 }

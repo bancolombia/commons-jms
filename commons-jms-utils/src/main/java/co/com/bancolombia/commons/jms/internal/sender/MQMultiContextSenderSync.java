@@ -31,14 +31,37 @@ public class MQMultiContextSenderSync implements MQMessageSenderSync {
     }
 
     @Override
-    public String send(Destination destination, MQMessageCreator messageCreator) {
-        int selectIndex = (int) (System.currentTimeMillis() % connections);
-        return adapterList.get(selectIndex).send(destination, messageCreator);
+    public String send(String message) {
+        return checkout().send(message);
     }
 
     @Override
     public String send(MQMessageCreator messageCreator) {
+        return checkout().send(messageCreator);
+    }
+
+    @Override
+    public String send(String destination, String message) {
+        return checkout().send(destination, message);
+    }
+
+    @Override
+    public String send(String destination, MQMessageCreator messageCreator) {
+        return checkout().send(destination, messageCreator);
+    }
+
+    @Override
+    public String send(Destination destination, String message) {
+        return checkout().send(destination, message);
+    }
+
+    @Override
+    public String send(Destination destination, MQMessageCreator messageCreator) {
+        return checkout().send(destination, messageCreator);
+    }
+
+    private MQMessageSenderSync checkout() {
         int selectIndex = (int) (System.currentTimeMillis() % connections);
-        return adapterList.get(selectIndex).send(messageCreator);
+        return adapterList.get(selectIndex);
     }
 }

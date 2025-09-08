@@ -69,7 +69,20 @@ class MQMultiContextSenderSyncTest {
     }
 
     @Test
-    void shouldSend() throws JMSException {
+    void shouldSendMessageString() throws JMSException {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createTextMessage(anyString())).thenReturn(message);
+        when(message.getJMSMessageID()).thenReturn(messageID);
+        // Act
+        String id = senderSync.send("message");
+        // Assert
+        assertEquals(messageID, id);
+        verify(producer, times(1)).send(queue, message);
+    }
+
+    @Test
+    void shouldSendMessageCreator() throws JMSException {
         // Arrange
         String messageID = UUID.randomUUID().toString();
         when(context.createTextMessage()).thenReturn(message);
@@ -82,7 +95,46 @@ class MQMultiContextSenderSyncTest {
     }
 
     @Test
-    void shouldSendWithDestination() throws JMSException {
+    void shouldSendWithStringsDestinationAndMessage() throws JMSException {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createTextMessage(anyString())).thenReturn(message);
+        when(message.getJMSMessageID()).thenReturn(messageID);
+        // Act
+        String id = senderSync.send("queue", "message");
+        // Assert
+        assertEquals(messageID, id);
+        verify(producer, times(1)).send(queue, message);
+    }
+
+    @Test
+    void shouldSendWithStringDestinationAndMessageCreator() throws JMSException {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createTextMessage()).thenReturn(message);
+        when(message.getJMSMessageID()).thenReturn(messageID);
+        // Act
+        String id = senderSync.send("queue", JMSContext::createTextMessage);
+        // Assert
+        assertEquals(messageID, id);
+        verify(producer, times(1)).send(queue, message);
+    }
+
+    @Test
+    void shouldSendWithDestinationAndStringMessage() throws JMSException {
+        // Arrange
+        String messageID = UUID.randomUUID().toString();
+        when(context.createTextMessage(anyString())).thenReturn(message);
+        when(message.getJMSMessageID()).thenReturn(messageID);
+        // Act
+        String id = senderSync.send(queue, "message");
+        // Assert
+        assertEquals(messageID, id);
+        verify(producer, times(1)).send(queue, message);
+    }
+
+    @Test
+    void shouldSendWithDestinationAndMessageCreator() throws JMSException {
         // Arrange
         String messageID = UUID.randomUUID().toString();
         when(context.createTextMessage()).thenReturn(message);
