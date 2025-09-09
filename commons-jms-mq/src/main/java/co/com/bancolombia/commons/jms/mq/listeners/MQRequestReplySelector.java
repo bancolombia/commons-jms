@@ -21,6 +21,7 @@ import java.time.Duration;
 @Log4j2
 public final class MQRequestReplySelector implements MQRequestReply {
     public static final int SECONDS_TIMEOUT = 30;
+    public static final String LOG_REPLY_QUEUE = "Setting queue for reply to: {}";
     private final MQMessageSender sender;
     private final MQQueuesContainer container;
     private final Destination requestQueue;
@@ -126,9 +127,9 @@ public final class MQRequestReplySelector implements MQRequestReply {
     private static void logQueue(Destination destination) throws JMSException {
         if (log.isInfoEnabled() && destination != null) {
             if (destination instanceof Queue) {
-                log.info("Setting queue for reply to: {}", ((Queue) destination).getQueueName());
+                log.info(LOG_REPLY_QUEUE, ((Queue) destination).getQueueName());
             } else {
-                log.info("Setting queue for reply to: {}", destination.toString());
+                log.info(LOG_REPLY_QUEUE, destination.toString());
             }
         }
     }
