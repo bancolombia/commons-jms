@@ -1,8 +1,8 @@
 name: 'commons-jms-docs'
 on:
-  release:
-    types:
-      - released
+  # release:
+  #   types:
+  #     - released
   push:
     branches:
       - main
