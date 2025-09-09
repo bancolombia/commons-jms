@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.4.8](https://github.com/bancolombia/commons-jms/tree/v2.4.8) (2025-09-09)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.7...v2.4.8)
+
+**Merged pull requests:**
+
+- fix\(replier\): Enforce replyTo assignation and update docs [\#98](https://github.com/bancolombia/commons-jms/pull/98) ([juancgalvis](https://github.com/juancgalvis))
+- docs: update link [\#96](https://github.com/bancolombia/commons-jms/pull/96) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.4.7](https://github.com/bancolombia/commons-jms/tree/v2.4.7) (2025-09-08)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.6...v2.4.7)
