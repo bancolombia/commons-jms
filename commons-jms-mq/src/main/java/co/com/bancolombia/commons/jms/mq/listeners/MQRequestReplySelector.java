@@ -7,9 +7,11 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQRequestReply;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +21,7 @@ import java.time.Duration;
 @Log4j2
 public final class MQRequestReplySelector implements MQRequestReply {
     public static final int SECONDS_TIMEOUT = 30;
+    public static final String LOG_REPLY_QUEUE = "Setting queue for reply to: {}";
     private final MQMessageSender sender;
     private final MQQueuesContainer container;
     private final Destination requestQueue;
@@ -58,30 +61,78 @@ public final class MQRequestReplySelector implements MQRequestReply {
 
     @Override
     public Mono<Message> requestReply(MQMessageCreator messageCreator, Duration timeout) {
-        return sender.send(requestQueue, messageCreator)
+        return sender.send(requestQueue, wrappedCreator(messageCreator))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(),
                         container.get(replyQueue)));
     }
 
+    @Override
     public Mono<Message> requestReply(String message, Destination request, Destination reply, Duration timeout) {
-        return sender.send(request, defaultCreator(message))
+        return sender.send(request, defaultCreator(message, reply))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(), reply));
     }
 
-    public Mono<Message> requestReply(MQMessageCreator messageCreator, Destination request, Destination reply, Duration timeout) {
-        return sender.send(request, messageCreator)
+    @Override
+    public Mono<Message> requestReply(MQMessageCreator messageCreator, Destination request, Destination reply,
+                                      Duration timeout) {
+        return sender.send(request, wrappedCreator(messageCreator, reply))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(), reply));
+    }
+
+    private MQMessageCreator wrappedCreator(MQMessageCreator creator, Destination reply) {
+        return ctx -> {
+            Message message = creator.create(ctx);
+            if (message.getJMSReplyTo() == null) {
+                message.setJMSReplyTo(reply);
+                logQueue(reply);
+            }
+            return message;
+        };
+    }
+
+    private MQMessageCreator wrappedCreator(MQMessageCreator creator) {
+        return ctx -> {
+            Message message = creator.create(ctx);
+            if (message.getJMSReplyTo() == null) {
+                setReplyTo(message);
+            }
+            return message;
+        };
+    }
+
+    private MQMessageCreator defaultCreator(String message, Destination reply) {
+        return ctx -> {
+            Message jmsMessage = ctx.createTextMessage(message);
+            jmsMessage.setJMSReplyTo(reply);
+            logQueue(reply);
+            return jmsMessage;
+        };
     }
 
     private MQMessageCreator defaultCreator(String message) {
         return ctx -> {
             Message jmsMessage = ctx.createTextMessage(message);
-            Queue queue = container.get(replyQueue);
-            jmsMessage.setJMSReplyTo(queue);
-            if (log.isInfoEnabled() && queue != null) {
-                log.info("Setting queue for reply to: {}", queue.getQueueName());
-            }
+            setReplyTo(jmsMessage);
             return jmsMessage;
         };
+    }
+
+    @SneakyThrows
+    private void setReplyTo(Message message) {
+        Queue queue = container.get(replyQueue);
+        message.setJMSReplyTo(queue);
+        logQueue(queue);
+    }
+
+    private static void logQueue(Destination destination) throws JMSException {
+        if (log.isInfoEnabled() && destination != null) {
+            String message;
+            if (destination instanceof Queue) {
+                message = ((Queue) destination).getQueueName();
+            } else {
+                message = destination.toString();
+            }
+            log.info(LOG_REPLY_QUEUE, message);
+        }
     }
 }

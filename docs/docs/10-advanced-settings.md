@@ -1,7 +1,3 @@
----
-sidebar_position: 8
----
-
 # Advanced Settings
 
 ## Override Predefined Beans

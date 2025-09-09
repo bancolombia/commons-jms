@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # Configuration Properties
 
 All this properties can be set in `application.yaml` file

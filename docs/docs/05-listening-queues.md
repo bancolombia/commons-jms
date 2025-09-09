@@ -1,7 +1,3 @@
----
-sidebar_position: 4
----
-
 # Listening for queues
 
 To listen queues you only should add the next code fragment using the `@MQListener` annotation.

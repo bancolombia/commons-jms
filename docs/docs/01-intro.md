@@ -1,7 +1,3 @@
----
-sidebar_position: 1
----
-
 # Overview
 
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.github.bancolombia/commons-jms-mq)

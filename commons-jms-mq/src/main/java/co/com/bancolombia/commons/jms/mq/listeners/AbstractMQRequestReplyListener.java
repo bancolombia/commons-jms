@@ -10,6 +10,7 @@ import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
@@ -55,26 +56,43 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
     }
 
     public Mono<T> requestReply(MQMessageCreator messageCreator, Duration timeout) {
-        return sender.send(requestQueue, messageCreator).flatMap(id -> router.wait(id, timeout));
+        return sender.send(requestQueue, wrappedCreator(messageCreator))
+                .flatMap(id -> router.wait(id, timeout));
     }
 
     public Mono<T> requestReply(String message, Destination request, Duration timeout) {
-        return sender.send(request, defaultCreator(message)).flatMap(id -> router.wait(id, timeout));
+        return sender.send(request, defaultCreator(message))
+                .flatMap(id -> router.wait(id, timeout));
     }
 
     protected String getCorrelationId(Message message) throws JMSException {
         return correlationExtractor.getCorrelationValue(message);
     }
 
+    private MQMessageCreator wrappedCreator(MQMessageCreator creator) {
+        return ctx -> {
+            Message message = creator.create(ctx);
+            if (message.getJMSReplyTo() == null) {
+                setReplyTo(message);
+            }
+            return message;
+        };
+    }
+
     private MQMessageCreator defaultCreator(String message) {
         return ctx -> {
             Message jmsMessage = ctx.createTextMessage(message);
-            Queue queue = queuesContainer.get(replyQueue);
-            jmsMessage.setJMSReplyTo(queue);
-            if (log.isInfoEnabled() && queue != null) {
-                log.info("Setting queue for reply to: {}", queue.getQueueName());
-            }
+            setReplyTo(jmsMessage);
             return jmsMessage;
         };
+    }
+
+    @SneakyThrows
+    private void setReplyTo(Message message) {
+        Queue queue = queuesContainer.get(replyQueue);
+        message.setJMSReplyTo(queue);
+        if (log.isInfoEnabled() && queue != null) {
+            log.info("Setting queue for reply to: {}", queue.getQueueName());
+        }
     }
 }

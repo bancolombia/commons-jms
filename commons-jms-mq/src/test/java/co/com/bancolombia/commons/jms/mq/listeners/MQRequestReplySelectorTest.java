@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,9 +78,11 @@ class MQRequestReplySelectorTest {
     }
 
     @Test
-    void shouldSendAndGetReplyFromFixedWithSpecificQueuesFromStringMessage() {
+    void shouldSendAndGetReplyFromFixedWithSpecificQueuesFromStringMessage() throws JMSException {
         // Arrange
-        when(sender.send(any(Destination.class), any(MQMessageCreator.class))).thenReturn(Mono.just("id"));
+        ArgumentCaptor<MQMessageCreator> creatorCaptor = ArgumentCaptor.forClass(MQMessageCreator.class);
+        when(context.createTextMessage(anyString())).thenReturn(message);
+        when(sender.send(any(Destination.class), creatorCaptor.capture())).thenReturn(Mono.just("id"));
         when(listener.getMessageBySelector(anyString(), anyLong(), any(Destination.class))).thenReturn(Mono.just(message));
         // Act
         Mono<Message> reply = reqReply.requestReply("MyMessage", destination, replyDestination, Duration.ofSeconds(1));
@@ -87,6 +90,10 @@ class MQRequestReplySelectorTest {
         StepVerifier.create(reply)
                 .assertNext(message1 -> assertEquals(message, message1))
                 .verifyComplete();
+        MQMessageCreator capturedCreator = creatorCaptor.getValue();
+        Message created = capturedCreator.create(context);
+        assertEquals(message, created);
+        verify(message).setJMSReplyTo(replyDestination);
     }
 
     @Test
@@ -95,11 +102,32 @@ class MQRequestReplySelectorTest {
         when(sender.send(any(Destination.class), any(MQMessageCreator.class))).thenReturn(Mono.just("id"));
         when(listener.getMessageBySelector(anyString(), anyLong(), any(Destination.class))).thenReturn(Mono.just(message));
         // Act
-        Mono<Message> reply = reqReply.requestReply(context -> message, destination, replyDestination, Duration.ofSeconds(1));
+        Mono<Message> reply = reqReply.requestReply(ignored -> message, destination, replyDestination,
+                Duration.ofSeconds(1));
         // Assert
         StepVerifier.create(reply)
                 .assertNext(message1 -> assertEquals(message, message1))
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldEnsureThatReplyToBeSet() throws JMSException {
+        // Arrange
+        ArgumentCaptor<MQMessageCreator> creatorCaptor = ArgumentCaptor.forClass(MQMessageCreator.class);
+        when(sender.send(any(Destination.class), creatorCaptor.capture())).thenReturn(Mono.just("id"));
+        when(listener.getMessageBySelector(anyString(), anyLong(), any(Destination.class))).thenReturn(Mono.just(message));
+        // Act
+        Mono<Message> reply = reqReply.requestReply(ignored -> message, destination, replyDestination,
+                Duration.ofSeconds(1));
+        // Assert
+        StepVerifier.create(reply)
+                .assertNext(message1 -> assertEquals(message, message1))
+                .verifyComplete();
+
+        MQMessageCreator capturedCreator = creatorCaptor.getValue();
+        Message created = capturedCreator.create(context);
+        assertEquals(message, created);
+        verify(message).setJMSReplyTo(replyDestination);
     }
 
     @Test

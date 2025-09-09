@@ -1,7 +1,3 @@
----
-sidebar_position: 1
----
-
 # Getting Started
 
 This quick start tutorial sets up a single node IBMMQ and shows how to install and configure the library.
@@ -25,22 +21,22 @@ or navigating your web in the path:
 - [Go to ibm-mq page](https://www.ibm.com/docs/en/ibm-mq)
 - Choose the desired version
   
-  ![alt text](../img/image.png)
+  ![alt text](./img/image.png)
 - Select containers from menu
 
-  ![alt text](../img/image-1.png)
+  ![alt text](./img/image-1.png)
 
 - Select reference from menu
   
-  ![alt text](../img/image-2.png)
+  ![alt text](./img/image-2.png)
 
 - Select Advanced for Developers container image
   
-  ![alt text](../img/image-3.png)
+  ![alt text](./img/image-3.png)
 
 - Now you can see available images
 
-  ![alt text](../img/image-4.png)
+  ![alt text](./img/image-4.png)
 
 You can use `podman` `docker`
 
