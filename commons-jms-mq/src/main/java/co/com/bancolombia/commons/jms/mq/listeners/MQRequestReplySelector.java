@@ -126,11 +126,13 @@ public final class MQRequestReplySelector implements MQRequestReply {
 
     private static void logQueue(Destination destination) throws JMSException {
         if (log.isInfoEnabled() && destination != null) {
+            String message;
             if (destination instanceof Queue) {
-                log.info(LOG_REPLY_QUEUE, ((Queue) destination).getQueueName());
+                message = ((Queue) destination).getQueueName();
             } else {
-                log.info(LOG_REPLY_QUEUE, destination.toString());
+                message = destination.toString();
             }
+            log.info(LOG_REPLY_QUEUE, message);
         }
     }
 }
