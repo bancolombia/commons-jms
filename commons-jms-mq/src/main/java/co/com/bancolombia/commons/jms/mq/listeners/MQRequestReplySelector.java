@@ -7,6 +7,7 @@ import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQRequestReply;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
 import lombok.Getter;
@@ -64,11 +65,13 @@ public final class MQRequestReplySelector implements MQRequestReply {
                         container.get(replyQueue)));
     }
 
+    @Override
     public Mono<Message> requestReply(String message, Destination request, Destination reply, Duration timeout) {
         return sender.send(request, defaultCreator(message, reply))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(), reply));
     }
 
+    @Override
     public Mono<Message> requestReply(MQMessageCreator messageCreator, Destination request, Destination reply,
                                       Duration timeout) {
         return sender.send(request, wrappedCreator(messageCreator, reply))
@@ -80,9 +83,7 @@ public final class MQRequestReplySelector implements MQRequestReply {
             Message message = creator.create(ctx);
             if (message.getJMSReplyTo() == null) {
                 message.setJMSReplyTo(reply);
-                if (log.isInfoEnabled()) {
-                    log.info("Setting queue for reply to: {}", reply.toString());
-                }
+                logQueue(reply);
             }
             return message;
         };
@@ -102,9 +103,7 @@ public final class MQRequestReplySelector implements MQRequestReply {
         return ctx -> {
             Message jmsMessage = ctx.createTextMessage(message);
             jmsMessage.setJMSReplyTo(reply);
-            if (log.isInfoEnabled()) {
-                log.info("Setting queue for reply to: {}", reply.toString());
-            }
+            logQueue(reply);
             return jmsMessage;
         };
     }
@@ -121,8 +120,16 @@ public final class MQRequestReplySelector implements MQRequestReply {
     private void setReplyTo(Message message) {
         Queue queue = container.get(replyQueue);
         message.setJMSReplyTo(queue);
-        if (log.isInfoEnabled() && queue != null) {
-            log.info("Setting queue for reply to: {}", queue.getQueueName());
+        logQueue(queue);
+    }
+
+    private static void logQueue(Destination destination) throws JMSException {
+        if (log.isInfoEnabled() && destination != null) {
+            if (destination instanceof Queue) {
+                log.info("Setting queue for reply to: {}", ((Queue) destination).getQueueName());
+            } else {
+                log.info("Setting queue for reply to: {}", destination.toString());
+            }
         }
     }
 }
