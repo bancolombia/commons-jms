@@ -10,6 +10,7 @@ import jakarta.jms.Destination;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
@@ -58,30 +59,70 @@ public final class MQRequestReplySelector implements MQRequestReply {
 
     @Override
     public Mono<Message> requestReply(MQMessageCreator messageCreator, Duration timeout) {
-        return sender.send(requestQueue, messageCreator)
+        return sender.send(requestQueue, wrappedCreator(messageCreator))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(),
                         container.get(replyQueue)));
     }
 
     public Mono<Message> requestReply(String message, Destination request, Destination reply, Duration timeout) {
-        return sender.send(request, defaultCreator(message))
+        return sender.send(request, defaultCreator(message, reply))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(), reply));
     }
 
-    public Mono<Message> requestReply(MQMessageCreator messageCreator, Destination request, Destination reply, Duration timeout) {
-        return sender.send(request, messageCreator)
+    public Mono<Message> requestReply(MQMessageCreator messageCreator, Destination request, Destination reply,
+                                      Duration timeout) {
+        return sender.send(request, wrappedCreator(messageCreator, reply))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(), reply));
+    }
+
+    private MQMessageCreator wrappedCreator(MQMessageCreator creator, Destination reply) {
+        return ctx -> {
+            Message message = creator.create(ctx);
+            if (message.getJMSReplyTo() == null) {
+                message.setJMSReplyTo(reply);
+                if (log.isInfoEnabled()) {
+                    log.info("Setting queue for reply to: {}", reply.toString());
+                }
+            }
+            return message;
+        };
+    }
+
+    private MQMessageCreator wrappedCreator(MQMessageCreator creator) {
+        return ctx -> {
+            Message message = creator.create(ctx);
+            if (message.getJMSReplyTo() == null) {
+                setReplyTo(message);
+            }
+            return message;
+        };
+    }
+
+    private MQMessageCreator defaultCreator(String message, Destination reply) {
+        return ctx -> {
+            Message jmsMessage = ctx.createTextMessage(message);
+            jmsMessage.setJMSReplyTo(reply);
+            if (log.isInfoEnabled()) {
+                log.info("Setting queue for reply to: {}", reply.toString());
+            }
+            return jmsMessage;
+        };
     }
 
     private MQMessageCreator defaultCreator(String message) {
         return ctx -> {
             Message jmsMessage = ctx.createTextMessage(message);
-            Queue queue = container.get(replyQueue);
-            jmsMessage.setJMSReplyTo(queue);
-            if (log.isInfoEnabled() && queue != null) {
-                log.info("Setting queue for reply to: {}", queue.getQueueName());
-            }
+            setReplyTo(jmsMessage);
             return jmsMessage;
         };
+    }
+
+    @SneakyThrows
+    private void setReplyTo(Message message) {
+        Queue queue = container.get(replyQueue);
+        message.setJMSReplyTo(queue);
+        if (log.isInfoEnabled() && queue != null) {
+            log.info("Setting queue for reply to: {}", queue.getQueueName());
+        }
     }
 }

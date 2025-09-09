@@ -1,12 +1,8 @@
----
-sidebar_position: 5
----
-
 # Sending Messages
 
 To send messages exists the `@EnableMQGateway` annotation which enables the producers auto-configuration.
 
-The senders are created with the default properties described at [Sender properties](/commons-jms/docs/commons-jms/configuration-properties#sender-properties)
+The senders are created with the default properties described at [Sender properties](/commons-jms/docs/configuration-properties#sender-properties)
 
 ## Send message to a fixed queue reactive
 

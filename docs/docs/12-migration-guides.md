@@ -1,7 +1,3 @@
----
-sidebar_position: 9
----
-
 # Migration
 
 ## From 1.x.x to 2.x.x

@@ -1,7 +1,3 @@
----
-sidebar_position: 3
----
-
 # Connection Factory
 
 This library uses the default bean of kind `ConnectionFactory` which is created with default or customized `application.yaml` properties. You also can override it with a custom `ConnectionFactory` bean instantiation.

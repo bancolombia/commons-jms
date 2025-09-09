@@ -133,7 +133,7 @@ public class MQAutoconfiguration {
     @Bean
     @ConditionalOnMissingBean(CorrelationExtractor.class)
     public CorrelationExtractor defaultCorrelationExtractor() {
-        return Message::getJMSCorrelationID;
+        return Message::getJMSMessageID;
     }
 
 
