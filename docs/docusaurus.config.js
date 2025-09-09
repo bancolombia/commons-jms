@@ -93,7 +93,7 @@ const config = {
               },
               {
                 label: 'Commons JMS',
-                to: '/docs/commons-jms/getting-started',
+                to: '/docs/getting-started',
               },
             ],
           },
