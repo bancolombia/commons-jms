@@ -65,6 +65,11 @@ public abstract class AbstractMQRequestReplyListener<T> extends MQMessageListene
                 .flatMap(id -> router.wait(id, timeout));
     }
 
+    public Mono<T> requestReply(MQMessageCreator messageCreator, Destination request, Duration timeout) {
+        return sender.send(request, wrappedCreator(messageCreator))
+                .flatMap(id -> router.wait(id, timeout));
+    }
+
     protected String getCorrelationId(Message message) throws JMSException {
         return correlationExtractor.getCorrelationValue(message);
     }

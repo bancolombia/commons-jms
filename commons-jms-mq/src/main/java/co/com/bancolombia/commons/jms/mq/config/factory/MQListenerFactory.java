@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.api.model.spec.MQMessageListenerSpec;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.MQListener;
@@ -13,6 +14,7 @@ import co.com.bancolombia.commons.jms.mq.config.MQSpringResolver;
 import co.com.bancolombia.commons.jms.mq.config.exceptions.MQInvalidListenerException;
 import co.com.bancolombia.commons.jms.mq.listeners.MQMessageListener;
 import co.com.bancolombia.commons.jms.mq.listeners.MQReactiveMessageListener;
+import co.com.bancolombia.commons.jms.mq.listeners.MQReactiveSpecMessageListener;
 import co.com.bancolombia.commons.jms.utils.MQMessageListenerUtils;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSRuntimeException;
@@ -52,6 +54,23 @@ public class MQListenerFactory {
         }
     }
 
+    public static void createListener(MQSpringResolver resolver, ConnectionFactory factory,
+                                      MQMessageListenerSpec spec) {
+        MQProperties properties = resolver.getProperties();
+        MessageListener handler = new MQReactiveSpecMessageListener(spec, properties.getMaxRetries());
+        MQListenerConfig listenerConfig = MQListenerConfig.builder()
+                .connectionFactory(factory)
+                .queueCustomizer(resolver.resolveBean(MQQueueCustomizer.class))
+                .messageListener(handler)
+                .listeningQueue(spec.getQueueName())
+                .maxRetries(properties.getMaxRetries())
+                .concurrency(properties.getInputConcurrency())
+                .build();
+        startListener(listenerConfig, resolver);
+    }
+
+    // private methods
+
     private static Map<Method, Set<MQListener>> getAnnotatedMethods(Class<?> targetClass) {
         return MethodIntrospector.selectMethods(targetClass,
                 (MethodIntrospector.MetadataLookup<Set<MQListener>>) method -> {
@@ -78,13 +97,16 @@ public class MQListenerFactory {
 
     private static void processJmsListener(MQListener annotation, Method mostSpecificMethod, Object bean,
                                            MQSpringResolver resolver) {
+        MQProperties properties = resolver.getProperties();
+        MQListenerConfig listenerConfig = buildConfig(annotation, mostSpecificMethod, properties, resolver, bean);
+        startListener(listenerConfig, resolver);
+    }
+
+    private static void startListener(MQListenerConfig listenerConfig, MQSpringResolver resolver) {
         MQQueuesContainer queuesContainer = resolver.getQueuesContainer();
         MQBrokerUtils brokerUtils = resolver.getBrokerUtils();
         MQHealthListener healthListener = resolver.getHealthListener();
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
-
-        MQProperties properties = resolver.getProperties();
-        MQListenerConfig listenerConfig = buildConfig(annotation, mostSpecificMethod, properties, resolver, bean);
 
         try {
             MQMessageListenerUtils.createListeners(
@@ -94,8 +116,9 @@ public class MQListenerFactory {
                     healthListener,
                     retryableConfig);
         } catch (JMSRuntimeException ex) {
-            throw new BeanInitializationException("Could not register MQ listener on [" + mostSpecificMethod
-                    + "], using ConnectionFactory: " + listenerConfig.getConnectionFactory(), ex);
+            throw new BeanInitializationException("Could not register MQ listener for queue ["
+                    + listenerConfig.getListeningQueue() + "], using  ConnectionFactory: "
+                    + listenerConfig.getConnectionFactory(), ex);
         }
     }
 
@@ -111,7 +134,8 @@ public class MQListenerFactory {
         ConnectionFactory connectionFactory = resolver.getConnectionFactory(annotation.connectionFactory());
 
         Method invocableMethod = AopUtils.selectInvocableMethod(mostSpecificMethod, bean.getClass());
-        MessageListener processor = buildMessageListener(bean, invocableMethod, properties.isReactive(), finalConcurrency);
+        MessageListener processor = buildMessageListener(bean, invocableMethod, properties.isReactive(),
+                finalConcurrency);
 
         MQListenerConfig listenerConfig = MQListenerConfig.builder()
                 .connectionFactory(connectionFactory)
