@@ -51,16 +51,20 @@ class MQListenerAutoconfigurationTest {
 
     @BeforeEach
     void setup() {
+        doReturn(cf).when(resolver).getConnectionFactory("");
+        doAnswer(invocation -> invocation.getArguments()[0]).when(resolver).resolveString(anyString());
+    }
+
+    void commonMocks() {
         doReturn(container).when(resolver).getQueuesContainer();
         doReturn(healthListener).when(resolver).getHealthListener();
         doReturn(brokerUtils).when(resolver).getBrokerUtils();
-        doReturn(cf).when(resolver).getConnectionFactory("");
-        doAnswer(invocation -> invocation.getArguments()[0]).when(resolver).resolveString(anyString());
     }
 
     @Test
     void shouldProcessAnnotated() {
         // Arrange
+        commonMocks();
         doReturn(new MQProperties()).when(resolver).getProperties();
         doReturn(cf2).when(resolver).getConnectionFactory("custom");
         Object bean = new MyListener();
@@ -73,6 +77,7 @@ class MQListenerAutoconfigurationTest {
     @Test
     void shouldProcessAnnotatedReactive() {
         // Arrange
+        commonMocks();
         Object bean = new MyReactiveListener();
         MQProperties properties = new MQProperties();
         properties.setReactive(true);
@@ -87,6 +92,7 @@ class MQListenerAutoconfigurationTest {
     @Test
     void shouldWorksWithInvalidConcurrency() {
         // Arrange
+        commonMocks();
         MQProperties properties = new MQProperties();
         properties.setInputConcurrency(0);
         properties.setReactive(true);

@@ -6,12 +6,14 @@ import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.MQRequestReply;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
+import co.com.bancolombia.commons.jms.api.model.spec.MQDomainSpec;
 import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
-import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQMultiContextMessageSelectorListenerSync;
+import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.ContextPerMessageStrategy;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.MultiContextSharedStrategy;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
@@ -48,6 +50,36 @@ import static co.com.bancolombia.commons.jms.mq.config.utils.AnnotationUtils.res
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MQReqReplyFactory {
 
+    @SneakyThrows
+    public static MQRequestReply createMQReqReply(MQDomainSpec spec, MQMessageSender sender,
+                                                  MQListenerConfig.QueueType queueType, MQSpringResolver resolver) {
+        MQProperties properties = resolver.getProperties();
+        MQListenerConfig listenerConfig = listenerConfigFromSpec(resolver, spec.getConnectionFactory(),
+                properties, queueType, spec.getName());
+        MQBrokerUtils mqBrokerUtils = resolver.getBrokerUtils();
+        MQHealthListener healthListener = resolver.getHealthListener();
+        MQQueuesContainer queuesContainer = resolver.getQueuesContainer();
+        RetryableConfig retryableConfig = resolver.getRetryableConfig();
+        MQQueueCustomizer customizer = resolver.resolveBean(MQQueueCustomizer.class);
+        Queue destination = new MQQueue(resolve(properties.getOutputQueue(), spec.getName()));
+        customizer.customize(destination);
+        CorrelationExtractor correlationExtractor = resolver.resolveBean(CorrelationExtractor.class);
+        switch (listenerConfig.getQueueType()) {
+            case FIXED: {
+                return fixedQueueWithMessageSelector(MQListenerConfig.SelectorMode.CONTEXT_SHARED.name(), resolver,
+                        listenerConfig, sender, healthListener, queuesContainer, retryableConfig, destination);
+            }
+            case FIXED_LOCATION_TRANSPARENCY: {
+                throw new MQInvalidListenerException("Unsupported configuration, cannot use " +
+                        "FIXED_LOCATION_TRANSPARENCY ");
+            }
+            default: {
+                return temporaryQueueWithAsyncListener(resolver, spec.getName(), listenerConfig, sender, mqBrokerUtils,
+                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor);
+            }
+        }
+    }
+
     public static Object createMQReqReply(ReqReply annotation, MQSpringResolver resolver, String beanName) {
         log.info("Creating bean instance for {} class", beanName);
         MQProperties properties = resolver.getProperties();
@@ -66,7 +98,8 @@ public class MQReqReplyFactory {
         CorrelationExtractor correlationExtractor = resolveCorrelationExtractor(annotation, resolver);
         switch (listenerConfig.getQueueType()) {
             case FIXED: {
-                return fixedQueueWithMessageSelector(annotation, resolver, listenerConfig, sender, healthListener,
+                return fixedQueueWithMessageSelector(annotation.selectorMode(), resolver, listenerConfig, sender,
+                        healthListener,
                         queuesContainer, retryableConfig, destination);
             }
             case FIXED_LOCATION_TRANSPARENCY: {
@@ -152,7 +185,7 @@ public class MQReqReplyFactory {
         return senderWithRouter;
     }
 
-    private static MQRequestReplySelector fixedQueueWithMessageSelector(ReqReply annotation, MQSpringResolver resolver,
+    private static MQRequestReplySelector fixedQueueWithMessageSelector(String selMode, MQSpringResolver resolver,
                                                                         MQListenerConfig listenerConfig,
                                                                         MQMessageSender sender,
                                                                         MQHealthListener healthListener,
@@ -160,7 +193,7 @@ public class MQReqReplyFactory {
                                                                         RetryableConfig retryableConfig,
                                                                         Destination destination) {
         log.info("Using fixed queue with message selector");
-        String selectorMode = resolver.resolveString(annotation.selectorMode());
+        String selectorMode = resolver.resolveString(selMode);
         SelectorModeProvider selectorModeProvider = getSelectorModeProvider(resolver, selectorMode,
                 listenerConfig.getConcurrency());
         MQMultiContextMessageSelectorListenerSync selectorListener = new MQMultiContextMessageSelectorListenerSync(
@@ -192,6 +225,36 @@ public class MQReqReplyFactory {
         Queue queue = new MQQueue(name);
         customizer.customize(queue);
         return queue;
+    }
+
+    private static MQListenerConfig listenerConfigFromSpec(MQSpringResolver resolver,
+                                                           ConnectionFactory connectionFactory,
+                                                           MQProperties properties,
+                                                           MQListenerConfig.QueueType queueType,
+                                                           String domain) {
+        MQQueueCustomizer customizer = resolver.resolveBean(MQQueueCustomizer.class);
+        String replyQueue;
+        if (queueType == MQListenerConfig.QueueType.TEMPORARY) {
+            replyQueue = domain;
+        } else {
+            replyQueue = resolve(properties.getInputQueue(), domain);
+        }
+        MQListenerConfig.MQListenerConfigBuilder builder = MQListenerConfig.builder()
+                .connectionFactory(connectionFactory)
+                .concurrency(properties.getInputConcurrency())
+                .queueType(queueType)
+                .selectorMode(MQListenerConfig.SelectorMode.CONTEXT_SHARED.name())
+                .listeningQueue(replyQueue)
+                .queueCustomizer(customizer)
+                .maxRetries(properties.getMaxRetries());
+        if (properties.isInputQueueSetQueueManager()) {
+            builder.qmSetter(resolver.getMqQueueManagerSetter());
+        }
+        MQListenerConfig listenerConfig = builder.build();
+        if (!StringUtils.hasText(listenerConfig.getListeningQueue())) {
+            throw new MQInvalidListenerException("Invalid configuration, should define replyQueue and queueType");
+        }
+        return listenerConfig;
     }
 
     private static MQListenerConfig validateAnnotationConfig(ReqReply annotation, MQSpringResolver resolver,

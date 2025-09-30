@@ -50,18 +50,32 @@ public final class MQRequestReplySelector implements MQRequestReply {
     }
 
     @Override
-    public Mono<Message> requestReply(String message, Duration timeout) {
-        return requestReply(defaultCreator(message), timeout);
-    }
-
-    @Override
     public Mono<Message> requestReply(MQMessageCreator messageCreator) {
         return requestReply(messageCreator, Duration.ofSeconds(SECONDS_TIMEOUT));
     }
 
     @Override
+    public Mono<Message> requestReply(String message, Duration timeout) {
+        return requestReply(defaultCreator(message), timeout);
+    }
+
+    @Override
     public Mono<Message> requestReply(MQMessageCreator messageCreator, Duration timeout) {
         return sender.send(requestQueue, wrappedCreator(messageCreator))
+                .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(),
+                        container.get(replyQueue)));
+    }
+
+    @Override
+    public Mono<Message> requestReply(String message, Destination request, Duration timeout) {
+        return sender.send(request, defaultCreator(message))
+                .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(),
+                        container.get(replyQueue)));
+    }
+
+    @Override
+    public Mono<Message> requestReply(MQMessageCreator messageCreator, Destination request, Duration timeout) {
+        return sender.send(request, wrappedCreator(messageCreator))
                 .flatMap(id -> listener.getMessageBySelector(selector.buildSelector(id), timeout.toMillis(),
                         container.get(replyQueue)));
     }

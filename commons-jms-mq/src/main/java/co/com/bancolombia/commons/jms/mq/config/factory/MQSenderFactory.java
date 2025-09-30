@@ -74,6 +74,28 @@ public class MQSenderFactory {
         return fromSenderConfig(domain, container, properties, config);
     }
 
+    public static MQMultiContextSender forConnectionFactory(ConnectionFactory connectionFactory,
+                                                            MQSpringResolver resolver) {
+        MQProperties properties = resolver.getProperties();
+        MQProducerCustomizer pCust = resolver.resolveBean(MQProducerCustomizer.class);
+        MQQueueCustomizer queueCust = resolver.resolveBean(MQQueueCustomizer.class);
+        RetryableConfig retryableConfig = resolver.resolveBean(RetryableConfig.class);
+        MQDestinationProvider destinationProvider = buildMqDestinationProvider(queueCust, properties.getOutputQueue());
+        MQHealthListener healthListener = resolver.getHealthListener();
+
+        MQSenderConfig config = MQSenderConfig.builder()
+                .connectionFactory(connectionFactory)
+                .concurrency(properties.getOutputConcurrency())
+                .destinationProvider(destinationProvider)
+                .producerCustomizer(pCust)
+                .healthListener(healthListener)
+                .retryableConfig(retryableConfig)
+                .build();
+
+        MQMultiContextSenderSync sender = new MQMultiContextSenderSync(config);
+        return new MQMultiContextSender(sender);
+    }
+
     public static Object fromSenderConfig(String domain, MQSenderContainer container,
                                           MQProperties properties, MQSenderConfig config) {
         MQMultiContextSenderSync sender = new MQMultiContextSenderSync(config);
