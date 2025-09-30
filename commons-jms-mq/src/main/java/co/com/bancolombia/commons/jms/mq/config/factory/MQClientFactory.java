@@ -37,7 +37,7 @@ public class MQClientFactory {
     }
 
     private static void createSender(MQDomainSpec domainSpec, MQClient client, MQSpringResolver resolver) {
-        MQMessageSender sender = MQSenderFactory.forConnectionFactory(domainSpec.getConnectionFactory(), resolver);
+        MQMessageSender sender = MQSenderFactory.forConnectionFactory(domainSpec, resolver);
         MQClientImpl implClient = (MQClientImpl) client;
         implClient.withSender(domainSpec.getName(), sender);
     }

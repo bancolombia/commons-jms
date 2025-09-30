@@ -9,11 +9,8 @@ logging:
 commons:
   jms:
     output-concurrency: 1
-    output-queue: "DEV.QUEUE.1"
-    producer-ttl: 60
     reactive: true
     input-concurrency: 1
-    input-queue: "DEV.QUEUE.2"
 ibm:
   mq:
     channel: "DEV.APP.SVRCONN"

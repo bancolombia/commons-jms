@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
+import co.com.bancolombia.commons.jms.api.model.spec.MQDomainSpec;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.MQSenderConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
@@ -74,17 +75,17 @@ public class MQSenderFactory {
         return fromSenderConfig(domain, container, properties, config);
     }
 
-    public static MQMultiContextSender forConnectionFactory(ConnectionFactory connectionFactory,
-                                                            MQSpringResolver resolver) {
+    public static MQMultiContextSender forConnectionFactory(MQDomainSpec spec, MQSpringResolver resolver) {
         MQProperties properties = resolver.getProperties();
         MQProducerCustomizer pCust = resolver.resolveBean(MQProducerCustomizer.class);
         MQQueueCustomizer queueCust = resolver.resolveBean(MQQueueCustomizer.class);
         RetryableConfig retryableConfig = resolver.resolveBean(RetryableConfig.class);
-        MQDestinationProvider destinationProvider = buildMqDestinationProvider(queueCust, properties.getOutputQueue());
+        MQDestinationProvider destinationProvider = buildMqDestinationProvider(queueCust,
+                resolve(properties.getOutputQueue(), spec.getName()));
         MQHealthListener healthListener = resolver.getHealthListener();
 
         MQSenderConfig config = MQSenderConfig.builder()
-                .connectionFactory(connectionFactory)
+                .connectionFactory(spec.getConnectionFactory())
                 .concurrency(properties.getOutputConcurrency())
                 .destinationProvider(destinationProvider)
                 .producerCustomizer(pCust)
