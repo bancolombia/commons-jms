@@ -32,7 +32,7 @@ public class MQClientFactory {
 
     private static void startListeners(MQDomainSpec domainSpec, MQSpringResolver resolver) {
         domainSpec.getMessageListeners()
-                .forEach((listenerSpec) ->
+                .forEach(listenerSpec ->
                         MQListenerFactory.createListener(resolver, domainSpec.getConnectionFactory(), listenerSpec));
     }
 

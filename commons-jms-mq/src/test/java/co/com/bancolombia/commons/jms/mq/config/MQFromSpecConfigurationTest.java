@@ -14,7 +14,6 @@ import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
 import jakarta.jms.JMSProducer;
 import jakarta.jms.TemporaryQueue;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,6 @@ import static co.com.bancolombia.commons.jms.mq.config.MQAutoconfiguration.KEEP_
 import static co.com.bancolombia.commons.jms.mq.config.MQAutoconfiguration.MAX_THREADS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -160,7 +158,7 @@ class MQFromSpecConfigurationTest {
     }
 
     @Test
-    void shouldCreateTemporaryReqReplyFromSpec() throws JMSException {
+    void shouldCreateTemporaryReqReplyFromSpec() {
         // Arrange
         MQFromSpecConfiguration config = new MQFromSpecConfiguration();
 
