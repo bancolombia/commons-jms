@@ -1,4 +1,4 @@
-package co.com.bancolombia.sample.domain.model;
+package co.com.bancolombia.samplebuilder.domain.model;
 
 import reactor.core.publisher.Mono;
 

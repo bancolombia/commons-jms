@@ -1,8 +1,8 @@
-package co.com.bancolombia.sample.entrypoints;
+package co.com.bancolombia.samplebuilder.entrypoints;
 
-import co.com.bancolombia.sample.domain.model.Result;
-import co.com.bancolombia.sample.domain.usecase.SampleReqReplyUseCase;
-import co.com.bancolombia.sample.domain.usecase.SampleUseCase;
+import co.com.bancolombia.samplebuilder.domain.model.Result;
+import co.com.bancolombia.samplebuilder.domain.usecase.SampleReqReplyUseCase;
+import co.com.bancolombia.samplebuilder.domain.usecase.SampleUseCase;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,10 @@
-package co.com.bancolombia.sample.app.config;
+package co.com.bancolombia.samplebuilder.app.config;
 
 import co.com.bancolombia.commons.jms.api.model.MQMessageHandler;
 import co.com.bancolombia.commons.jms.api.model.spec.CommonsJMSSpec;
 import co.com.bancolombia.commons.jms.api.model.spec.MQDomainSpec;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
-import co.com.bancolombia.sample.domain.model.Result;
+import co.com.bancolombia.samplebuilder.domain.model.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.mq.jakarta.jms.MQConnectionFactory;
 import com.ibm.mq.spring.boot.MQConfigurationProperties;

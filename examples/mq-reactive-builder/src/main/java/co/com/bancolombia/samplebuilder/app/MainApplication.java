@@ -1,4 +1,4 @@
-package co.com.bancolombia.sample.app;
+package co.com.bancolombia.samplebuilder.app;
 
 import co.com.bancolombia.commons.jms.mq.EnableMQClientFromSpec;
 import org.springframework.boot.SpringApplication;

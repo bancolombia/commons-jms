@@ -1,4 +1,4 @@
-package co.com.bancolombia.sample.domain.exceptions;
+package co.com.bancolombia.samplebuilder.domain.exceptions;
 
 public class RelatedMessageNotFoundException extends RuntimeException {
 }

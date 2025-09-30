@@ -1,8 +1,8 @@
-package co.com.bancolombia.sample.domain.usecase;
+package co.com.bancolombia.samplebuilder.domain.usecase;
 
-import co.com.bancolombia.sample.domain.model.Request;
-import co.com.bancolombia.sample.domain.model.RequestGateway;
-import co.com.bancolombia.sample.domain.model.Result;
+import co.com.bancolombia.samplebuilder.domain.model.Request;
+import co.com.bancolombia.samplebuilder.domain.model.RequestGateway;
+import co.com.bancolombia.samplebuilder.domain.model.Result;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
