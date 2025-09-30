@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.5.0](https://github.com/bancolombia/commons-jms/tree/v2.5.0) (2025-09-30)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.8...v2.5.0)
+
+**Merged pull requests:**
+
+- feat\(spec\): builder to define jms objects [\#100](https://github.com/bancolombia/commons-jms/pull/100) ([juancgalvis](https://github.com/juancgalvis))
+- docs\(link\): update broken link [\#99](https://github.com/bancolombia/commons-jms/pull/99) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.4.8](https://github.com/bancolombia/commons-jms/tree/v2.4.8) (2025-09-09)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.7...v2.4.8)
@@ -305,7 +314,7 @@
 
 ## [v2.2.3](https://github.com/bancolombia/commons-jms/tree/v2.2.3) (2024-05-03)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.3)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.3)
 
 **Merged pull requests:**
 
@@ -313,13 +322,13 @@
 - fix\(release\): implementing semantic release [\#49](https://github.com/bancolombia/commons-jms/pull/49) ([santicalleg](https://github.com/santicalleg))
 - fix\(release\): implementing semantic release [\#47](https://github.com/bancolombia/commons-jms/pull/47) ([santicalleg](https://github.com/santicalleg))
 
-## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
-
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.0)
-
 ## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.2)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.2)
+
+## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.0)
 
 **Merged pull requests:**
 
