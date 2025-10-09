@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.5.2](https://github.com/bancolombia/commons-jms/tree/v2.5.2) (2025-10-09)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.1...v2.5.2)
+
+**Merged pull requests:**
+
+- fix: remove timeout from reactor because threads are in park mode when timeout [\#102](https://github.com/bancolombia/commons-jms/pull/102) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.5.1](https://github.com/bancolombia/commons-jms/tree/v2.5.1) (2025-10-09)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.0...v2.5.1)
