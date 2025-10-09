@@ -56,7 +56,7 @@ public class MQMultiContextMessageSelectorListener implements MQMessageSelectorL
 
     private Mono<Message> doAsync(Supplier<Message> supplier, long timeout) {
         return Mono.fromSupplier(supplier)
-                .subscribeOn(scheduler)
-                .timeout(Duration.ofMillis(timeout)); // Enforces timeout to ensure scheduler thread is released
+                .subscribeOn(scheduler);
+//                .timeout(Duration.ofMillis(timeout)); // Enforces timeout to ensure scheduler thread is released
     }
 }
