@@ -15,18 +15,15 @@ public class ContextSharedStrategy implements SelectorStrategy {
 
     @Override
     public Message getMessageBySelector(String selector, long timeout, Destination destination) {
+        long start = System.currentTimeMillis();
         try (JMSConsumer consumer = context.createConsumer(destination, selector)) {
-            long start = System.currentTimeMillis();
             log.info("Waiting message with selector {}", selector);
             Message message = consumer.receive(timeout);
             if (message == null) {
-                throw new ReceiveTimeoutException("Message not received in " + timeout + " error atfter: "
-                        + (System.currentTimeMillis() - start) + " ms");
+                throw new ReceiveTimeoutException("Message not received in: " + timeout + " error after: "
+                        + (System.currentTimeMillis() - start) + "ms");
             }
             return message;
-        } catch (Exception e) {
-            log.error("Error receiving message with selector {}: {}", selector, e.getMessage());
-            throw e;
         }
     }
 }
