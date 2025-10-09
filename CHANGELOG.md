@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.5.1](https://github.com/bancolombia/commons-jms/tree/v2.5.1) (2025-10-09)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.0...v2.5.1)
+
+**Merged pull requests:**
+
+- fix: allow lazy MQMessageSender beans [\#101](https://github.com/bancolombia/commons-jms/pull/101) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.5.0](https://github.com/bancolombia/commons-jms/tree/v2.5.0) (2025-09-30)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.4.8...v2.5.0)
