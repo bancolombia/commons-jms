@@ -14,6 +14,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 
 import static co.com.bancolombia.commons.jms.mq.config.MQProperties.DEFAULT_DOMAIN;
@@ -22,6 +23,7 @@ import static co.com.bancolombia.commons.jms.mq.config.MQProperties.DEFAULT_DOMA
 public class MQAutoconfigurationSender {
 
     @Bean
+    @Lazy
     @Primary
     @ConditionalOnMissingBean(MQMessageSender.class)
     @ConditionalOnProperty(prefix = "commons.jms", name = "reactive", havingValue = "true")
@@ -49,6 +51,7 @@ public class MQAutoconfigurationSender {
     }
 
     @Bean
+    @Lazy
     @Primary
     @ConditionalOnMissingBean(MQMessageSenderSync.class)
     @ConditionalOnProperty(prefix = "commons.jms", name = "reactive", havingValue = "false")
