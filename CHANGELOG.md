@@ -1,5 +1,13 @@
 # Changelog
 
+## [v2.5.4](https://github.com/bancolombia/commons-jms/tree/v2.5.4) (2025-12-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.3...v2.5.4)
+
+**Merged pull requests:**
+
+- fix: add shutdown hook to close connections [\#107](https://github.com/bancolombia/commons-jms/pull/107) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.5.3](https://github.com/bancolombia/commons-jms/tree/v2.5.3) (2025-11-13)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.2...v2.5.3)
