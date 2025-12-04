@@ -2,7 +2,6 @@ dependencies {
     api project(':commons-jms-utils')
     api 'com.ibm.mq:mq-jms-spring-boot-starter:4.0.0-RC1'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-//    implementation 'org.springframework.boot:spring-boot-actuator'
     implementation 'org.springframework.boot:spring-boot-health'
 }
 
