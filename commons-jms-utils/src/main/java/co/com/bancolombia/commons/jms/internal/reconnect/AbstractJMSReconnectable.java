@@ -37,6 +37,16 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
     public T call() {
         this.process = name();
         healthListener.onInit(process);
+        log.info("Setup CommonsJMS shutdown for {}", process);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.warn("Commencing graceful CommonsJMS shutdown for {}", process);
+            try {
+                this.disconnect();
+            } catch (Exception e) {
+                log.error("Error disconnecting during graceful CommonsJMS shutdown for {}", process, e);
+            }
+            log.warn("Graceful CommonsJMS shutdown completed for {}", process);
+        }, process + "-down"));
         return start();
     }
 
