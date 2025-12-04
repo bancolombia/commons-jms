@@ -1,5 +1,17 @@
 # Changelog
 
+## [v3.0.0](https://github.com/bancolombia/commons-jms/tree/v3.0.0) (2025-12-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.4...v3.0.0)
+
+**Fixed bugs:**
+
+- The 200-thread pool size exceeds [\#97](https://github.com/bancolombia/commons-jms/issues/97)
+
+**Merged pull requests:**
+
+- feat!: update java 25 and spring boot dependencies to 4 [\#108](https://github.com/bancolombia/commons-jms/pull/108) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.5.4](https://github.com/bancolombia/commons-jms/tree/v2.5.4) (2025-12-04)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.3...v2.5.4)
