@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.web.server.WebServer;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.netty.DisposableServer;
 import reactor.test.StepVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,9 +28,10 @@ class ReplyServerTest {
     void startServer() {
         // Arrange
         // Act
-        WebServer server = ReplyServer.startServer(router, 8080, false);
+        DisposableServer server = ReplyServer.startServer(router, 8080, true);
         // Assert
         assertNotNull(server);
+        server.disposeNow();
     }
 
     @Test
