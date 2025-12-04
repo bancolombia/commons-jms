@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +50,16 @@ class AbstractJMSReconnectableTest {
         verify(healthListener, times(1)).onInit("test-name");
         verify(healthListener, times(1)).onException("test-name", exception);
         verify(healthListener, atLeastOnce()).onStarted("test-name");
+    }
+
+    @Test
+    void shouldShutdown() {
+        // Arrange
+        AbstractJMSReconnectable<AbstractJMSReconnectableSample> spied = Mockito.spy(reconnectable);
+        // Act
+        spied.shutdown();
+        // Assert
+        verify(spied, times(1)).disconnect();
     }
 
     @SuperBuilder
