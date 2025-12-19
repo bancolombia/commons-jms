@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.0.1](https://github.com/bancolombia/commons-jms/tree/v3.0.1) (2025-12-19)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.0...v3.0.1)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies [\#109](https://github.com/bancolombia/commons-jms/pull/109) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
 ## [v3.0.0](https://github.com/bancolombia/commons-jms/tree/v3.0.0) (2025-12-04)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.4...v3.0.0)
