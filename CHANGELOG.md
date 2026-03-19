@@ -1,5 +1,15 @@
 # Changelog
 
+## [v3.0.3](https://github.com/bancolombia/commons-jms/tree/v3.0.3) (2026-03-19)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.2...v3.0.3)
+
+**Merged pull requests:**
+
+- ci: update GitHub app token action [\#117](https://github.com/bancolombia/commons-jms/pull/117) ([luisgomez29](https://github.com/luisgomez29))
+- chore: update Node.js version and dependencies [\#116](https://github.com/bancolombia/commons-jms/pull/116) ([luisgomez29](https://github.com/luisgomez29))
+- fix\(deps\): update dependencies [\#112](https://github.com/bancolombia/commons-jms/pull/112) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
 ## [v3.0.2](https://github.com/bancolombia/commons-jms/tree/v3.0.2) (2025-12-29)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.1...v3.0.2)
