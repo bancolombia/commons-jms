@@ -1,6 +1,6 @@
 dependencies {
     api project(':commons-jms-utils')
-    api 'com.ibm.mq:mq-jms-spring-boot-starter:4.0.2'
+    api 'com.ibm.mq:mq-jms-spring-boot-starter:4.0.5'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-health'
 }
@@ -8,9 +8,9 @@ dependencies {
 configurations.configureEach {
     resolutionStrategy {
         force 'org.json:json:20251224' // to avoid CVE-2023-5072
-        force 'org.bouncycastle:bcprov-jdk18on:1.83'
-        force 'org.bouncycastle:bcpkix-jdk18on:1.83'
-        force 'org.bouncycastle:bcutil-jdk18on:1.83'
+        force 'org.bouncycastle:bcprov-jdk18on:1.84'
+        force 'org.bouncycastle:bcpkix-jdk18on:1.84'
+        force 'org.bouncycastle:bcutil-jdk18on:1.84'
     }
 }
 

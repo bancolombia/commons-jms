@@ -1,5 +1,7 @@
 package co.com.bancolombia.commons.jms.api.model.spec;
 
+import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
+import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.model.MQMessageHandler;
 import jakarta.jms.ConnectionFactory;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,8 @@ public class MQDomainSpec {
     private final ConnectionFactory connectionFactory;
     private final List<MQMessageListenerSpec> messageListeners;
     private final boolean enableMessageSender;
+    private final MQProducerCustomizer producerCustomizer;
+    private final MQQueueCustomizer queueCustomizer;
     private final boolean enableFixedReqReply;
     private final boolean enableTemporaryReqReply;
 
@@ -25,6 +29,8 @@ public class MQDomainSpec {
         private boolean enableMessageSender = false;
         private boolean enableFixedReqReply = false;
         private boolean enableTemporaryReqReply = false;
+        private MQProducerCustomizer producerCustomizer;
+        private MQQueueCustomizer queueCustomizer;
 
         public MQDomainSpecBuilder(String name, ConnectionFactory connectionFactory) {
             this.name = name;
@@ -34,6 +40,16 @@ public class MQDomainSpec {
 
         public MQDomainSpecBuilder listenQueue(String queueName, MQMessageHandler messageListener) {
             this.messageListeners.add(new MQMessageListenerSpec(queueName, messageListener));
+            return this;
+        }
+
+        public MQDomainSpecBuilder withProducerCustomizer(MQProducerCustomizer producerCustomizer) {
+            this.producerCustomizer = producerCustomizer;
+            return this;
+        }
+
+        public MQDomainSpecBuilder withQueueCustomizer(MQQueueCustomizer queueCustomizer) {
+            this.queueCustomizer = queueCustomizer;
             return this;
         }
 
@@ -56,7 +72,7 @@ public class MQDomainSpec {
 
         public MQDomainSpec build() {
             return new MQDomainSpec(name, connectionFactory, messageListeners, enableMessageSender,
-                    enableFixedReqReply, enableTemporaryReqReply);
+                    producerCustomizer, queueCustomizer, enableFixedReqReply, enableTemporaryReqReply);
         }
     }
 
