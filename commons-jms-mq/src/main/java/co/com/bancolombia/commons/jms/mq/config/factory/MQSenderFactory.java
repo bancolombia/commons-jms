@@ -80,6 +80,13 @@ public class MQSenderFactory {
         MQProducerCustomizer pCust = resolver.resolveBean(MQProducerCustomizer.class);
         MQQueueCustomizer queueCust = resolver.resolveBean(MQQueueCustomizer.class);
         RetryableConfig retryableConfig = resolver.resolveBean(RetryableConfig.class);
+        if (spec.getProducerCustomizer() != null) {
+            pCust = pCust.andThen(spec.getProducerCustomizer());
+        }
+        if (spec.getProducerCustomizer() != null) {
+            queueCust = queueCust.andThen(spec.getQueueCustomizer());
+        }
+
         MQDestinationProvider destinationProvider = buildMqDestinationProvider(queueCust,
                 resolve(properties.getOutputQueue(), spec.getName()));
         MQHealthListener healthListener = resolver.getHealthListener();
