@@ -1,5 +1,63 @@
 # Changelog
 
+## [v2.6.0-beta](https://github.com/bancolombia/commons-jms/tree/v2.6.0-beta) (2026-06-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.4...v2.6.0-beta)
+
+## [v3.0.4](https://github.com/bancolombia/commons-jms/tree/v3.0.4) (2026-04-24)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.3...v3.0.4)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies [\#122](https://github.com/bancolombia/commons-jms/pull/122) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
+## [v3.0.3](https://github.com/bancolombia/commons-jms/tree/v3.0.3) (2026-03-19)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.2...v3.0.3)
+
+**Merged pull requests:**
+
+- ci: update GitHub app token action [\#117](https://github.com/bancolombia/commons-jms/pull/117) ([luisgomez29](https://github.com/luisgomez29))
+- chore: update Node.js version and dependencies [\#116](https://github.com/bancolombia/commons-jms/pull/116) ([luisgomez29](https://github.com/luisgomez29))
+- fix\(deps\): update dependencies [\#112](https://github.com/bancolombia/commons-jms/pull/112) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
+## [v3.0.2](https://github.com/bancolombia/commons-jms/tree/v3.0.2) (2025-12-29)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.1...v3.0.2)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies [\#110](https://github.com/bancolombia/commons-jms/pull/110) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
+## [v3.0.1](https://github.com/bancolombia/commons-jms/tree/v3.0.1) (2025-12-19)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.0...v3.0.1)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies [\#109](https://github.com/bancolombia/commons-jms/pull/109) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
+## [v3.0.0](https://github.com/bancolombia/commons-jms/tree/v3.0.0) (2025-12-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.4...v3.0.0)
+
+**Fixed bugs:**
+
+- The 200-thread pool size exceeds [\#97](https://github.com/bancolombia/commons-jms/issues/97)
+
+**Merged pull requests:**
+
+- feat!: update java 25 and spring boot dependencies to 4 [\#108](https://github.com/bancolombia/commons-jms/pull/108) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.5.4](https://github.com/bancolombia/commons-jms/tree/v2.5.4) (2025-12-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.3...v2.5.4)
+
+**Merged pull requests:**
+
+- fix: add shutdown hook to close connections [\#107](https://github.com/bancolombia/commons-jms/pull/107) ([juancgalvis](https://github.com/juancgalvis))
+
 ## [v2.5.3](https://github.com/bancolombia/commons-jms/tree/v2.5.3) (2025-11-13)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.5.2...v2.5.3)
@@ -338,7 +396,7 @@
 
 ## [v2.2.3](https://github.com/bancolombia/commons-jms/tree/v2.2.3) (2024-05-03)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.3)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.3)
 
 **Merged pull requests:**
 
@@ -346,13 +404,13 @@
 - fix\(release\): implementing semantic release [\#49](https://github.com/bancolombia/commons-jms/pull/49) ([santicalleg](https://github.com/santicalleg))
 - fix\(release\): implementing semantic release [\#47](https://github.com/bancolombia/commons-jms/pull/47) ([santicalleg](https://github.com/santicalleg))
 
-## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
-
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.2)
-
 ## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.0)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.0)
+
+## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.2)
 
 **Merged pull requests:**
 
