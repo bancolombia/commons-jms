@@ -37,11 +37,6 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     @Override
-    protected void disconnect() {
-        // do not disconnect to avoid another thread exceptions
-    }
-
-    @Override
     protected void connect() {
         log.info("Starting listener {}", getProcess());
         context = config.getConnectionFactory().createContext();
