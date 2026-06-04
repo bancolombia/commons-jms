@@ -1,16 +1,16 @@
 dependencies {
     api project(':commons-jms-utils')
-    api 'com.ibm.mq:mq-jms-spring-boot-starter:3.5.7'
+    api 'com.ibm.mq:mq-jms-spring-boot-starter:3.5.13'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'org.springframework.boot:spring-boot-actuator'
 }
 
 configurations.configureEach {
     resolutionStrategy {
-        force 'org.json:json:20250517' // to avoid CVE-2023-5072
-        force 'org.bouncycastle:bcprov-jdk18on:1.83'
-        force 'org.bouncycastle:bcpkix-jdk18on:1.83'
-        force 'org.bouncycastle:bcutil-jdk18on:1.83'
+        force 'org.json:json:20260522' // to avoid CVE-2023-5072
+        force 'org.bouncycastle:bcprov-jdk18on:1.84'
+        force 'org.bouncycastle:bcpkix-jdk18on:1.84'
+        force 'org.bouncycastle:bcutil-jdk18on:1.84'
     }
 }
 

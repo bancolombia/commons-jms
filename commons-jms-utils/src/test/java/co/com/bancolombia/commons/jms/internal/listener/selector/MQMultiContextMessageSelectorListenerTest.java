@@ -3,6 +3,7 @@ package co.com.bancolombia.commons.jms.internal.listener.selector;
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListener;
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.exceptions.ReceiveTimeoutException;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.MultiContextSharedStrategy;
@@ -55,6 +56,8 @@ class MQMultiContextMessageSelectorListenerTest {
     private MQHealthListener healthListener;
     @Mock
     private MQQueuesContainer container;
+    @Mock
+    private MQExceptionClassifier exceptionClassifier;
 
     private MQMessageSelectorListener listener;
 
@@ -76,7 +79,7 @@ class MQMultiContextMessageSelectorListenerTest {
         SelectorModeProvider provider = (cf, context) -> new MultiContextSharedStrategy(cf, 2);
         MQMessageSelectorListenerSync listenerSync =
                 new MQMultiContextMessageSelectorListenerSync(config, healthListener,
-                        retryableConfig, provider, container);
+                        retryableConfig, provider, container, exceptionClassifier);
         Scheduler scheduler = Schedulers.newBoundedElastic(MAX_THREADS, MAX_THREADS, "selector-pool",
                 KEEP_ALIVE_SECONDS);
         MQSchedulerProvider executorService = () -> scheduler;

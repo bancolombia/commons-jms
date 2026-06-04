@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import co.com.bancolombia.commons.jms.mq.config.MQProperties;
@@ -33,6 +34,8 @@ class MQAutoconfigurationSenderTest {
     private RetryableConfig retryableConfig;
     @Mock
     private MQSenderContainer container;
+    @Mock
+    private MQExceptionClassifier exceptionClassifier;
     private MQAutoconfigurationSender senderConfiguration;
 
     @BeforeEach
@@ -50,7 +53,8 @@ class MQAutoconfigurationSenderTest {
                 properties,
                 healthListener,
                 retryableConfig,
-                container
+                container,
+                exceptionClassifier
         );
         // Assert
         assertNotNull(sender);
@@ -68,7 +72,8 @@ class MQAutoconfigurationSenderTest {
                 properties,
                 healthListener,
                 retryableConfig,
-                senderConfiguration.defaultMqSenderContainer()
+                senderConfiguration.defaultMqSenderContainer(),
+                exceptionClassifier
         );
         // Assert
         assertNotNull(sender);
