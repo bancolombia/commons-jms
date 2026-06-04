@@ -7,7 +7,6 @@ import co.com.bancolombia.commons.jms.utils.MQQueuesContainerImp;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
 import jakarta.jms.MessageListener;
 import jakarta.jms.Queue;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +65,7 @@ class MQContextListenerTest {
     }
 
     @Test
-    void shouldDisconnectAndConnectOnException() throws JMSException {
+    void shouldDisconnectAndConnectOnException() {
         // Arrange
         when(connectionFactory.createContext()).thenReturn(context);
         when(context.createQueue(anyString())).thenReturn(queue);
@@ -75,6 +74,6 @@ class MQContextListenerTest {
         // Act
         contextListener.disconnect();
         // Assert
-        verify(consumer, times(1)).close();
+        verify(context, times(1)).close();
     }
 }

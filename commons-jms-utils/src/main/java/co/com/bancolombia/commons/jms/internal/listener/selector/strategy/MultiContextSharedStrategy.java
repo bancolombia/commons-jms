@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Log4j2
@@ -20,7 +19,7 @@ public class MultiContextSharedStrategy implements SelectorStrategy {
         this.concurrency = concurrency;
         this.contexts = IntStream.range(0, concurrency)
                 .mapToObj(idx -> new ContextSharedStrategy(factory.createContext()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
