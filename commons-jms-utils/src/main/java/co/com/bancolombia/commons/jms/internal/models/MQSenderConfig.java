@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.internal.models;
 
 import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import jakarta.jms.ConnectionFactory;
 import lombok.Builder;
@@ -15,5 +16,6 @@ public class MQSenderConfig {
     private final MQHealthListener healthListener;
     private final RetryableConfig retryableConfig;
     private final MQProducerCustomizer producerCustomizer;
+    private final MQExceptionClassifier exceptionClassifier;
     private final int concurrency;
 }

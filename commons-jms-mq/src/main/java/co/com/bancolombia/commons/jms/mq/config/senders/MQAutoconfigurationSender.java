@@ -4,6 +4,7 @@ import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
 import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQMessageSenderSync;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQSenderConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
@@ -33,7 +34,8 @@ public class MQAutoconfigurationSender {
                                                   MQProperties properties,
                                                   MQHealthListener healthListener,
                                                   RetryableConfig retryableConfig,
-                                                  MQSenderContainer container) {
+                                                  MQSenderContainer container,
+                                                  MQExceptionClassifier exceptionClassifier) {
         if (container.containsKey(DEFAULT_DOMAIN)) {
             return container.getReactive(DEFAULT_DOMAIN);
         }
@@ -45,6 +47,7 @@ public class MQAutoconfigurationSender {
                 .producerCustomizer(customizer)
                 .healthListener(healthListener)
                 .retryableConfig(retryableConfig)
+                .exceptionClassifier(exceptionClassifier)
                 .build();
 
         return (MQMessageSender) MQSenderFactory.fromSenderConfig(DEFAULT_DOMAIN, container, properties, config);
@@ -61,7 +64,8 @@ public class MQAutoconfigurationSender {
                                                           MQProperties properties,
                                                           MQHealthListener healthListener,
                                                           RetryableConfig retryableConfig,
-                                                          MQSenderContainer container) {
+                                                          MQSenderContainer container,
+                                                          MQExceptionClassifier exceptionClassifier) {
         if (container.containsKey(DEFAULT_DOMAIN)) {
             return container.getImperative(DEFAULT_DOMAIN);
         }
@@ -73,6 +77,7 @@ public class MQAutoconfigurationSender {
                 .producerCustomizer(customizer)
                 .healthListener(healthListener)
                 .retryableConfig(retryableConfig)
+                .exceptionClassifier(exceptionClassifier)
                 .build();
 
         return (MQMessageSenderSync) MQSenderFactory.fromSenderConfig(DEFAULT_DOMAIN, container, properties, config);
