@@ -64,6 +64,9 @@ public class MQExceptionClassifierImpl implements MQExceptionClassifier {
     }
 
     private boolean isReconnectableByErrorCode(String errorCode) {
+        if (errorCode == null) {
+            return true;
+        }
         return !nonReconnectableErrorCodes.containsKey(errorCode);
     }
 }

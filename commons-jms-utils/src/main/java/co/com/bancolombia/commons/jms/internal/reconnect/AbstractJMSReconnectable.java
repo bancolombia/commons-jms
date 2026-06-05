@@ -9,7 +9,6 @@ import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.jms.JMSRuntimeException;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
@@ -23,8 +22,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @Log4j2
 @SuperBuilder
 public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, Callable<T> {
-    @Builder.Default
-    private final Stats stats = new Stats();
     @Builder.Default
     private final ExecutorService service = Executors.newSingleThreadExecutor();
     @Builder.Default
@@ -66,7 +63,6 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
             if (handled > lastSuccess.get()) {
                 safeDisconnect();
                 try {
-                    stats.connections++;
                     connect();
                     markAsStarted();
                     return self();
@@ -92,7 +88,6 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
         if (!isReconnectable(exception)) {
             return;
         }
-        stats.exceptions++;
         healthListener.onException(process, exception);
         if (!connecting.compareAndSet(false, true)) {
             log.warn("Reconnection already in progress for {}, exception ignored", process);
@@ -141,7 +136,6 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
 
     private void safeDisconnect() {
         try {
-            stats.disconnections++;
             disconnect();
         } catch (Exception e) {
             log.warn("Error disconnecting {}", process, e);
@@ -149,19 +143,7 @@ public abstract class AbstractJMSReconnectable<T> implements ExceptionListener, 
     }
 
     private void markAsStarted() {
-        stats.reconnections++;
-        if (stats.reconnections % 10 == 0) {
-            log.error("Connection started successfully, total reconnections: {}", stats.toString());
-        }
         healthListener.onStarted(process);
         lastSuccess.set(System.currentTimeMillis());
-    }
-
-    @Data
-    public static class Stats {
-        private long connections;
-        private long disconnections;
-        private long reconnections;
-        private long exceptions;
     }
 }

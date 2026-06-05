@@ -90,11 +90,12 @@ class AbstractJMSReconnectableTest {
 
         @Override
         protected void connect() {
-
+            // ignored
         }
 
         @Override
         protected void disconnect() {
+            // ignored
         }
 
     }

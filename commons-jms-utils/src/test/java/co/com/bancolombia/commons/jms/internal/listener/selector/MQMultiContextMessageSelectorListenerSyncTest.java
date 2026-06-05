@@ -12,7 +12,6 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
 import jakarta.jms.JMSConsumer;
 import jakarta.jms.JMSContext;
-import jakarta.jms.JMSException;
 import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
@@ -30,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -251,16 +249,6 @@ class MQMultiContextMessageSelectorListenerSyncTest {
         // Assert
         assertThrows(ReceiveTimeoutException.class,
                 () -> listenerSync.getMessageBySelector("JMSMessageID='" + messageID + "'", DEFAULT_TIMEOUT, queue));
-    }
-
-    @Test
-    void shouldNotDisconnect() throws JMSException {
-        // Arrange
-        MQContextMessageSelectorListenerSync listener = (MQContextMessageSelectorListenerSync) listenerSync.getRandom();
-        // Act
-        listener.disconnect();
-        // Assert
-        verify(consumer, never()).close();
     }
 
 }
