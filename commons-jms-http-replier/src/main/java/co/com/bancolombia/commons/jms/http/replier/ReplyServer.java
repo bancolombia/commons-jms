@@ -3,28 +3,34 @@ package co.com.bancolombia.commons.jms.http.replier;
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
-import org.springframework.boot.web.reactive.server.ReactiveWebServerFactory;
-import org.springframework.boot.web.server.WebServer;
+import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.netty.DisposableServer;
+import reactor.netty.http.server.HttpServer;
 
 @Log4j2
 @UtilityClass
 public class ReplyServer {
 
-    public static WebServer startServer(HttpReactiveReplyRouter router, int port, boolean start) {
+    public static DisposableServer startServer(HttpReactiveReplyRouter router, int port, boolean start) {
         log.info("Starting Reply Server for mq messages in port {}", port);
-        ReactiveWebServerFactory factory = new NettyReactiveWebServerFactory(port);
-        WebServer server = factory.getWebServer(RouterFunctions.toHttpHandler(httpRouter(router)));
+        ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(
+                RouterFunctions.toHttpHandler(httpRouter(router))
+        );
+        HttpServer server = HttpServer.create()
+                .port(port)
+                .handle(adapter);
+
         if (start) {
-            server.start();
+            DisposableServer disposableServer = server.bindNow();
             log.info("Reply Server started in port {}", port);
+            return disposableServer;
         }
-        return server;
+        return null;
     }
 
 

@@ -25,7 +25,6 @@ public class MQMultiContextSenderSync implements MQMessageSenderSync {
                         .senderConfig(senderConfig)
                         .healthListener(senderConfig.getHealthListener())
                         .retryableConfig(senderConfig.getRetryableConfig())
-                        .exceptionClassifier(senderConfig.getExceptionClassifier())
                         .build()
                         .call())
                 .collect(Collectors.toList());

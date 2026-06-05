@@ -3,7 +3,6 @@ package co.com.bancolombia.commons.jms.mq.config.factory;
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
-import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.model.spec.MQMessageListenerSpec;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -108,7 +107,6 @@ public class MQListenerFactory {
         MQBrokerUtils brokerUtils = resolver.getBrokerUtils();
         MQHealthListener healthListener = resolver.getHealthListener();
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
-        MQExceptionClassifier exceptionClassifier = resolver.resolveBean(MQExceptionClassifier.class);
 
         try {
             MQMessageListenerUtils.createListeners(
@@ -116,8 +114,7 @@ public class MQListenerFactory {
                     queuesContainer,
                     brokerUtils,
                     healthListener,
-                    retryableConfig,
-                    exceptionClassifier);
+                    retryableConfig);
         } catch (JMSRuntimeException ex) {
             throw new BeanInitializationException("Could not register MQ listener for queue ["
                     + listenerConfig.getListeningQueue() + "], using  ConnectionFactory: "

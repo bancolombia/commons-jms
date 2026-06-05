@@ -3,7 +3,6 @@ package co.com.bancolombia.commons.jms.mq.config.factory;
 import co.com.bancolombia.commons.jms.api.MQDestinationProvider;
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
-import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.model.spec.MQDomainSpec;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -61,7 +60,6 @@ public class MQSenderFactory {
         MQProducerCustomizer pCust = resolver.resolveBean(settings.getProducerCustomizer(), MQProducerCustomizer.class);
         MQQueueCustomizer queueCust = resolver.resolveBean(settings.getQueueCustomizer(), MQQueueCustomizer.class);
         RetryableConfig retryableConfig = resolver.resolveBean(settings.getRetryConfig(), RetryableConfig.class);
-        MQExceptionClassifier exceptionClassifier = resolver.resolveBean(MQExceptionClassifier.class);
         MQDestinationProvider destinationProvider = buildMqDestinationProvider(queueCust, realQueue);
         MQHealthListener healthListener = resolver.getHealthListener();
 
@@ -72,7 +70,6 @@ public class MQSenderFactory {
                 .producerCustomizer(pCust)
                 .healthListener(healthListener)
                 .retryableConfig(retryableConfig)
-                .exceptionClassifier(exceptionClassifier)
                 .build();
 
         return fromSenderConfig(domain, container, properties, config);
@@ -83,7 +80,29 @@ public class MQSenderFactory {
         MQProducerCustomizer pCust = resolver.resolveBean(MQProducerCustomizer.class);
         MQQueueCustomizer queueCust = resolver.resolveBean(MQQueueCustomizer.class);
         RetryableConfig retryableConfig = resolver.resolveBean(RetryableConfig.class);
-        MQExceptionClassifier exceptionClassifier = resolver.resolveBean(MQExceptionClassifier.class);
+
+        if (pCust != null && spec.getProducerCustomizer() != null) {
+            pCust = pCust.andThen(spec.getProducerCustomizer());
+        } else if (spec.getProducerCustomizer() != null) {
+            pCust = spec.getProducerCustomizer();
+        }
+
+        // Provide a no-op customizer if none is available
+        if (pCust == null) {
+            pCust = producer -> {};
+        }
+
+        if (queueCust != null && spec.getQueueCustomizer() != null) {
+            queueCust = queueCust.andThen(spec.getQueueCustomizer());
+        } else if (spec.getQueueCustomizer() != null) {
+            queueCust = spec.getQueueCustomizer();
+        }
+
+        // Provide a no-op customizer if none is available
+        if (queueCust == null) {
+            queueCust = queue -> {};
+        }
+
         MQDestinationProvider destinationProvider = buildMqDestinationProvider(queueCust,
                 resolve(properties.getOutputQueue(), spec.getName()));
         MQHealthListener healthListener = resolver.getHealthListener();
@@ -95,7 +114,6 @@ public class MQSenderFactory {
                 .producerCustomizer(pCust)
                 .healthListener(healthListener)
                 .retryableConfig(retryableConfig)
-                .exceptionClassifier(exceptionClassifier)
                 .build();
 
         MQMultiContextSenderSync sender = new MQMultiContextSenderSync(config);

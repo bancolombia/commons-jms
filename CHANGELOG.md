@@ -1,17 +1,5 @@
 # Changelog
 
-## [v2.6.0-beta](https://github.com/bancolombia/commons-jms/tree/v2.6.0-beta) (2026-06-04)
-
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.4...v2.6.0-beta)
-
-## [v3.0.4](https://github.com/bancolombia/commons-jms/tree/v3.0.4) (2026-04-24)
-
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.3...v3.0.4)
-
-**Merged pull requests:**
-
-- fix\(deps\): update dependencies [\#122](https://github.com/bancolombia/commons-jms/pull/122) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
-
 ## [v3.0.3](https://github.com/bancolombia/commons-jms/tree/v3.0.3) (2026-03-19)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.2...v3.0.3)
@@ -396,7 +384,7 @@
 
 ## [v2.2.3](https://github.com/bancolombia/commons-jms/tree/v2.2.3) (2024-05-03)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.3)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.3)
 
 **Merged pull requests:**
 
@@ -404,13 +392,13 @@
 - fix\(release\): implementing semantic release [\#49](https://github.com/bancolombia/commons-jms/pull/49) ([santicalleg](https://github.com/santicalleg))
 - fix\(release\): implementing semantic release [\#47](https://github.com/bancolombia/commons-jms/pull/47) ([santicalleg](https://github.com/santicalleg))
 
-## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
-
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.2...v2.2.0)
-
 ## [v2.2.2](https://github.com/bancolombia/commons-jms/tree/v2.2.2) (2024-04-18)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.2)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.0...v2.2.2)
+
+## [v2.2.0](https://github.com/bancolombia/commons-jms/tree/v2.2.0) (2024-04-18)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.2.1...v2.2.0)
 
 **Merged pull requests:**
 
