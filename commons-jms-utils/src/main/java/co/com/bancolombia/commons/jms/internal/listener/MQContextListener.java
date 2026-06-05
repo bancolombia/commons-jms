@@ -6,6 +6,8 @@ import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import jakarta.jms.Destination;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSContext;
 import jakarta.jms.JMSException;
 import jakarta.jms.Queue;
 import jakarta.jms.TemporaryQueue;
@@ -18,6 +20,8 @@ public class MQContextListener extends AbstractJMSReconnectable<MQContextListene
     private final MQListenerConfig listenerConfig;
     private final MQQueuesContainer container;
     private final MQBrokerUtils utils;
+    private JMSConsumer consumer;
+    private JMSContext context;
     private TemporaryQueue tempQueue;
 
     @Override
@@ -25,50 +29,62 @@ public class MQContextListener extends AbstractJMSReconnectable<MQContextListene
         String[] parts = Thread.currentThread().getName().split("-");
         String finalName;
         if (listenerConfig.getQueueType() == MQListenerConfig.QueueType.TEMPORARY) {
-            finalName =
-                    "mq-listener-tmp-queue-" + parts[parts.length - 1] + "[" + listenerConfig.getListeningQueue() + "]";
+            finalName = "mq-listener-tmp-queue-" + parts[parts.length - 1] + "[" + listenerConfig.getListeningQueue() + "]";
         } else {
-            finalName =
-                    "mq-listener-fixed-queue-" + parts[parts.length - 1] + "[" + listenerConfig.getListeningQueue() + "]";
+            finalName = "mq-listener-fixed-queue-" + parts[parts.length - 1] + "[" + listenerConfig.getListeningQueue() + "]";
         }
         Thread.currentThread().setName(finalName);
         return finalName;
     }
 
     @Override
-    protected MQContextListener self() {
-        return this;
-    }
-
-    @Override
     protected void disconnect() {
-        super.disconnect();
         if (listenerConfig.getQueueType() == MQListenerConfig.QueueType.TEMPORARY) {
             container.unregisterFromQueueGroup(listenerConfig.getListeningQueue(), tempQueue);
+        }
+        if (consumer != null) {
+            try {
+                consumer.close();
+            } catch (Exception ignored) {
+                // ignore because disconnection
+            }
+        }
+        if (tempQueue != null) {
+            try {
+                tempQueue.delete();
+            } catch (Exception ignored) {
+                // ignore because disconnection
+            }
+        }
+        if (context != null) {
+            try {
+                context.close();
+            } catch (Exception ignored) {
+                // ignore because disconnection
+            }
         }
     }
 
     @Override
-    protected void connect() {
+    protected MQContextListener connect() {
         log.info("Starting listener {}", getProcess());
         context = listenerConfig.getConnectionFactory().createContext();
         context.setExceptionListener(this);
-        String destinationName;
         if (listenerConfig.getQueueType() == MQListenerConfig.QueueType.TEMPORARY) {
             tempQueue = MQQueueUtils.setupTemporaryQueue(context, listenerConfig);
             container.registerToQueueGroup(listenerConfig.getListeningQueue(), tempQueue);
-            var consumer = context.createConsumer(tempQueue);//NOSONAR
+            consumer = context.createConsumer(tempQueue);//NOSONAR
             consumer.setMessageListener(listenerConfig.getMessageListener());
-            destinationName = shortDestinationName();
+            log.info("Listener {} started successfully with queue: {}", getProcess(), shortDestinationName());
         } else {
             Destination destination = MQQueueUtils.setupFixedQueue(context, listenerConfig);
             utils.setQueueManager(context, (Queue) destination);
             container.registerQueue(listenerConfig.getListeningQueue(), (Queue) destination);
-            var consumer = context.createConsumer(destination);//NOSONAR
+            consumer = context.createConsumer(destination);//NOSONAR
             consumer.setMessageListener(listenerConfig.getMessageListener());
-            destinationName = listenerConfig.getListeningQueue();
+            log.info("Listener {} started successfully with queue: {}", getProcess(), listenerConfig.getListeningQueue());
         }
-        log.info("Listener {} started successfully with queue: {}", getProcess(), destinationName);
+        return this;
     }
 
     private String shortDestinationName() {

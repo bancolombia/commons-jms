@@ -6,14 +6,12 @@ import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueueManagerSetter;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
-import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.reply.CorrelationExtractor;
 import co.com.bancolombia.commons.jms.internal.listener.selector.MQSchedulerProvider;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorBuilder;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
-import co.com.bancolombia.commons.jms.mq.config.exceptions.MQExceptionClassifierImpl;
 import co.com.bancolombia.commons.jms.mq.config.health.MQListenerDisabledHealthIndicator;
 import co.com.bancolombia.commons.jms.mq.config.health.MQListenerHealthIndicator;
 import co.com.bancolombia.commons.jms.mq.utils.MQUtils;
@@ -138,11 +136,6 @@ public class MQAutoconfiguration {
         return Message::getJMSCorrelationID;
     }
 
-    @Bean
-    @ConditionalOnMissingBean(MQExceptionClassifier.class)
-    public MQExceptionClassifier defaultMQExceptionClassifier() {
-        return new MQExceptionClassifierImpl();
-    }
 
     @Bean
     @ConditionalOnMissingBean(MQSchedulerProvider.class)

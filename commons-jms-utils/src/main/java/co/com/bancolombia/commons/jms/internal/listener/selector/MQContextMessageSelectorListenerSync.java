@@ -9,6 +9,7 @@ import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.reconnect.AbstractJMSReconnectable;
 import co.com.bancolombia.commons.jms.utils.MQQueueUtils;
 import jakarta.jms.Destination;
+import jakarta.jms.JMSContext;
 import jakarta.jms.JMSRuntimeException;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
@@ -32,19 +33,28 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
     }
 
     @Override
-    protected MQContextMessageSelectorListenerSync self() {
-        return this;
+    protected void disconnect() {
+        // do not disconnect to avoid another thread exceptions
     }
 
     @Override
-    protected void connect() {
-        log.info("Starting listener {}", getProcess());
-        context = config.getConnectionFactory().createContext();
-        context.setExceptionListener(this);
-        destination = MQQueueUtils.setupFixedQueue(context, config);
-        container.registerQueue(config.getListeningQueue(), (Queue) destination);
-        strategy = selectorModeProvider.get(config.getConnectionFactory(), context);
-        log.info("Listener {} started successfully", getProcess());
+    protected MQContextMessageSelectorListenerSync connect() {
+        long handled = System.currentTimeMillis();
+        synchronized (this) {
+            if (handled > lastSuccess.get()) {
+                log.info("Starting listener {}", getProcess());
+                JMSContext context = config.getConnectionFactory().createContext();
+                context.setExceptionListener(this);
+                destination = MQQueueUtils.setupFixedQueue(context, config);
+                container.registerQueue(config.getListeningQueue(), (Queue) destination);
+                strategy = selectorModeProvider.get(config.getConnectionFactory(), context);
+                log.info("Listener {} started successfully", getProcess());
+                lastSuccess.set(System.currentTimeMillis());
+            } else {
+                log.warn("Reconnection ignored because already connected");
+            }
+        }
+        return this;
     }
 
     public Message getMessage(String correlationId) {
@@ -78,16 +88,18 @@ public class MQContextMessageSelectorListenerSync extends AbstractJMSReconnectab
         try {
             return strategy.getMessageBySelector(selector, timeout, destination);
         } catch (JMSRuntimeException e) {
+            // Connection is broken
+            if (strategy instanceof ContextSharedStrategy && e.getCause() != null && e.getCause().getMessage() != null
+                    && e.getCause().getMessage().contains("CONNECTION_BROKEN")) {
+                connect();
+            }
             if (retry) {
                 log.warn("Retrying because: {}", e.getMessage());
-                // Connection is broken, try recover before retry
-                if (strategy instanceof ContextSharedStrategy && isReconnectable(e)) {
-                    start();
-                }
                 return getMessageBySelector(selector, timeout, destination, false);
+            } else {
+                log.warn("Retry has failed with {}, this will rethrow", e.getMessage());
+                throw e;
             }
-            onException(e); // Handle for reconnection
-            throw e;
         }
     }
 

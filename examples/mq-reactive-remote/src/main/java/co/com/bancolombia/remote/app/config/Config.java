@@ -12,7 +12,7 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.JMSRuntimeException;
 import lombok.SneakyThrows;
-import org.springframework.boot.autoconfigure.jms.JmsProperties;
+import org.springframework.boot.jms.autoconfigure.JmsProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

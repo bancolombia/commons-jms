@@ -1,7 +1,6 @@
 package co.com.bancolombia.commons.jms.internal.sender;
 
 import co.com.bancolombia.commons.jms.api.MQProducerCustomizer;
-import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQSenderConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
@@ -44,8 +43,6 @@ class MQMultiContextSenderSyncTest {
     private MQProducerCustomizer customizer;
     @Mock
     private MQHealthListener healthListener;
-    @Mock
-    private MQExceptionClassifier exceptionClassifier;
 
     private MQMultiContextSenderSync senderSync;
 
@@ -67,7 +64,6 @@ class MQMultiContextSenderSyncTest {
                 .destinationProvider(ctx -> ctx.createQueue("QUEUE.NAME"))
                 .connectionFactory(connectionFactory)
                 .concurrency(2)
-                .exceptionClassifier(exceptionClassifier)
                 .build();
         senderSync = new MQMultiContextSenderSync(config);
     }

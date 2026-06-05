@@ -12,7 +12,7 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.DeliveryMode;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.jms.JmsProperties;
+import org.springframework.boot.jms.autoconfigure.JmsProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;

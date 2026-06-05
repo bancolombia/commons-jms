@@ -7,7 +7,6 @@ import co.com.bancolombia.commons.jms.api.MQMessageSender;
 import co.com.bancolombia.commons.jms.api.MQQueueCustomizer;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
 import co.com.bancolombia.commons.jms.api.MQRequestReply;
-import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
 import co.com.bancolombia.commons.jms.api.model.spec.MQDomainSpec;
@@ -62,15 +61,13 @@ public class MQReqReplyFactory {
         MQQueuesContainer queuesContainer = resolver.getQueuesContainer();
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
         MQQueueCustomizer customizer = resolver.resolveBean(MQQueueCustomizer.class);
-        MQExceptionClassifier exceptionClassifier = resolver.resolveBean(MQExceptionClassifier.class);
         Queue destination = new MQQueue(resolve(properties.getOutputQueue(), spec.getName()));
         customizer.customize(destination);
         CorrelationExtractor correlationExtractor = resolver.resolveBean(CorrelationExtractor.class);
         switch (listenerConfig.getQueueType()) {
             case FIXED: {
                 return fixedQueueWithMessageSelector(MQListenerConfig.SelectorMode.CONTEXT_SHARED.name(), resolver,
-                        listenerConfig, sender, healthListener, queuesContainer, retryableConfig, destination,
-                        exceptionClassifier);
+                        listenerConfig, sender, healthListener, queuesContainer, retryableConfig, destination);
             }
             case FIXED_LOCATION_TRANSPARENCY: {
                 throw new MQInvalidListenerException("Unsupported configuration, cannot use " +
@@ -78,8 +75,7 @@ public class MQReqReplyFactory {
             }
             default: {
                 return temporaryQueueWithAsyncListener(resolver, spec.getName(), listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
-                        exceptionClassifier);
+                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor);
             }
         }
     }
@@ -98,23 +94,21 @@ public class MQReqReplyFactory {
         MQHealthListener healthListener = resolver.getHealthListener();
         MQQueuesContainer queuesContainer = resolver.getQueuesContainer();
         RetryableConfig retryableConfig = resolver.getRetryableConfig();
-        MQExceptionClassifier exceptionClassifier = resolver.resolveBean(MQExceptionClassifier.class);
         Destination destination = resolveDestination(annotation, resolver, properties);
         CorrelationExtractor correlationExtractor = resolveCorrelationExtractor(annotation, resolver);
         switch (listenerConfig.getQueueType()) {
             case FIXED: {
                 return fixedQueueWithMessageSelector(annotation.selectorMode(), resolver, listenerConfig, sender,
-                        healthListener, queuesContainer, retryableConfig, destination, exceptionClassifier);
+                        healthListener,
+                        queuesContainer, retryableConfig, destination);
             }
             case FIXED_LOCATION_TRANSPARENCY: {
                 return fixedQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
-                        exceptionClassifier);
+                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor);
             }
             default: {
                 return temporaryQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
-                        exceptionClassifier);
+                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor);
             }
         }
     }
@@ -127,8 +121,7 @@ public class MQReqReplyFactory {
                                                                           MQQueuesContainer queuesContainer,
                                                                           RetryableConfig retryableConfig,
                                                                           Destination destination,
-                                                                          CorrelationExtractor correlationExtractor,
-                                                                          MQExceptionClassifier exceptionClassifier) {
+                                                                          CorrelationExtractor correlationExtractor) {
         log.info("Using temporary queue with async listener");
         ReactiveReplyRouter<Message> router = resolver.resolveReplier();
         MQRequestReplyListener senderWithRouter = new MQRequestReplyListener(
@@ -148,8 +141,7 @@ public class MQReqReplyFactory {
                     queuesContainer,
                     mqBrokerUtils,
                     healthListener,
-                    retryableConfig,
-                    exceptionClassifier);
+                    retryableConfig);
         } catch (JMSRuntimeException ex) {
             throw new BeanInitializationException("Could not create @ReqReply bean named " + beanName
                     + " with connectionFactory: " + listenerConfig.getConnectionFactory(), ex);
@@ -165,8 +157,7 @@ public class MQReqReplyFactory {
                                                                             MQQueuesContainer queuesContainer,
                                                                             RetryableConfig retryableConfig,
                                                                             Destination destination,
-                                                                            CorrelationExtractor correlationExtractor,
-                                                                            MQExceptionClassifier exceptionClassifier) {
+                                                                            CorrelationExtractor correlationExtractor) {
         log.info("Using fixed queue with location transparency");
         ReactiveReplyRouter<JmsMessage> router = resolver.resolveReplier(JmsMessage.class);
         MQRequestReplyRemoteListener senderWithRouter = new MQRequestReplyRemoteListener(
@@ -186,8 +177,7 @@ public class MQReqReplyFactory {
                     queuesContainer,
                     mqBrokerUtils,
                     healthListener,
-                    retryableConfig,
-                    exceptionClassifier);
+                    retryableConfig);
         } catch (JMSRuntimeException ex) {
             throw new BeanInitializationException("Could not create @ReqReply bean named " + beanName
                     + " with connectionFactory: " + listenerConfig.getConnectionFactory(), ex);
@@ -201,8 +191,7 @@ public class MQReqReplyFactory {
                                                                         MQHealthListener healthListener,
                                                                         MQQueuesContainer queuesContainer,
                                                                         RetryableConfig retryableConfig,
-                                                                        Destination destination,
-                                                                        MQExceptionClassifier exceptionClassifier) {
+                                                                        Destination destination) {
         log.info("Using fixed queue with message selector");
         String selectorMode = resolver.resolveString(selMode);
         SelectorModeProvider selectorModeProvider = getSelectorModeProvider(resolver, selectorMode,
@@ -212,8 +201,7 @@ public class MQReqReplyFactory {
                 healthListener,
                 retryableConfig,
                 selectorModeProvider,
-                queuesContainer,
-                exceptionClassifier);
+                queuesContainer);
         SelectorBuilder selector = resolver.getSelectorBuilder();
         MQSchedulerProvider schedulerProvider = resolver.getMqExecutorService();
         MQMessageSelectorListener reactiveSelectorListener = new MQMultiContextMessageSelectorListener(
