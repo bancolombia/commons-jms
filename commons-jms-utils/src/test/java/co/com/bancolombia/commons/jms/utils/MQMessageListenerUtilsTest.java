@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.utils;
 
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
@@ -30,6 +31,8 @@ class MQMessageListenerUtilsTest {
     private MQBrokerUtils utils;
     @Mock
     private MQHealthListener healthListener;
+    @Mock
+    private MQExceptionClassifier exceptionClassifier;
 
     @Test
     void shouldCreateFixedQueueListeners() {
@@ -47,7 +50,8 @@ class MQMessageListenerUtilsTest {
                 .multiplier(1.5)
                 .build();
         // Act
-        MQMessageListenerUtils.createListeners(config, container, utils, healthListener, retryableConfig);
+        MQMessageListenerUtils.createListeners(config, container, utils, healthListener, retryableConfig,
+                exceptionClassifier);
     }
 
     @Test
@@ -66,7 +70,8 @@ class MQMessageListenerUtilsTest {
                 .multiplier(1.5)
                 .build();
         // Act
-        MQMessageListenerUtils.createListeners(config, container, utils, healthListener, retryableConfig);
+        MQMessageListenerUtils.createListeners(config, container, utils, healthListener, retryableConfig,
+                exceptionClassifier);
         // Assert
         verify(config, atLeastOnce()).getConcurrency();
     }

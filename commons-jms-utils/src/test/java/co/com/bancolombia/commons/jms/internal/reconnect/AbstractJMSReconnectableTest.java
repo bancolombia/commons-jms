@@ -1,7 +1,9 @@
 package co.com.bancolombia.commons.jms.internal.reconnect;
 
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import jakarta.jms.JMSException;
+import jakarta.jms.JMSRuntimeException;
 import lombok.experimental.SuperBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,17 @@ class AbstractJMSReconnectableTest {
     void setup() {
         reconnectable = AbstractJMSReconnectableSample.builder()
                 .healthListener(healthListener)
+                .exceptionClassifier(new MQExceptionClassifier() {
+                    @Override
+                    public boolean isReconnectable(JMSRuntimeException e) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean isReconnectable(JMSException e) {
+                        return true;
+                    }
+                })
                 .build();
     }
 
@@ -66,18 +79,24 @@ class AbstractJMSReconnectableTest {
     private static class AbstractJMSReconnectableSample extends AbstractJMSReconnectable<AbstractJMSReconnectableSample> {
 
         @Override
-        protected AbstractJMSReconnectableSample connect() {
+        protected String name() {
+            return "test-name";
+        }
+
+        @Override
+        protected AbstractJMSReconnectableSample self() {
             return this;
         }
 
         @Override
-        protected void disconnect() {
-
+        protected void connect() {
+            // ignored
         }
 
         @Override
-        protected String name() {
-            return "test-name";
+        protected void disconnect() {
+            // ignored
         }
+
     }
 }

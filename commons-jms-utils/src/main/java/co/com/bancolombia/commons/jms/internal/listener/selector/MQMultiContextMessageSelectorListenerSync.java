@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.internal.listener.selector;
 
 import co.com.bancolombia.commons.jms.api.MQMessageSelectorListenerSync;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.selector.strategy.SelectorModeProvider;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -20,7 +21,7 @@ public class MQMultiContextMessageSelectorListenerSync implements MQMessageSelec
     public MQMultiContextMessageSelectorListenerSync(MQListenerConfig config,
                                                      MQHealthListener healthListener, RetryableConfig retryableConfig,
                                                      SelectorModeProvider selectorModeProvider,
-                                                     MQQueuesContainer container) {
+                                                     MQQueuesContainer container, MQExceptionClassifier classifier) {
         this.concurrency = config.getConcurrency();
         adapterList = IntStream.range(0, config.getConcurrency())
                 .mapToObj(idx -> MQContextMessageSelectorListenerSync.builder()
@@ -29,6 +30,7 @@ public class MQMultiContextMessageSelectorListenerSync implements MQMessageSelec
                         .retryableConfig(retryableConfig)
                         .selectorModeProvider(selectorModeProvider)
                         .container(container)
+                        .exceptionClassifier(classifier)
                         .build()
                         .call())
                 .collect(Collectors.toList());

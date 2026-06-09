@@ -2,6 +2,7 @@ package co.com.bancolombia.commons.jms.utils;
 
 import co.com.bancolombia.commons.jms.api.MQBrokerUtils;
 import co.com.bancolombia.commons.jms.api.MQQueuesContainer;
+import co.com.bancolombia.commons.jms.api.exceptions.MQExceptionClassifier;
 import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.listener.MQContextListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
@@ -22,7 +23,8 @@ public class MQMessageListenerUtils {
                                        MQQueuesContainer container,
                                        MQBrokerUtils utils,
                                        MQHealthListener healthListener,
-                                       RetryableConfig retryableConfig) {
+                                       RetryableConfig retryableConfig,
+                                       MQExceptionClassifier classifier) {
         if (log.isInfoEnabled()) {
             log.info("Creating {} listeners", config.getConcurrency());
         }
@@ -33,6 +35,7 @@ public class MQMessageListenerUtils {
                         .container(container)
                         .utils(utils)
                         .healthListener(healthListener)
+                        .exceptionClassifier(classifier)
                         .retryableConfig(retryableConfig)
                         .build())
                 .forEach(service::submit);
