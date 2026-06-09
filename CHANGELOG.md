@@ -1,30 +1,41 @@
 # Changelog
 
-## [v3.0.3](https://github.com/bancolombia/commons-jms/tree/v3.0.3) (2026-03-19)
+## [v3.1.0](https://github.com/bancolombia/commons-jms/tree/v3.1.0) (2026-06-09)
 
-[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.2...v3.0.3)
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.6.0...v3.1.0)
 
 **Merged pull requests:**
 
-- ci: update GitHub app token action [\#117](https://github.com/bancolombia/commons-jms/pull/117) ([luisgomez29](https://github.com/luisgomez29))
-- chore: update Node.js version and dependencies [\#116](https://github.com/bancolombia/commons-jms/pull/116) ([luisgomez29](https://github.com/luisgomez29))
-- fix\(deps\): update dependencies [\#112](https://github.com/bancolombia/commons-jms/pull/112) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+- feat: improve reconnections [\#128](https://github.com/bancolombia/commons-jms/pull/128) ([juancgalvis](https://github.com/juancgalvis))
+- build: revert release bot changes [\#127](https://github.com/bancolombia/commons-jms/pull/127) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v2.6.0](https://github.com/bancolombia/commons-jms/tree/v2.6.0) (2026-06-09)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v2.6.0-beta...v2.6.0)
+
+## [v2.6.0-beta](https://github.com/bancolombia/commons-jms/tree/v2.6.0-beta) (2026-06-04)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.4...v2.6.0-beta)
+
+**Merged pull requests:**
+
+- fix: improve reconnections v2.x.x [\#126](https://github.com/bancolombia/commons-jms/pull/126) ([juancgalvis](https://github.com/juancgalvis))
+
+## [v3.0.4](https://github.com/bancolombia/commons-jms/tree/v3.0.4) (2026-04-24)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.3...v3.0.4)
+
+## [v3.0.3](https://github.com/bancolombia/commons-jms/tree/v3.0.3) (2026-03-19)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.2...v3.0.3)
 
 ## [v3.0.2](https://github.com/bancolombia/commons-jms/tree/v3.0.2) (2025-12-29)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.1...v3.0.2)
 
-**Merged pull requests:**
-
-- fix\(deps\): update dependencies [\#110](https://github.com/bancolombia/commons-jms/pull/110) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
-
 ## [v3.0.1](https://github.com/bancolombia/commons-jms/tree/v3.0.1) (2025-12-19)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.0.0...v3.0.1)
-
-**Merged pull requests:**
-
-- fix\(deps\): update dependencies [\#109](https://github.com/bancolombia/commons-jms/pull/109) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
 
 ## [v3.0.0](https://github.com/bancolombia/commons-jms/tree/v3.0.0) (2025-12-04)
 
@@ -33,10 +44,6 @@
 **Fixed bugs:**
 
 - The 200-thread pool size exceeds [\#97](https://github.com/bancolombia/commons-jms/issues/97)
-
-**Merged pull requests:**
-
-- feat!: update java 25 and spring boot dependencies to 4 [\#108](https://github.com/bancolombia/commons-jms/pull/108) ([juancgalvis](https://github.com/juancgalvis))
 
 ## [v2.5.4](https://github.com/bancolombia/commons-jms/tree/v2.5.4) (2025-12-04)
 
