@@ -27,12 +27,7 @@ public class AnnotationParser {
         );
     }
 
-    private static class AnnotationInvocationHandler implements InvocationHandler {
-        private final Map<String, Object> attributes;
-
-        AnnotationInvocationHandler(Map<String, Object> attributes) {
-            this.attributes = attributes;
-        }
+    private record AnnotationInvocationHandler(Map<String, Object> attributes) implements InvocationHandler {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

@@ -22,7 +22,7 @@ class MQSenderContainerTest {
     private MQSenderContainer senderContainer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         senderContainer = new MQSenderContainer();
         senderContainer.put(DEFAULT_DOMAIN, sender);
         senderContainer.put("other", senderSync);

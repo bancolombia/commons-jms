@@ -24,7 +24,7 @@ import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_RESOLVED
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MQUtils {
+public final class MQUtils {
     private static final String CONNECTION_PROPERTY = "connection";
 
     public static String extractQMNameWithTempQueue(JMSContext context) {

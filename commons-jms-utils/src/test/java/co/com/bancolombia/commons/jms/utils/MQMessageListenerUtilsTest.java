@@ -7,7 +7,6 @@ import co.com.bancolombia.commons.jms.api.exceptions.MQHealthListener;
 import co.com.bancolombia.commons.jms.internal.models.MQListenerConfig;
 import co.com.bancolombia.commons.jms.internal.models.RetryableConfig;
 import jakarta.jms.ConnectionFactory;
-import jakarta.jms.JMSException;
 import jakarta.jms.MessageListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +54,7 @@ class MQMessageListenerUtilsTest {
     }
 
     @Test
-    void shouldCreateTemporaryQueueListeners() throws JMSException {
+    void shouldCreateTemporaryQueueListeners() {
         // Arrange
         MQListenerConfig config = spy(MQListenerConfig.builder()
                 .listeningQueue("alias")

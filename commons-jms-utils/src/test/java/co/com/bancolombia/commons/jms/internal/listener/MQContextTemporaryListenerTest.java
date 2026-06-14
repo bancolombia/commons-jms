@@ -60,7 +60,7 @@ class MQContextTemporaryListenerTest {
     }
 
     @Test
-    void shouldStartListener() throws JMSException {
+    void shouldStartListener() {
         // Arrange
         // Act
         contextTemporaryListener.call();
@@ -69,7 +69,7 @@ class MQContextTemporaryListenerTest {
     }
 
     @Test
-    void shouldDisconnect() throws JMSException {
+    void shouldDisconnect() {
         // Arrange
         contextTemporaryListener.call();
         // Act

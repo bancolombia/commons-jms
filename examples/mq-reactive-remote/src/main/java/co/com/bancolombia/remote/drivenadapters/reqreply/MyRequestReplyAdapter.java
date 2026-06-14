@@ -1,15 +1,15 @@
 package co.com.bancolombia.remote.drivenadapters.reqreply;
 
 import co.com.bancolombia.commons.jms.api.model.JmsMessage;
-import co.com.bancolombia.remote.domain.model.Result;
 import co.com.bancolombia.remote.domain.model.Request;
 import co.com.bancolombia.remote.domain.model.RequestGateway;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import co.com.bancolombia.remote.domain.model.Result;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Date;
 
@@ -18,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class MyRequestReplyAdapter implements RequestGateway {
     private final MyRequestReply requestReply;
-    private final ObjectMapper mapper;
+    private final JsonMapper mapper;
 
     @Override
     public Mono<Result> doRequest(Request request) {

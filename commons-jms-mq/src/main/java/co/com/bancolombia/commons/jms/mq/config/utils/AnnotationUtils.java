@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AnnotationUtils {
+public final class AnnotationUtils {
 
     public static int resolveRetries(String maxRetriesStr) {
         try {

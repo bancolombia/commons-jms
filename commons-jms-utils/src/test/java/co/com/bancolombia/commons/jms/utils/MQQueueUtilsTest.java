@@ -73,7 +73,7 @@ class MQQueueUtilsTest {
     }
 
     @Test
-    void shouldCreateTemporaryQueue() throws JMSException {
+    void shouldCreateTemporaryQueue() {
         // Arrange
         when(context.createTemporaryQueue()).thenReturn(temporaryQueue);
         // Act
@@ -84,7 +84,7 @@ class MQQueueUtilsTest {
     }
 
     @Test
-    void shouldCreateFailCreatingTemporaryQueue() throws JMSException {
+    void shouldCreateFailCreatingTemporaryQueue() {
         // Arrange
         when(context.createTemporaryQueue()).thenThrow(new JMSRuntimeException("Any Error"));
         // Assert

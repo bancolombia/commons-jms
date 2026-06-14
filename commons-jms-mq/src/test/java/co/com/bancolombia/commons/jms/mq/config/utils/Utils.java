@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Utils {
+public final class Utils {
     public static AnnotationMetadata getMetadataEnableMQGateway() {
         BeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry();
         ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry);

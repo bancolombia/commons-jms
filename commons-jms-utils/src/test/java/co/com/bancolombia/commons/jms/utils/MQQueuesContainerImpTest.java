@@ -30,11 +30,11 @@ class MQTemporaryQueuesContainerImpTest {
     @Test
     void shouldSaveAndGet() {
         // Arrange
-        MQQueuesContainer container = new MQQueuesContainerImp();
+        MQQueuesContainer containerImp = new MQQueuesContainerImp();
         String alias = "key";
         // Act
-        container.registerQueue(alias, queue);
-        Queue savedQueue = container.get(alias);
+        containerImp.registerQueue(alias, queue);
+        Queue savedQueue = containerImp.get(alias);
         // Assert
         assertEquals(queue, savedQueue);
     }
