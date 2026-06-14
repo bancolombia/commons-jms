@@ -61,7 +61,7 @@ To achieve the auto implementation, you should:
 
   ```java
     @Component
-    @AllArgsConstructor
+@RequiredArgsConstructor
     public class MyRequestReplyAdapter implements RequestGateway {
         private final MyRequestReply requestReply;
         ...

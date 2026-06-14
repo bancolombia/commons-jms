@@ -51,7 +51,7 @@ mqcreds\
 Then pass the directory
 
 ```bash
-docker run -e LICENSE=accept -e MQ_QMGR_NAME=QM1 -p 1414:1414 -p 9443:9443 -d --name ibmmq -v ./mqcreds:/run/secrets icr.io/ibm-messaging/mq:9.4.3.1-r1
+docker run -e LICENSE=accept -e MQ_QMGR_NAME=QM1 -p 1414:1414 -p 9443:9443 -d --name ibmmq -v ./mqcreds:/run/secrets icr.io/ibm-messaging/mq:9.4.5.1-r1
 ```
 
 If you prefer to use an older image (last version was 9.2.4) located at docker, it can be done with:
@@ -69,7 +69,8 @@ Password: The password set in `mqAdminPassword` file or `passw0rd` if you are us
 
 You can use our [Scaffold Clean Architecture Plugin](https://bancolombia.github.io/scaffold-clean-architecture/docs/getting-started) to acelerate the setup and get a clean architecture structure.
 
-Change `3.26.1` with latest plugin version -> ![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/co.com.bancolombia.cleanArchitecture)
+Change `4.5.0` with latest plugin
+version -> ![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/co.com.bancolombia.cleanArchitecture)
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -81,7 +82,7 @@ import TabItem from '@theme/TabItem';
 mkdir commonsjms-quick-start
 cd commonsjms-quick-start
 echo "plugins {
-    id 'co.com.bancolombia.cleanArchitecture' version '3.26.1'
+    id 'co.com.bancolombia.cleanArchitecture' version '4.5.0'
 }" > build.gradle
 gradle ca --name=CommonsJMSQuickStart
 ./gradlew gda --type mq
@@ -102,7 +103,7 @@ Set-Location -Path "commonsjms-quick-start"
 # Create the build.gradle file with the specified content
 @"
 plugins {
-    id 'co.com.bancolombia.cleanArchitecture' version '3.26.1'
+    id 'co.com.bancolombia.cleanArchitecture' version '4.5.0'
 }
 "@ | Set-Content -Path "build.gradle"
 
@@ -125,7 +126,7 @@ cd commonsjms-quick-start
 :: Create the build.gradle file with the specified content
 (
 echo plugins {
-echo     id 'co.com.bancolombia.cleanArchitecture' version '3.26.1'
+echo     id 'co.com.bancolombia.cleanArchitecture' version '4.5.0'
 echo }
 ) > build.gradle
 

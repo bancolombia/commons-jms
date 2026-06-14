@@ -1,6 +1,6 @@
 # Configuration Properties
 
-All this properties can be set in `application.yaml` file
+All this properties can be set in `application.yaml` file.
 
 ## General properties
 
@@ -30,4 +30,4 @@ There are three configuration properties:
 - `commons.jms.retry-multiplier`: Multiplier for the interval between retries.
 
 For more information about the connection retry properties, please refer
-to [Resilience4j Retry](https://resilience4j.readme.io/docs/retry)
+to [Resilience4j Retry](https://resilience4j.readme.io/docs/retry).

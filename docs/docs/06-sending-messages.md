@@ -5,11 +5,10 @@ To send messages exists the `@EnableMQGateway` annotation which enables the prod
 The senders are created with the default properties described at [Sender properties](/commons-jms/docs/configuration-properties#sender-properties)
 
 ## Send message to a fixed queue reactive
-
 ```java
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableMQGateway(scanBasePackages = "co.com.bancolombia")
 public class SampleMQMessageSender {
     private final MQMessageSender sender;
@@ -68,7 +67,7 @@ sender.send(destination, messageCreator);
 ```java
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableMQGateway(scanBasePackages = "co.com.bancolombia")
 public class SampleMQMessageSender {
     private final MQMessageSenderSync sender;
@@ -131,5 +130,6 @@ graph TD
   G -->|uses| J
 ```
 
-The amount of JMSContexts and JMSProducers is related to the `concurrency` property [see setup](#Setup), it is based on
+The amount of JMSContexts and JMSProducers is related to the `concurrency`
+property ([see setup](/commons-jms/docs/configuration-properties#sender-properties)), it is based on
 JMS 2.0.
