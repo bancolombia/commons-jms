@@ -1,7 +1,7 @@
 package co.com.bancolombia.commons.jms.mq.config.utils;
 
-import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
