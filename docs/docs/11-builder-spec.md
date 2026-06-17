@@ -14,15 +14,9 @@ The specification allows you to create domains, a domain is a group of senders a
 connection factory and configuration.
 
 You should create the connection factories.
-
-```java
-
-```
-
 If you will have listeners, so you need to create the message handlers:
 
 ```java
-
 @Bean
 public MQMessageHandler messageHandler() {
     return (source, message) -> {
@@ -85,7 +79,7 @@ required objects in the MQClient bean, which you can use to send messages and ma
 
 ```java
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MyService {
     private final MQClient mqClient;
 

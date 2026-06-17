@@ -10,39 +10,18 @@ import jakarta.jms.Destination;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Queue;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
-@Getter
 @Log4j2
-public final class MQRequestReplySelector implements MQRequestReply {
+public record MQRequestReplySelector(MQMessageSender sender, MQQueuesContainer container, Destination requestQueue,
+                                     String replyQueue, SelectorBuilder selector,
+                                     MQMessageSelectorListener listener) implements MQRequestReply {
     public static final int SECONDS_TIMEOUT = 30;
     public static final String LOG_REPLY_QUEUE = "Setting queue for reply to: {}";
-    private final MQMessageSender sender;
-    private final MQQueuesContainer container;
-    private final Destination requestQueue;
-    private final String replyQueue;
-    private final SelectorBuilder selector;
-
-    private final MQMessageSelectorListener listener;
-
-    public MQRequestReplySelector(MQMessageSender sender,
-                                  MQQueuesContainer container,
-                                  Destination requestQueue,
-                                  String replyQueue,
-                                  SelectorBuilder selector,
-                                  MQMessageSelectorListener listener) {
-        this.sender = sender;
-        this.container = container;
-        this.requestQueue = requestQueue;
-        this.replyQueue = replyQueue;
-        this.selector = selector;
-        this.listener = listener;
-    }
 
     @Override
     public Mono<Message> requestReply(String message) {
@@ -141,8 +120,8 @@ public final class MQRequestReplySelector implements MQRequestReply {
     private static void logQueue(Destination destination) throws JMSException {
         if (log.isInfoEnabled() && destination != null) {
             String message;
-            if (destination instanceof Queue) {
-                message = ((Queue) destination).getQueueName();
+            if (destination instanceof Queue queue) {
+                message = queue.getQueueName();
             } else {
                 message = destination.toString();
             }

@@ -50,8 +50,7 @@ public class MQAutoconfiguration {
     @ConditionalOnMissingBean(MQQueueCustomizer.class)
     public MQQueueCustomizer defaultMQQueueCustomizer() {
         return queue -> {
-            if (queue instanceof MQQueue) {
-                MQQueue customized = (MQQueue) queue;
+            if (queue instanceof MQQueue customized) {
                 customized.setProperty(WMQ_TARGET_CLIENT, "1");
                 customized.setProperty(WMQ_MQMD_READ_ENABLED, "true");
                 customized.setProperty(WMQ_MQMD_WRITE_ENABLED, "true");

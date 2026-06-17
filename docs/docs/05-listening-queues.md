@@ -70,8 +70,6 @@ graph TD
   J -->|notifies|F
 ```
 
-
-The amount of JMSContexts and JMSConsumers is related to the `concurrency` annotation attribute, it is based on JMS 2.0.
-
-The amount of Sessions and MessageConsumers is related to the `concurrency` annotation attribute, it is based on JMS
-1.1.
+The amount of JMSContexts and JMSConsumers is related to the `concurrency` annotation
+attribute ([see setup](/commons-jms/docs/configuration-properties#listener-properties)), it is based on JMS 2.0.
+.

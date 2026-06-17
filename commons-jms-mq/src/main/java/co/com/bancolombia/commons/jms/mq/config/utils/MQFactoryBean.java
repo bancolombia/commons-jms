@@ -7,11 +7,11 @@ import co.com.bancolombia.commons.jms.mq.config.factory.MQReqReplyFactory;
 import co.com.bancolombia.commons.jms.mq.config.factory.MQSenderFactory;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.jspecify.annotations.NonNull;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.lang.NonNull;
 
 import java.lang.annotation.Annotation;
 
@@ -48,10 +48,12 @@ public class MQFactoryBean<T extends Annotation> implements FactoryBean<Object> 
     }
 
     private Object build(T annotation, Class<?> clazz) {
-        if (annotation instanceof MQSender) {
-            return MQSenderFactory.fromMQSender((MQSender) annotation, resolver, clazz.getSimpleName());
+        if (annotation instanceof MQSender mqSender) {
+            return MQSenderFactory.fromMQSender(mqSender, resolver, clazz.getSimpleName());
+        } else if (annotation instanceof ReqReply reqReply) {
+            return MQReqReplyFactory.createMQReqReply(reqReply, resolver, clazz.getSimpleName());
         } else {
-            return MQReqReplyFactory.createMQReqReply((ReqReply) annotation, resolver, clazz.getSimpleName());
+            throw new IllegalArgumentException("Unsupported annotation type: " + annotation);
         }
     }
 }

@@ -5,7 +5,6 @@ import co.com.bancolombia.commons.jms.mq.EnableMQGateway;
 import co.com.bancolombia.sample.selector.domain.model.Request;
 import co.com.bancolombia.sample.selector.domain.model.RequestGateway;
 import co.com.bancolombia.sample.selector.domain.model.Result;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.Message;
 import jakarta.jms.TextMessage;
 import lombok.AllArgsConstructor;
@@ -13,6 +12,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Duration;
 import java.util.Date;
@@ -23,7 +23,7 @@ import java.util.Date;
 @EnableMQGateway
 public class MyMQSender implements RequestGateway {
     private final MyRequestReply requestReply; // domainB
-    private final ObjectMapper mapper;
+    private final JsonMapper mapper;
     private final MQQueuesContainer container;
 
     @Override

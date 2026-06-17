@@ -103,7 +103,7 @@ class MQRequestReplyListenerTest {
     }
 
     @Test
-    void shouldFailWhenUsingFixedMethod() throws JMSException {
+    void shouldFailWhenUsingFixedMethod() {
         // Arrange
         // Act
         Mono<Message> flow = listener.requestReply(context1 -> message, destination, destination,
@@ -114,7 +114,7 @@ class MQRequestReplyListenerTest {
     }
 
     @Test
-    void shouldFailWhenUsingFixedMethodStringMessage() throws JMSException {
+    void shouldFailWhenUsingFixedMethodStringMessage() {
         // Arrange
         // Act
         Mono<Message> flow = listener.requestReply("message", destination, destination, Duration.ofSeconds(1));

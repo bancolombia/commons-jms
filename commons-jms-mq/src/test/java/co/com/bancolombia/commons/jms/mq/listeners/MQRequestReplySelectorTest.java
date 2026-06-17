@@ -48,7 +48,7 @@ class MQRequestReplySelectorTest {
     private MQRequestReplySelector reqReply;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         String destinationQueue = "sample";
         String replyQueue = "sample";
         MQQueuesContainer container = new MQQueuesContainerImp();

@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class AnnotationSenderSettings {
+public final class AnnotationSenderSettings {
     private final String concurrency;
     private final String destinationQueue;
     private final String connectionFactory;

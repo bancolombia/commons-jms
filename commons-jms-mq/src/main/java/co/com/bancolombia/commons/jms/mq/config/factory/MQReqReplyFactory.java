@@ -49,7 +49,7 @@ import static co.com.bancolombia.commons.jms.mq.config.utils.AnnotationUtils.res
 
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MQReqReplyFactory {
+public final class MQReqReplyFactory {
 
     @SneakyThrows
     public static MQRequestReply createMQReqReply(MQDomainSpec spec, MQMessageSender sender,
@@ -66,22 +66,17 @@ public class MQReqReplyFactory {
         Queue destination = new MQQueue(resolve(properties.getOutputQueue(), spec.getName()));
         customizer.customize(destination);
         CorrelationExtractor correlationExtractor = resolver.resolveBean(CorrelationExtractor.class);
-        switch (listenerConfig.getQueueType()) {
-            case FIXED: {
-                return fixedQueueWithMessageSelector(MQListenerConfig.SelectorMode.CONTEXT_SHARED.name(), resolver,
-                        listenerConfig, sender, healthListener, queuesContainer, retryableConfig, destination,
-                        exceptionClassifier);
-            }
-            case FIXED_LOCATION_TRANSPARENCY: {
-                throw new MQInvalidListenerException("Unsupported configuration, cannot use " +
-                        "FIXED_LOCATION_TRANSPARENCY ");
-            }
-            default: {
-                return temporaryQueueWithAsyncListener(resolver, spec.getName(), listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
-                        exceptionClassifier);
-            }
-        }
+        return switch (listenerConfig.getQueueType()) {
+            case FIXED -> fixedQueueWithMessageSelector(MQListenerConfig.SelectorMode.CONTEXT_SHARED.name(), resolver,
+                    listenerConfig, sender, healthListener, queuesContainer, retryableConfig, destination,
+                    exceptionClassifier);
+            case FIXED_LOCATION_TRANSPARENCY ->
+                    throw new MQInvalidListenerException("Unsupported configuration, cannot use " +
+                            "FIXED_LOCATION_TRANSPARENCY ");
+            default -> temporaryQueueWithAsyncListener(resolver, spec.getName(), listenerConfig, sender, mqBrokerUtils,
+                    healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
+                    exceptionClassifier);
+        };
     }
 
     public static Object createMQReqReply(ReqReply annotation, MQSpringResolver resolver, String beanName) {
@@ -101,22 +96,17 @@ public class MQReqReplyFactory {
         MQExceptionClassifier exceptionClassifier = resolver.resolveBean(MQExceptionClassifier.class);
         Destination destination = resolveDestination(annotation, resolver, properties);
         CorrelationExtractor correlationExtractor = resolveCorrelationExtractor(annotation, resolver);
-        switch (listenerConfig.getQueueType()) {
-            case FIXED: {
-                return fixedQueueWithMessageSelector(annotation.selectorMode(), resolver, listenerConfig, sender,
-                        healthListener, queuesContainer, retryableConfig, destination, exceptionClassifier);
-            }
-            case FIXED_LOCATION_TRANSPARENCY: {
-                return fixedQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
-                        exceptionClassifier);
-            }
-            default: {
-                return temporaryQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
-                        healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
-                        exceptionClassifier);
-            }
-        }
+        return switch (listenerConfig.getQueueType()) {
+            case FIXED -> fixedQueueWithMessageSelector(annotation.selectorMode(), resolver, listenerConfig, sender,
+                    healthListener, queuesContainer, retryableConfig, destination, exceptionClassifier);
+            case FIXED_LOCATION_TRANSPARENCY ->
+                    fixedQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
+                            healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
+                            exceptionClassifier);
+            default -> temporaryQueueWithAsyncListener(resolver, beanName, listenerConfig, sender, mqBrokerUtils,
+                    healthListener, queuesContainer, retryableConfig, destination, correlationExtractor,
+                    exceptionClassifier);
+        };
     }
 
     private static MQRequestReplyListener temporaryQueueWithAsyncListener(MQSpringResolver resolver, String beanName,

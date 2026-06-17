@@ -5,7 +5,6 @@ import co.com.bancolombia.commons.jms.api.model.spec.CommonsJMSSpec;
 import co.com.bancolombia.commons.jms.api.model.spec.MQDomainSpec;
 import co.com.bancolombia.commons.jms.utils.ReactiveReplyRouter;
 import co.com.bancolombia.samplebuilder.domain.model.Result;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.mq.jakarta.jms.MQConnectionFactory;
 import com.ibm.mq.spring.boot.MQConfigurationProperties;
 import com.ibm.msg.client.jakarta.jms.JmsConstants;
@@ -13,23 +12,26 @@ import com.ibm.msg.client.jakarta.jms.JmsFactoryFactory;
 import com.ibm.msg.client.jakarta.wmq.common.CommonConstants;
 import jakarta.jms.ConnectionFactory;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jms.autoconfigure.JmsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Mono;
+import tools.jackson.databind.json.JsonMapper;
 
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CLIENT_RECONNECT_DISABLED;
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_CM_CLIENT;
 import static com.ibm.msg.client.jakarta.wmq.common.CommonConstants.WMQ_TEMPORARY_MODEL;
 
 @Configuration
+@Log4j2
 @EnableConfigurationProperties({MQConfigurationProperties.class, JmsProperties.class})
 public class Config {
 
     @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+    public JsonMapper objectMapper() {
+        return new JsonMapper();
     }
 
     @Bean
@@ -40,7 +42,7 @@ public class Config {
     @Bean
     public MQMessageHandler messageHandler() {
         return (source, message) -> {
-            System.out.println("Received message from " + source + ": " + message);
+            log.info("Received message from {}: {}", source, message);
             return Mono.empty();
         };
     }

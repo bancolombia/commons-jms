@@ -33,10 +33,9 @@ import reactor.core.scheduler.Schedulers;
 
 import java.lang.annotation.Annotation;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -84,7 +83,7 @@ class MQFactoryBeanTest {
         when(resolver.getMqSenderContainer()).thenReturn(senderContainer);
         when(resolver.resolveBean("", MQQueueCustomizer.class)).thenReturn(queue -> {
         });
-        when(resolver.resolveBean("", MQProducerCustomizer.class)).thenReturn(producer -> {
+        when(resolver.resolveBean("", MQProducerCustomizer.class)).thenReturn(p -> {
         });
         when(resolver.resolveBean("", RetryableConfig.class)).thenReturn(retryableConfig);
         when(resolver.getConnectionFactory(anyString())).thenReturn(connectionFactory);
@@ -115,7 +114,7 @@ class MQFactoryBeanTest {
         // Act
         Object generated = scanner.getObject();
         // Assert
-        assertTrue(generated instanceof MQRequestReply);
+        assertInstanceOf(MQRequestReply.class, generated);
     }
 
     @Test
@@ -132,6 +131,6 @@ class MQFactoryBeanTest {
         // Act
         Object generated = scanner.getObject();
         // Assert
-        assertTrue(generated instanceof MQRequestReply);
+        assertInstanceOf(MQRequestReply.class, generated);
     }
 }

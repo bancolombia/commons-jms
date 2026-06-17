@@ -39,7 +39,7 @@ class MQAutoconfigurationSenderTest {
     private MQAutoconfigurationSender senderConfiguration;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         senderConfiguration = new MQAutoconfigurationSender();
     }
 
