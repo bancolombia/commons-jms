@@ -1,5 +1,23 @@
 # Changelog
 
+## [v3.1.3](https://github.com/bancolombia/commons-jms/tree/v3.1.3) (2026-07-08)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.1.2...v3.1.3)
+
+**Merged pull requests:**
+
+- ci: update commit action to version 2.9 [\#137](https://github.com/bancolombia/commons-jms/pull/137) ([luisgomez29](https://github.com/luisgomez29))
+- build\(deps\): bump heinrichreimer/github-changelog-generator-action from 2.3 to 2.4 [\#133](https://github.com/bancolombia/commons-jms/pull/133) ([dependabot[bot]](https://github.com/apps/dependabot))
+- fix\(deps\): update dependencies [\#131](https://github.com/bancolombia/commons-jms/pull/131) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+
+## [v3.1.2](https://github.com/bancolombia/commons-jms/tree/v3.1.2) (2026-06-17)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.1.1...v3.1.2)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies, GitHub Actions, documentation and refactor code [\#132](https://github.com/bancolombia/commons-jms/pull/132) ([luisgomez29](https://github.com/luisgomez29))
+
 ## [v3.1.1](https://github.com/bancolombia/commons-jms/tree/v3.1.1) (2026-06-11)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.1.0...v3.1.1)
