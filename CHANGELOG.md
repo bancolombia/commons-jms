@@ -1,5 +1,23 @@
 # Changelog
 
+## [v3.1.4](https://github.com/bancolombia/commons-jms/tree/v3.1.4) (2026-08-21)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.1.3...v3.1.4)
+
+**Merged pull requests:**
+
+- fix\(deps\): update dependencies [\#157](https://github.com/bancolombia/commons-jms/pull/157) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.37.3 to 4.37.6 [\#152](https://github.com/bancolombia/commons-jms/pull/152) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.37.1 to 4.37.3 [\#147](https://github.com/bancolombia/commons-jms/pull/147) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump ossf/scorecard-action from 2.4.3 to 2.4.4 [\#146](https://github.com/bancolombia/commons-jms/pull/146) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.37.0 to 4.37.1 [\#145](https://github.com/bancolombia/commons-jms/pull/145) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump actions/setup-node from 6 to 7 [\#144](https://github.com/bancolombia/commons-jms/pull/144) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): update dependencies [\#143](https://github.com/bancolombia/commons-jms/pull/143) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+- ci: update app-id to client-id in workflow files and bump docs dependencies [\#141](https://github.com/bancolombia/commons-jms/pull/141) ([luisgomez29](https://github.com/luisgomez29))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.36.3 to 4.37.0 [\#140](https://github.com/bancolombia/commons-jms/pull/140) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.36.2 to 4.36.3 [\#139](https://github.com/bancolombia/commons-jms/pull/139) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump actions/checkout from 6 to 7 [\#138](https://github.com/bancolombia/commons-jms/pull/138) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v3.1.3](https://github.com/bancolombia/commons-jms/tree/v3.1.3) (2026-07-08)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.1.2...v3.1.3)
