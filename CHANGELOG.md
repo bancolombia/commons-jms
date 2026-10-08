@@ -1,5 +1,19 @@
 # Changelog
 
+## [v3.1.5](https://github.com/bancolombia/commons-jms/tree/v3.1.5) (2026-10-08)
+
+[Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.1.4...v3.1.5)
+
+**Merged pull requests:**
+
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.38.0 to 4.38.1 [\#171](https://github.com/bancolombia/commons-jms/pull/171) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.37.9 to 4.38.0 [\#168](https://github.com/bancolombia/commons-jms/pull/168) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.37.8 to 4.37.9 [\#163](https://github.com/bancolombia/commons-jms/pull/163) ([dependabot[bot]](https://github.com/apps/dependabot))
+- fix\(deps\): update dependencies [\#161](https://github.com/bancolombia/commons-jms/pull/161) ([app-toolkit-opensource-innersource[bot]](https://github.com/apps/app-toolkit-opensource-innersource))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.37.7 to 4.37.8 [\#160](https://github.com/bancolombia/commons-jms/pull/160) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump actions/setup-java from 5 to 6 [\#159](https://github.com/bancolombia/commons-jms/pull/159) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build\(deps\): bump github/codeql-action/upload-sarif from 4.37.6 to 4.37.7 [\#158](https://github.com/bancolombia/commons-jms/pull/158) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v3.1.4](https://github.com/bancolombia/commons-jms/tree/v3.1.4) (2026-08-21)
 
 [Full Changelog](https://github.com/bancolombia/commons-jms/compare/v3.1.3...v3.1.4)
