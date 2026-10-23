@@ -58,6 +58,15 @@ subprojects {
         testImplementation 'org.mockito:mockito-junit-jupiter'
     }
 
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-dependencies:4.1.2'
+        }
+    }
+
+    // TODO: Remove once it has been updated in Spring Boot
+    ext['jackson-bom.version'] = "3.1.8"
+
     test {
         useJUnitPlatform()
         testLogging {
@@ -193,5 +202,5 @@ tasks.register('generateMergedReport', JacocoReport) {
 }
 
 tasks.named('wrapper') {
-    gradleVersion = '9.8.1'
+    gradleVersion = '9.8.2'
 }

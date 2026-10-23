@@ -17,6 +17,12 @@ include 'services:webservice'
 
 rootProject.name = 'CommonsJMS'
 
+buildCache {
+    local {
+        directory = new File(rootDir, 'build-cache')
+    }
+}
+
 FileTree buildFiles = fileTree(rootDir) {
     List excludes = gradle.startParameter.projectProperties.get("excludeProjects")?.split(",")
     include '**/*.gradle', '/*.gradle'
