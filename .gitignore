@@ -292,3 +292,4 @@ FFDC
 commons-jms-utils/src/main/java/co/com/bancolombia/commons/jms/internal/models/eda
 examples/mq-reactive/src/main/java/co/com/bancolombia/sample/app/config/MQRegistryConfig.java
 **/SSLContextCreator.java
+/build-cache/
